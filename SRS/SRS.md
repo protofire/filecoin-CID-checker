@@ -5,10 +5,7 @@ disqus: hackmd
 
 Filecoin CID checker SRS
 ===
-![downloads](https://img.shields.io/github/downloads/atom/atom/total.svg)
-![build](https://img.shields.io/appveyor/ci/:user/:repo.svg)
-![chat](https://img.shields.io/discord/:serverId.svg)
-
+Link: https://hackmd.io/RMpGnE3YQm607jl0QevCoQ?view
 ## Table of Contents
 
 [TOC]
@@ -50,16 +47,16 @@ Feature: list the User's CIDs and related info
 green - good | grey - capacity | red - failing
 
 
-  Scenario: User adds item to cart
-    Given I'm a logged-in User
-    When I go to the Item page
-    And I click "Add item to cart"
-    Then the quantity of items in my cart should go up
-    And my subtotal should increment
-    And the warehouse inventory should decrement
+Scenario: User 
+    Given Condition
+    When Action1
+    And Action2
+    Then Result1
+    And Result2
+    And Result3
 ```
 
-> Read more about Gherkin here: https://docs.cucumber.io/gherkin/reference/
+> 
 
 User flows (in progress)
 ---
@@ -88,7 +85,7 @@ gantt
     anther task      : 24d
 ```
 
-> Read more about mermaid here: http://mermaid-js.github.io/mermaid/
+> 
 
 ## Appendix and FAQ
 
