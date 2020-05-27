@@ -6,3 +6,20 @@ One option would be to build 1 long table that shows each miner x sectors they a
 
 **Software requirements specification (the SRS) is** [here](https://hackmd.io/RMpGnE3YQm607jl0QevCoQ?view)
 
+**Project Roadmap is** [here](https://github.com/protofire/filecoin-CID-checker#workspaces/filecoin-cid-checker-5ecbabcb812f8965b13d94cb/roadmap?repos=266746476)
+
+**Project management board is** [here](https://github.com/protofire/filecoin-CID-checker#workspaces/filecoin-cid-checker-5ecbabcb812f8965b13d94cb/board?repos=266746476)
+
+## User Starting Guide 
+
+If you are a total beginner to this, start here!
+
+- Use remote CID checker service:
+1. Navigate to the vebsite: www.TBD
+2. Enter your Filecoin address 
+3. See the list of your CIDs and their currens status
+4. Query info by any specific CID or miner 
+
+- Install the CID checker to your Filecoin (Lotus) node:
+*instructions are in progress*
+
