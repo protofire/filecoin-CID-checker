@@ -23,3 +23,5 @@ If you are a total beginner to this, start here!
 - Install the CID checker to your Filecoin (Lotus) node:
 *instructions are in progress*
 
+## Data mapping diagram
+![DataMap_v2](https://user-images.githubusercontent.com/38105183/84385549-70260380-abf8-11ea-9f40-389c844b50a7.png)
