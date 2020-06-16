@@ -1,4 +1,4 @@
-name: Cid checker
+name: Build and test
 
 on:
   push:
