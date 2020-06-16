@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+
+#  lotus-node:
+#    build:
+#      context: ./docker/lotus-miner
+#    restart: always
+#
+#  lotus-miner:
+#    build:
+#      context: ./docker/lotus-node
+#    restart: always
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+    - 27017:27017
+
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
