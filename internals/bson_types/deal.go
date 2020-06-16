@@ -5,7 +5,7 @@ import (
 	"github.com/filecoin-project/specs-actors/actors/abi"
 )
 
-func BsonDeal(dealId string, deal api.MarketDeal) MarketDeal {
+func BsonDeal(dealId uint64, deal api.MarketDeal) MarketDeal {
 	return MarketDeal{
 		DealId: dealId,
 		Proposal: DealProposal{
@@ -31,7 +31,7 @@ func BsonDeal(dealId string, deal api.MarketDeal) MarketDeal {
 }
 
 type MarketDeal struct {
-	DealId   string
+	DealId   uint64
 	Proposal DealProposal
 	State    DealState
 }

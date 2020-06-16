@@ -2,6 +2,8 @@ package lotus_processors
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/protofire/filecoin-CID-checker/internals/bson_types"
 
@@ -25,7 +27,12 @@ func DealsProcessor(lotusApi api.FullNode, mongoClient *mongo.Client) BlockEvent
 		collection := mongoClient.Database("local").Collection("deals")
 
 		var models []mongo.WriteModel
-		for dealId, deal := range deals {
+		for dealIdStr, deal := range deals {
+			dealId, err := strconv.ParseUint(dealIdStr, 10, 64)
+			if err != nil {
+				return err
+			}
+
 			filter := bson.M{"_id": dealId}
 
 			models = append(models, mongo.NewReplaceOneModel().
@@ -35,8 +42,7 @@ func DealsProcessor(lotusApi api.FullNode, mongoClient *mongo.Client) BlockEvent
 
 		result, err := collection.BulkWrite(ctx, models)
 		if err != nil {
-			log.WithError(err).Error("Failed to insert deal data")
-			return err
+			return fmt.Errorf("failed to write deals data: %w", err)
 		}
 
 		log.WithFields(log.Fields{

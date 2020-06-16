@@ -3,16 +3,16 @@ package handlers
 import (
 	"context"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type DealResponse struct {
-	DealId     string
-	SectorId   int64
+	DealId     uint64
+	SectorId   uint64
 	DealInfo   interface{}
 	SectorInfo interface{}
 }
@@ -56,10 +56,10 @@ func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 		var results []DealResponse
 
 		for _, deal := range deals {
-			dealIdStr := deal["dealid"].(string)
-			dealId, err := strconv.ParseInt(dealIdStr, 10, 64)
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			dealId, ok := deal["dealid"].(int64)
+			if !ok {
+				log.Error("failed to convert dealid to int64")
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
 				return
 			}
 
@@ -71,7 +71,12 @@ func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 				return
 			}
 
-			sectorId := dealToSector["sectorId"].(int64)
+			sectorId, ok := dealToSector["sectorId"].(int64)
+			if !ok {
+				log.Error("failed to convert sectorId to uint64")
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
+				return
+			}
 
 			filter = bson.M{"_id": sectorId}
 
@@ -83,8 +88,8 @@ func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 
 			results = append(results, DealResponse{
 				DealInfo:   deal,
-				DealId:     dealIdStr,
-				SectorId:   sectorId,
+				DealId:     uint64(dealId),
+				SectorId:   uint64(sectorId),
 				SectorInfo: sector,
 			})
 		}

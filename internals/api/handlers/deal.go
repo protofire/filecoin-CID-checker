@@ -3,15 +3,23 @@ package handlers
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func CreateDealHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		dealId := c.Param("dealid")
+		dealIdString := c.Param("dealid")
+
+		dealId, err := strconv.ParseUint(dealIdString, 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request: dealid should be integer"})
+			return
+		}
 
 		dealsCollection := mongoClient.Database("local").Collection("deals")
 		dealToSectorsCollection := mongoClient.Database("local").Collection("deals_to_sectors")
@@ -19,14 +27,8 @@ func CreateDealHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 
 		filter := bson.M{"_id": dealId}
 
-		result := dealsCollection.FindOne(context.Background(), filter)
-		if result.Err() != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": result.Err().Error()})
-			return
-		}
-
 		var deal bson.M
-		if err := result.Decode(&deal); err != nil {
+		if err := dealsCollection.FindOne(context.Background(), filter).Decode(&deal); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -37,7 +39,12 @@ func CreateDealHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 			return
 		}
 
-		sectorId := dealToSector["sectorId"].(int64)
+		sectorId, ok := dealToSector["sectorId"].(int64)
+		if !ok {
+			log.Error("failed to convert sectorId to uint64")
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
+			return
+		}
 
 		filter = bson.M{"_id": sectorId}
 
@@ -50,7 +57,7 @@ func CreateDealHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 		response := DealResponse{
 			DealInfo:   deal,
 			DealId:     dealId,
-			SectorId:   sectorId,
+			SectorId:   uint64(sectorId),
 			SectorInfo: sector,
 		}
 

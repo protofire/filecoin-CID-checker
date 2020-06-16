@@ -87,8 +87,7 @@ func SectorsProcessor(lotusApi api.FullNode, mongoClient *mongo.Client) BlockEve
 			dealsToSectorsCollection := mongoClient.Database("local").Collection("deals_to_sectors")
 			result, err := dealsToSectorsCollection.BulkWrite(context.Background(), dealsToSectorsModels)
 			if err != nil {
-				log.WithError(err).Error("Failed to insert deals to sectors data")
-				return err
+				return fmt.Errorf("failed to write deals-to-sectors data: %w", err)
 			}
 
 			log.WithFields(log.Fields{
