@@ -1,13 +1,14 @@
-package bson_types
+package bsontypes
 
 import (
 	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/specs-actors/actors/abi"
 )
 
-func BsonDeal(dealId uint64, deal api.MarketDeal) MarketDeal {
+// BsonDeal create bson-compatible MarketDeal from api.MarketDeal.
+func BsonDeal(dealID uint64, deal api.MarketDeal) MarketDeal {
 	return MarketDeal{
-		DealId: dealId,
+		DealID: dealID,
 		Proposal: DealProposal{
 			PieceCID:     deal.Proposal.PieceCID.String(),
 			PieceSize:    uint64(deal.Proposal.PieceSize),
@@ -30,12 +31,14 @@ func BsonDeal(dealId uint64, deal api.MarketDeal) MarketDeal {
 	}
 }
 
+// MarketDeal bson-compatible version of api.MarketDeal.
 type MarketDeal struct {
-	DealId   uint64
+	DealID   uint64
 	Proposal DealProposal
 	State    DealState
 }
 
+// DealProposal bson-compatible version of api.DealProposal.
 type DealProposal struct {
 	PieceCID     string // CommP
 	PieceSize    uint64
@@ -55,6 +58,7 @@ type DealProposal struct {
 	ClientCollateral   abi.TokenAmount
 }
 
+// DealState bson-compatible version of api.DealState.
 type DealState struct {
 	SectorStartEpoch abi.ChainEpoch // -1 if not yet included in proven sector
 	LastUpdatedEpoch abi.ChainEpoch // -1 if deal state never updated

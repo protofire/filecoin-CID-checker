@@ -10,19 +10,22 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// DealResponse represents response format for deals related queries.
 type DealResponse struct {
-	DealId     uint64
-	SectorId   uint64
+	DealID     uint64
+	SectorID   uint64
 	DealInfo   interface{}
 	SectorInfo interface{}
 }
 
+// CreateDealsHandler creates handler for /deals requests.
+// Returns deals information by file CID or miner id (not CID, id in string form similar to "t01000").
 func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		pieceCid := c.Query("piececid")
-		minerId := c.Query("minerid")
+		pieceCID := c.Query("piececid")
+		minerID := c.Query("minerid")
 
-		if pieceCid == "" && minerId == "" {
+		if pieceCID == "" && minerID == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "request error: piececid or minerid requered"})
 			return
 		}
@@ -33,12 +36,12 @@ func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 
 		var filter bson.M
 
-		if pieceCid != "" {
-			filter = bson.M{"proposal.piececid": pieceCid}
+		if pieceCID != "" {
+			filter = bson.M{"proposal.piececid": pieceCID}
 		}
 
-		if minerId != "" {
-			filter = bson.M{"proposal.provider": minerId}
+		if minerID != "" {
+			filter = bson.M{"proposal.provider": minerID}
 		}
 
 		cursor, err := dealsCollection.Find(context.Background(), filter)
@@ -56,14 +59,14 @@ func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 		var results []DealResponse
 
 		for _, deal := range deals {
-			dealId, ok := deal["dealid"].(int64)
+			dealID, ok := deal["dealid"].(int64)
 			if !ok {
 				log.Error("failed to convert dealid to int64")
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
 				return
 			}
 
-			filter := bson.M{"_id": dealId}
+			filter := bson.M{"_id": dealID}
 
 			var dealToSector bson.M
 			if err = dealToSectorsCollection.FindOne(context.Background(), filter).Decode(&dealToSector); err != nil {
@@ -71,14 +74,14 @@ func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 				return
 			}
 
-			sectorId, ok := dealToSector["sectorId"].(int64)
+			sectorID, ok := dealToSector["sectorId"].(int64)
 			if !ok {
 				log.Error("failed to convert sectorId to uint64")
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
 				return
 			}
 
-			filter = bson.M{"_id": sectorId}
+			filter = bson.M{"_id": sectorID}
 
 			var sector bson.M
 			if err = sectorsCollection.FindOne(context.Background(), filter).Decode(&sector); err != nil {
@@ -88,8 +91,8 @@ func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 
 			results = append(results, DealResponse{
 				DealInfo:   deal,
-				DealId:     uint64(dealId),
-				SectorId:   uint64(sectorId),
+				DealID:     uint64(dealID),
+				SectorID:   uint64(sectorID),
 				SectorInfo: sector,
 			})
 		}

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/protofire/filecoin-CID-checker/internals/api/handlers"
-	"github.com/protofire/filecoin-CID-checker/internals/lotus_processors"
+	"github.com/protofire/filecoin-CID-checker/internals/lotusprocs"
 
 	"github.com/filecoin-project/lotus/api/client"
 	"github.com/gin-gonic/gin"
@@ -35,21 +35,21 @@ func main() {
 
 	log.Info("Connected to MongoDB!")
 
-	lotusApi, closer, err := client.NewFullNodeRPC("ws://localhost:1234/rpc/v0", http.Header{})
+	lotusAPI, closer, err := client.NewFullNodeRPC("ws://localhost:1234/rpc/v0", http.Header{})
 	if err != nil {
 		log.WithError(err).Fatal("Failed to connect with Lotus Node")
 	}
 	defer closer()
 
-	head, err := lotusApi.ChainHead(context.Background())
+	head, err := lotusAPI.ChainHead(context.Background())
 	if err != nil {
 		log.WithError(err).Fatal("Failed to connect with Lotus Node")
 	}
 	log.Infof("Connected to Lotus API, current chain height %d", head.Height())
-	lotus_processors.NewBlocksWatcher(lotusApi).
-		AddBlockEventHandler(lotus_processors.DealsProcessor(lotusApi, mongoClient)).
-		AddBlockEventHandler(lotus_processors.SectorsProcessor(lotusApi, mongoClient)).
-		AddBlockEventHandler(lotus_processors.MinersProcessor(lotusApi, mongoClient)).
+	lotusprocs.NewBlocksWatcher(lotusAPI).
+		AddBlockEventHandler(lotusprocs.DealsProcessor(lotusAPI, mongoClient)).
+		AddBlockEventHandler(lotusprocs.SectorsProcessor(lotusAPI, mongoClient)).
+		AddBlockEventHandler(lotusprocs.MinersProcessor(lotusAPI, mongoClient)).
 		Start()
 
 	router := gin.New()

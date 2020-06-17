@@ -1,4 +1,4 @@
-package lotus_processors
+package lotusprocs
 
 import (
 	"context"
@@ -12,7 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func SectorsProcessor(lotusApi api.FullNode, mongoClient *mongo.Client) BlockEventHandler {
+// SectorsProcessor read sectors from lotus, trough lotusAPI.
+// Saves sectors info to "sectors" collection, and relations of deals with sectors to "deals_to_sectors".
+func SectorsProcessor(lotusAPI api.FullNode, mongoClient *mongo.Client) BlockEventHandler {
 	return func() error {
 		log.Info("Fetching sectors from Lotus node")
 
@@ -27,28 +29,28 @@ func SectorsProcessor(lotusApi api.FullNode, mongoClient *mongo.Client) BlockEve
 		var sectorsModels []mongo.WriteModel
 
 		for _, miner := range minersList {
-			minerId, ok := miner.(string)
+			minerID, ok := miner.(string)
 			if !ok {
-				return fmt.Errorf("minerId %v is not a string", minerId)
+				return fmt.Errorf("minerID %v is not a string", minerID)
 			}
 
-			minerAddr, err := address.NewFromString(minerId)
+			minerAddr, err := address.NewFromString(minerID)
 			if err != nil {
-				return fmt.Errorf("failed to convert %s to miner address: %w", minerId, err)
+				return fmt.Errorf("failed to convert %s to miner address: %w", minerID, err)
 			}
 
 			// TODO make this Debugf()
 			log.Infof("Processing miner %s", minerAddr.String())
 
-			sectors, err := lotusApi.StateMinerSectors(context.Background(), minerAddr, nil, true, types.EmptyTSK)
+			sectors, err := lotusAPI.StateMinerSectors(context.Background(), minerAddr, nil, true, types.EmptyTSK)
 			if err != nil {
 				return err
 			}
 
 			for _, sector := range sectors {
-				for _, dealId := range sector.Info.Info.DealIDs {
-					filter := bson.M{"_id": dealId}
-					sectorToDeal := bson.M{"_id": dealId, "sectorId": sector.ID, "minerId": minerId}
+				for _, dealID := range sector.Info.Info.DealIDs {
+					filter := bson.M{"_id": dealID}
+					sectorToDeal := bson.M{"_id": dealID, "sectorId": sector.ID, "minerId": minerID}
 
 					// TODO change replacement to insert?
 
@@ -80,7 +82,7 @@ func SectorsProcessor(lotusApi api.FullNode, mongoClient *mongo.Client) BlockEve
 				"ModifiedCount": result.ModifiedCount,
 				"DeletedCount":  result.DeletedCount,
 				"UpsertedCount": result.UpsertedCount,
-			}).Info("Sectors updates")
+			}).Info("Sectors updated")
 		}
 
 		if len(dealsToSectorsModels) > 0 {
@@ -96,7 +98,7 @@ func SectorsProcessor(lotusApi api.FullNode, mongoClient *mongo.Client) BlockEve
 				"ModifiedCount": result.ModifiedCount,
 				"DeletedCount":  result.DeletedCount,
 				"UpsertedCount": result.UpsertedCount,
-			}).Info("DealsToSectors updates")
+			}).Info("DealsToSectors updated")
 
 			log.Debugf("UpsertedIDs %v", result.UpsertedIDs)
 		}

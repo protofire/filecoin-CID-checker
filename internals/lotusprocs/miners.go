@@ -1,4 +1,4 @@
-package lotus_processors
+package lotusprocs
 
 import (
 	"bytes"
@@ -14,7 +14,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func MinersProcessor(lotusApi api.FullNode, mongoClient *mongo.Client) BlockEventHandler {
+// MinersProcessor read miners from lotus, trough lotusAPI and save miner sectors states to "sectors" mongo collection.
+func MinersProcessor(lotusAPI api.FullNode, mongoClient *mongo.Client) BlockEventHandler {
 	return func() error {
 		log.Info("Fetching miners from Lotus node")
 
@@ -28,29 +29,29 @@ func MinersProcessor(lotusApi api.FullNode, mongoClient *mongo.Client) BlockEven
 		var sectorsModels []mongo.WriteModel
 		var filter bson.M
 
-		// Set all sectors fault and recover to false
+		// Set all sectors fault and recovery to false
 		filter = bson.M{}
 		sectorsModels = append(sectorsModels, mongo.NewUpdateManyModel().
 			SetFilter(filter).
 			SetUpdate(bson.M{"$set": bson.M{"fault": false, "recovery": false}}))
 
 		for _, minerData := range minersList {
-			minerId, ok := minerData.(string)
+			minerID, ok := minerData.(string)
 			if !ok {
-				return fmt.Errorf("minerId %v is not a string", minerId)
+				return fmt.Errorf("minerID %v is not a string", minerID)
 			}
 
-			minerAddr, err := address.NewFromString(minerId)
+			minerAddr, err := address.NewFromString(minerID)
 			if err != nil {
-				return fmt.Errorf("failed to convert %s to miner address: %w", minerId, err)
+				return fmt.Errorf("failed to convert %s to miner address: %w", minerID, err)
 			}
 
-			minerActor, err := lotusApi.StateGetActor(context.Background(), minerAddr, types.EmptyTSK)
+			minerActor, err := lotusAPI.StateGetActor(context.Background(), minerAddr, types.EmptyTSK)
 			if err != nil {
 				return err
 			}
 
-			minerStateBytes, err := lotusApi.ChainReadObj(context.Background(), minerActor.Head)
+			minerStateBytes, err := lotusAPI.ChainReadObj(context.Background(), minerActor.Head)
 			if err != nil {
 				return err
 			}
@@ -71,16 +72,16 @@ func MinersProcessor(lotusApi api.FullNode, mongoClient *mongo.Client) BlockEven
 				return err
 			}
 
-			for _, faultSectorId := range faultSectors {
-				filter = bson.M{"_id": faultSectorId}
+			for _, faultSectorID := range faultSectors {
+				filter = bson.M{"_id": faultSectorID}
 				sectorsModels = append(sectorsModels, mongo.NewUpdateOneModel().
 					SetFilter(filter).
 					SetUpdate(bson.M{"$set": bson.M{"fault": true}}).
 					SetUpsert(true))
 			}
 
-			for _, recoveriesSectorId := range recoveriesSectors {
-				filter = bson.M{"_id": recoveriesSectorId}
+			for _, recoveriesSectorID := range recoveriesSectors {
+				filter = bson.M{"_id": recoveriesSectorID}
 				sectorsModels = append(sectorsModels, mongo.NewUpdateOneModel().
 					SetFilter(filter).
 					SetUpdate(bson.M{"$set": bson.M{"recovery": true}}).
@@ -101,7 +102,7 @@ func MinersProcessor(lotusApi api.FullNode, mongoClient *mongo.Client) BlockEven
 				"ModifiedCount": result.ModifiedCount,
 				"DeletedCount":  result.DeletedCount,
 				"UpsertedCount": result.UpsertedCount,
-			}).Info("Sectors states updates")
+			}).Info("Sectors states updated")
 		}
 
 		return nil

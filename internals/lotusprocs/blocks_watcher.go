@@ -1,4 +1,4 @@
-package lotus_processors
+package lotusprocs
 
 import (
 	"context"
@@ -9,20 +9,23 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// BlocksWatcher responsible for watching new blocks and run blockEventHandlers.
 type BlocksWatcher struct {
-	lotusApi          api.FullNode
-	height            abi.ChainEpoch
-	blockEventHandles []BlockEventHandler
+	lotusAPI           api.FullNode
+	height             abi.ChainEpoch
+	blockEventHandlers []BlockEventHandler
 }
 
-func NewBlocksWatcher(lotusApi api.FullNode) *BlocksWatcher {
-	return &BlocksWatcher{lotusApi: lotusApi}
+// NewBlocksWatcher create new BlocksWatcher instance.
+func NewBlocksWatcher(lotusAPI api.FullNode) *BlocksWatcher {
+	return &BlocksWatcher{lotusAPI: lotusAPI}
 }
 
+// Start runs in infinite cycle and triggers handlers from blockEventHandlers each new block.
 func (w *BlocksWatcher) Start() {
 	go func() {
 		for {
-			ts, err := w.lotusApi.ChainHead(context.Background())
+			ts, err := w.lotusAPI.ChainHead(context.Background())
 			if err != nil {
 				log.WithError(err).Error("Failed to get ChainHead from Lotus API")
 				time.Sleep(5 * time.Second)
@@ -34,7 +37,7 @@ func (w *BlocksWatcher) Start() {
 				log.WithField("height", w.height).Info("New block height")
 
 				var gotError bool
-				for _, handler := range w.blockEventHandles {
+				for _, handler := range w.blockEventHandlers {
 					if err := handler(); err != nil {
 						log.WithError(err).Error("Failed to handle BlockEvent")
 						gotError = true
@@ -52,9 +55,11 @@ func (w *BlocksWatcher) Start() {
 	}()
 }
 
+// BlockEventHandler handler type for new block event.
 type BlockEventHandler func() error
 
+// AddBlockEventHandler attaches new handler to handlers pools.
 func (w *BlocksWatcher) AddBlockEventHandler(handler BlockEventHandler) *BlocksWatcher {
-	w.blockEventHandles = append(w.blockEventHandles, handler)
+	w.blockEventHandlers = append(w.blockEventHandlers, handler)
 	return w
 }
