@@ -1,7 +1,7 @@
 # Filecoin CID checker and Storage Oracle
 
 ![](https://github.com/protofire/filecoin-CID-checker/workflows/Build%20and%20test/badge.svg)
-[![Go Report Card](https://goreportcard.com/badge/github.com/protofire/filecoin-CID-checker)](https://goreportcard.com/report/github.com/nektos/act)
+[![Go Report Card](https://goreportcard.com/badge/github.com/protofire/filecoin-CID-checker)](https://goreportcard.com/report/github.com/protofire/filecoin-CID-checker)
 
 A website and API service that can list all CIDs along with their current status in the latest state tree. 
 The page could also support queries by CID or miner. 
