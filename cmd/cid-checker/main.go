@@ -20,14 +20,14 @@ func main() {
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
 	// Connect to MongoDB
-	mongoClient, err := mongo.Connect(context.TODO(), clientOptions)
+	mongoClient, err := mongo.Connect(context.Background(), clientOptions)
 
 	if err != nil {
 		log.WithError(err).Fatal("Failed to connect with MongoDB")
 	}
 
 	// Check the connection
-	err = mongoClient.Ping(context.TODO(), nil)
+	err = mongoClient.Ping(context.Background(), nil)
 
 	if err != nil {
 		log.WithError(err).Fatal("Failed to connect with MongoDB")
