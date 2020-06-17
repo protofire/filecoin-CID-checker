@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/protofire/filecoin-CID-checker/internals/repos"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,7 +15,7 @@ import (
 
 // CreateDealHandler creates handler for /deal/:dealid requests.
 // Returns deal information by deal id (not CID, just integer id).
-func CreateDealHandler(mongoClient *mongo.Client) gin.HandlerFunc {
+func CreateDealHandler(repo repos.DealsRepo, mongoClient *mongo.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sDealID := c.Param("dealid")
 
@@ -23,17 +25,16 @@ func CreateDealHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 			return
 		}
 
-		dealsCollection := mongoClient.Database("local").Collection("deals")
 		dealToSectorsCollection := mongoClient.Database("local").Collection("deals_to_sectors")
 		sectorsCollection := mongoClient.Database("local").Collection("sectors")
 
-		filter := bson.M{"_id": dealID}
-
-		var deal bson.M
-		if err := dealsCollection.FindOne(context.Background(), filter).Decode(&deal); err != nil {
+		deal, err := repo.GetDeal(dealID)
+		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
+
+		filter := bson.M{"_id": dealID}
 
 		var dealToSector bson.M
 		if err := dealToSectorsCollection.FindOne(context.Background(), filter).Decode(&dealToSector); err != nil {

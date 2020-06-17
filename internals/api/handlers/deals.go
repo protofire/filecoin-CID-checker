@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,7 +16,7 @@ import (
 type DealResponse struct {
 	DealID     uint64
 	SectorID   uint64
-	DealInfo   interface{}
+	DealInfo   bsontypes.MarketDeal
 	SectorInfo interface{}
 }
 
@@ -50,7 +52,7 @@ func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 			return
 		}
 
-		var deals []bson.M
+		var deals []bsontypes.MarketDeal
 		if err := cursor.All(context.Background(), &deals); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -59,12 +61,7 @@ func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 		var results []DealResponse
 
 		for _, deal := range deals {
-			dealID, ok := deal["dealid"].(int64)
-			if !ok {
-				log.Error("failed to convert dealid to int64")
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
-				return
-			}
+			dealID := deal.DealID
 
 			filter := bson.M{"_id": dealID}
 

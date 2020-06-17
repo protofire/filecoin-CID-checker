@@ -6,6 +6,7 @@ import (
 
 	"github.com/protofire/filecoin-CID-checker/internals/api/handlers"
 	"github.com/protofire/filecoin-CID-checker/internals/lotusprocs"
+	"github.com/protofire/filecoin-CID-checker/internals/repos"
 
 	"github.com/filecoin-project/lotus/api/client"
 	"github.com/gin-gonic/gin"
@@ -35,6 +36,8 @@ func main() {
 
 	log.Info("Connected to MongoDB!")
 
+	dealsRepo := repos.NewMongoDealsRepo(mongoClient)
+
 	lotusAPI, closer, err := client.NewFullNodeRPC("ws://localhost:1234/rpc/v0", http.Header{})
 	if err != nil {
 		log.WithError(err).Fatal("Failed to connect with Lotus Node")
@@ -47,7 +50,7 @@ func main() {
 	}
 	log.Infof("Connected to Lotus API, current chain height %d", head.Height())
 	lotusprocs.NewBlocksWatcher(lotusAPI).
-		AddBlockEventHandler(lotusprocs.DealsProcessor(lotusAPI, mongoClient)).
+		AddBlockEventHandler(lotusprocs.DealsProcessor(lotusAPI, dealsRepo)).
 		AddBlockEventHandler(lotusprocs.SectorsProcessor(lotusAPI, mongoClient)).
 		AddBlockEventHandler(lotusprocs.MinersProcessor(lotusAPI, mongoClient)).
 		Start()
@@ -55,7 +58,7 @@ func main() {
 	router := gin.New()
 	router.Use(ginlogrus.Logger(log.New()), gin.Recovery())
 
-	router.GET("/deals/:dealid", handlers.CreateDealHandler(mongoClient))
+	router.GET("/deals/:dealid", handlers.CreateDealHandler(dealsRepo, mongoClient))
 	router.GET("/deals", handlers.CreateDealsHandler(mongoClient))
 
 	log.Fatal(router.Run(":8080"))
