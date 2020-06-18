@@ -37,6 +37,7 @@ func main() {
 	log.Info("Connected to MongoDB!")
 
 	dealsRepo := repos.NewMongoDealsRepo(mongoClient)
+	sectorsRepo := repos.NewMongoSectorsRepo(mongoClient)
 
 	lotusAPI, closer, err := client.NewFullNodeRPC("ws://localhost:1234/rpc/v0", http.Header{})
 	if err != nil {
@@ -51,15 +52,15 @@ func main() {
 	log.Infof("Connected to Lotus API, current chain height %d", head.Height())
 	lotusprocs.NewBlocksWatcher(lotusAPI).
 		AddBlockEventHandler(lotusprocs.DealsProcessor(lotusAPI, dealsRepo)).
-		AddBlockEventHandler(lotusprocs.SectorsProcessor(lotusAPI, dealsRepo, mongoClient)).
-		AddBlockEventHandler(lotusprocs.MinersProcessor(lotusAPI, dealsRepo, mongoClient)).
+		AddBlockEventHandler(lotusprocs.SectorsProcessor(lotusAPI, dealsRepo, sectorsRepo, mongoClient)).
+		AddBlockEventHandler(lotusprocs.MinersProcessor(lotusAPI, dealsRepo, sectorsRepo)).
 		Start()
 
 	router := gin.New()
 	router.Use(ginlogrus.Logger(log.New()), gin.Recovery())
 
-	router.GET("/deals/:dealid", handlers.CreateDealHandler(dealsRepo, mongoClient))
-	router.GET("/deals", handlers.CreateDealsHandler(dealsRepo, mongoClient))
+	router.GET("/deals/:dealid", handlers.CreateDealHandler(dealsRepo, sectorsRepo, mongoClient))
+	router.GET("/deals", handlers.CreateDealsHandler(dealsRepo, sectorsRepo, mongoClient))
 
 	log.Fatal(router.Run(":8080"))
 }

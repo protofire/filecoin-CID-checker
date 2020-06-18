@@ -15,7 +15,7 @@ import (
 
 // CreateDealHandler creates handler for /deal/:dealid requests.
 // Returns deal information by deal id (not CID, just integer id).
-func CreateDealHandler(repo repos.DealsRepo, mongoClient *mongo.Client) gin.HandlerFunc {
+func CreateDealHandler(repo repos.DealsRepo, sectorsRepo repos.SectorsRepo, mongoClient *mongo.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sDealID := c.Param("dealid")
 
@@ -26,7 +26,6 @@ func CreateDealHandler(repo repos.DealsRepo, mongoClient *mongo.Client) gin.Hand
 		}
 
 		dealToSectorsCollection := mongoClient.Database("local").Collection("deals_to_sectors")
-		sectorsCollection := mongoClient.Database("local").Collection("sectors")
 
 		deal, err := repo.GetDeal(dealID)
 		if err != nil {
@@ -51,8 +50,8 @@ func CreateDealHandler(repo repos.DealsRepo, mongoClient *mongo.Client) gin.Hand
 
 		filter = bson.M{"_id": sectorID}
 
-		var sector bson.M
-		if err := sectorsCollection.FindOne(context.Background(), filter).Decode(&sector); err != nil {
+		sector, err := sectorsRepo.GetSector(uint64(sectorID))
+		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}

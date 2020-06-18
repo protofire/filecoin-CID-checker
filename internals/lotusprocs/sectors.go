@@ -16,7 +16,7 @@ import (
 
 // SectorsProcessor read sectors from lotus, trough lotusAPI.
 // Saves sectors info to "sectors" collection, and relations of deals with sectors to "deals_to_sectors".
-func SectorsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, mongoClient *mongo.Client) BlockEventHandler {
+func SectorsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo, mongoClient *mongo.Client) BlockEventHandler {
 	return func() error {
 		log.Info("Fetching sectors from Lotus node")
 
@@ -26,7 +26,7 @@ func SectorsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, mongoCli
 		}
 
 		var dealsToSectorsModels []mongo.WriteModel
-		var sectorsModels []mongo.WriteModel
+		var allSectors []*api.ChainSectorInfo
 
 		for _, minerID := range minersList {
 			minerAddr, err := address.NewFromString(minerID)
@@ -42,6 +42,8 @@ func SectorsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, mongoCli
 				return err
 			}
 
+			allSectors = append(allSectors, sectors...)
+
 			for _, sector := range sectors {
 				for _, dealID := range sector.Info.Info.DealIDs {
 					filter := bson.M{"_id": dealID}
@@ -53,31 +55,12 @@ func SectorsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, mongoCli
 						SetFilter(filter).
 						SetReplacement(sectorToDeal).
 						SetUpsert(true))
-
-					filter = bson.M{"_id": sector.ID}
-					sectorsModels = append(sectorsModels, mongo.NewUpdateOneModel().
-						SetFilter(filter).
-						SetUpdate(bson.M{"$set": sector}).
-						SetUpsert(true))
 				}
 			}
 		}
 
-		if len(sectorsModels) > 0 {
-			sectorsCollection := mongoClient.Database("local").Collection("sectors")
-			result, err := sectorsCollection.BulkWrite(context.Background(), sectorsModels)
-			if err != nil {
-				log.WithError(err).Error("Failed to insert sectors data")
-				return err
-			}
-
-			log.WithFields(log.Fields{
-				"InsertedCount": result.InsertedCount,
-				"MatchedCount":  result.MatchedCount,
-				"ModifiedCount": result.ModifiedCount,
-				"DeletedCount":  result.DeletedCount,
-				"UpsertedCount": result.UpsertedCount,
-			}).Info("Sectors updated")
+		if err := sectorsRepo.BulkWrite(allSectors); err != nil {
+			return err
 		}
 
 		if len(dealsToSectorsModels) > 0 {

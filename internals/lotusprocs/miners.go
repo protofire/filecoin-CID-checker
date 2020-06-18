@@ -12,12 +12,10 @@ import (
 	"github.com/filecoin-project/lotus/chain/types"
 	"github.com/filecoin-project/specs-actors/actors/builtin/miner"
 	log "github.com/sirupsen/logrus"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // MinersProcessor read miners from lotus, trough lotusAPI and save miner sectors states to "sectors" mongo collection.
-func MinersProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, mongoClient *mongo.Client) BlockEventHandler {
+func MinersProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo) BlockEventHandler {
 	return func() error {
 		log.Info("Fetching miners from Lotus node")
 
@@ -26,14 +24,7 @@ func MinersProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, mongoClie
 			return err
 		}
 
-		var sectorsModels []mongo.WriteModel
-		var filter bson.M
-
-		// Set all sectors fault and recovery to false
-		filter = bson.M{}
-		sectorsModels = append(sectorsModels, mongo.NewUpdateManyModel().
-			SetFilter(filter).
-			SetUpdate(bson.M{"$set": bson.M{"fault": false, "recovery": false}}))
+		var allFaultSectors, allRecoveriesSectors []uint64
 
 		for _, minerID := range minersList {
 			minerAddr, err := address.NewFromString(minerID)
@@ -62,42 +53,20 @@ func MinersProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, mongoClie
 			if err != nil {
 				return err
 			}
+			allFaultSectors = append(allFaultSectors, faultSectors...)
+
 			recoveriesSectors, err := minerState.Recoveries.All(^uint64(0))
 			if err != nil {
 				return err
 			}
-
-			for _, faultSectorID := range faultSectors {
-				filter = bson.M{"_id": faultSectorID}
-				sectorsModels = append(sectorsModels, mongo.NewUpdateOneModel().
-					SetFilter(filter).
-					SetUpdate(bson.M{"$set": bson.M{"fault": true}}).
-					SetUpsert(true))
-			}
-
-			for _, recoveriesSectorID := range recoveriesSectors {
-				filter = bson.M{"_id": recoveriesSectorID}
-				sectorsModels = append(sectorsModels, mongo.NewUpdateOneModel().
-					SetFilter(filter).
-					SetUpdate(bson.M{"$set": bson.M{"recovery": true}}).
-					SetUpsert(true))
-			}
+			allRecoveriesSectors = append(allRecoveriesSectors, recoveriesSectors...)
 		}
 
-		if len(sectorsModels) > 0 {
-			sectorsCollection := mongoClient.Database("local").Collection("sectors")
-			result, err := sectorsCollection.BulkWrite(context.Background(), sectorsModels)
-			if err != nil {
-				return fmt.Errorf("failed to update sectors states: %w", err)
-			}
-
-			log.WithFields(log.Fields{
-				"InsertedCount": result.InsertedCount,
-				"MatchedCount":  result.MatchedCount,
-				"ModifiedCount": result.ModifiedCount,
-				"DeletedCount":  result.DeletedCount,
-				"UpsertedCount": result.UpsertedCount,
-			}).Info("Sectors states updated")
+		if err := sectorsRepo.SetFaultSectors(allFaultSectors); err != nil {
+			return err
+		}
+		if err := sectorsRepo.SetRecoveriesSectors(allRecoveriesSectors); err != nil {
+			return err
 		}
 
 		return nil

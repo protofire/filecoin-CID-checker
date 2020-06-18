@@ -23,7 +23,7 @@ type DealResponse struct {
 
 // CreateDealsHandler creates handler for /deals requests.
 // Returns deals information by file CID or miner id (not CID, id in string form similar to "t01000").
-func CreateDealsHandler(dealsRepo repos.DealsRepo, mongoClient *mongo.Client) gin.HandlerFunc {
+func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo, mongoClient *mongo.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		pieceCID := c.Query("piececid")
 		minerID := c.Query("minerid")
@@ -34,7 +34,6 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, mongoClient *mongo.Client) gi
 		}
 
 		dealToSectorsCollection := mongoClient.Database("local").Collection("deals_to_sectors")
-		sectorsCollection := mongoClient.Database("local").Collection("sectors")
 
 		var filter bson.M
 
@@ -72,10 +71,8 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, mongoClient *mongo.Client) gi
 				return
 			}
 
-			filter = bson.M{"_id": sectorID}
-
-			var sector bson.M
-			if err = sectorsCollection.FindOne(context.Background(), filter).Decode(&sector); err != nil {
+			sector, err := sectorsRepo.GetSector(uint64(sectorID))
+			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
 			}
