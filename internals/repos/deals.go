@@ -95,6 +95,7 @@ func (r *MongoDealsRepo) Miners() ([]string, error) {
 		if !ok {
 			return nil, fmt.Errorf("minerID %v is not a string", minerID)
 		}
+		minerIDs = append(minerIDs, minerID)
 	}
 	return minerIDs, nil
 }
