@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
+	"github.com/protofire/filecoin-CID-checker/internals/repos"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -22,7 +23,7 @@ type DealResponse struct {
 
 // CreateDealsHandler creates handler for /deals requests.
 // Returns deals information by file CID or miner id (not CID, id in string form similar to "t01000").
-func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
+func CreateDealsHandler(dealsRepo repos.DealsRepo, mongoClient *mongo.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		pieceCID := c.Query("piececid")
 		minerID := c.Query("minerid")
@@ -32,7 +33,6 @@ func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 			return
 		}
 
-		dealsCollection := mongoClient.Database("local").Collection("deals")
 		dealToSectorsCollection := mongoClient.Database("local").Collection("deals_to_sectors")
 		sectorsCollection := mongoClient.Database("local").Collection("sectors")
 
@@ -46,14 +46,8 @@ func CreateDealsHandler(mongoClient *mongo.Client) gin.HandlerFunc {
 			filter = bson.M{"proposal.provider": minerID}
 		}
 
-		cursor, err := dealsCollection.Find(context.Background(), filter)
+		deals, err := dealsRepo.Find(filter)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		var deals []bsontypes.MarketDeal
-		if err := cursor.All(context.Background(), &deals); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}

@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/protofire/filecoin-CID-checker/internals/repos"
+
 	"github.com/filecoin-project/go-address"
 	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/lotus/chain/types"
@@ -14,26 +16,19 @@ import (
 
 // SectorsProcessor read sectors from lotus, trough lotusAPI.
 // Saves sectors info to "sectors" collection, and relations of deals with sectors to "deals_to_sectors".
-func SectorsProcessor(lotusAPI api.FullNode, mongoClient *mongo.Client) BlockEventHandler {
+func SectorsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, mongoClient *mongo.Client) BlockEventHandler {
 	return func() error {
 		log.Info("Fetching sectors from Lotus node")
 
-		dealsCollection := mongoClient.Database("local").Collection("deals")
-
-		minersList, err := dealsCollection.Distinct(context.Background(), "proposal.provider", bson.M{})
+		minersList, err := dealsRepo.Miners()
 		if err != nil {
-			return fmt.Errorf("failed to select distinct miners ids from deals %w", err)
+			return err
 		}
 
 		var dealsToSectorsModels []mongo.WriteModel
 		var sectorsModels []mongo.WriteModel
 
-		for _, miner := range minersList {
-			minerID, ok := miner.(string)
-			if !ok {
-				return fmt.Errorf("minerID %v is not a string", minerID)
-			}
-
+		for _, minerID := range minersList {
 			minerAddr, err := address.NewFromString(minerID)
 			if err != nil {
 				return fmt.Errorf("failed to convert %s to miner address: %w", minerID, err)

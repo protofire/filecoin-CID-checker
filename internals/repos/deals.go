@@ -14,14 +14,19 @@ import (
 type DealsRepo interface {
 	BulkWrite(deals []bsontypes.MarketDeal) error
 	GetDeal(dealID uint64) (bsontypes.MarketDeal, error)
+	Find(filter bson.M) ([]bsontypes.MarketDeal, error)
+	Miners() ([]string, error)
 }
 
 type MongoDealsRepo struct {
-	mongoClient *mongo.Client
+	collection *mongo.Collection
 }
 
 func NewMongoDealsRepo(mongoClient *mongo.Client) *MongoDealsRepo {
-	return &MongoDealsRepo{mongoClient: mongoClient}
+	return &MongoDealsRepo{
+		// TODO replace with config values
+		collection: mongoClient.Database("local").Collection("deals"),
+	}
 }
 
 func (r *MongoDealsRepo) BulkWrite(deals []bsontypes.MarketDeal) error {
@@ -35,10 +40,7 @@ func (r *MongoDealsRepo) BulkWrite(deals []bsontypes.MarketDeal) error {
 			SetReplacement(deal).SetUpsert(true))
 	}
 
-	// TODO replace with config values
-	collection := r.mongoClient.Database("local").Collection("deals")
-
-	result, err := collection.BulkWrite(context.Background(), models)
+	result, err := r.collection.BulkWrite(context.Background(), models)
 	if err != nil {
 		return fmt.Errorf("failed to write deals data: %w", err)
 	}
@@ -57,15 +59,42 @@ func (r *MongoDealsRepo) BulkWrite(deals []bsontypes.MarketDeal) error {
 }
 
 func (r *MongoDealsRepo) GetDeal(dealID uint64) (bsontypes.MarketDeal, error) {
-	// TODO replace with config values
-	dealsCollection := r.mongoClient.Database("local").Collection("deals")
-
 	filter := bson.M{"_id": dealID}
 
 	var deal bsontypes.MarketDeal
-	if err := dealsCollection.FindOne(context.Background(), filter).Decode(&deal); err != nil {
+	if err := r.collection.FindOne(context.Background(), filter).Decode(&deal); err != nil {
 		return bsontypes.MarketDeal{}, err
 	}
 
 	return deal, nil
+}
+
+func (r *MongoDealsRepo) Find(filter bson.M) ([]bsontypes.MarketDeal, error) {
+	cursor, err := r.collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+
+	var deals []bsontypes.MarketDeal
+	if err := cursor.All(context.Background(), &deals); err != nil {
+		return nil, err
+	}
+
+	return deals, nil
+}
+
+func (r *MongoDealsRepo) Miners() ([]string, error) {
+	minersList, err := r.collection.Distinct(context.Background(), "proposal.provider", bson.M{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to select distinct miners ids from deals %w", err)
+	}
+
+	var minerIDs []string
+	for _, miner := range minersList {
+		minerID, ok := miner.(string)
+		if !ok {
+			return nil, fmt.Errorf("minerID %v is not a string", minerID)
+		}
+	}
+	return minerIDs, nil
 }

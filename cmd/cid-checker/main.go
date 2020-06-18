@@ -51,15 +51,15 @@ func main() {
 	log.Infof("Connected to Lotus API, current chain height %d", head.Height())
 	lotusprocs.NewBlocksWatcher(lotusAPI).
 		AddBlockEventHandler(lotusprocs.DealsProcessor(lotusAPI, dealsRepo)).
-		AddBlockEventHandler(lotusprocs.SectorsProcessor(lotusAPI, mongoClient)).
-		AddBlockEventHandler(lotusprocs.MinersProcessor(lotusAPI, mongoClient)).
+		AddBlockEventHandler(lotusprocs.SectorsProcessor(lotusAPI, dealsRepo, mongoClient)).
+		AddBlockEventHandler(lotusprocs.MinersProcessor(lotusAPI, dealsRepo, mongoClient)).
 		Start()
 
 	router := gin.New()
 	router.Use(ginlogrus.Logger(log.New()), gin.Recovery())
 
 	router.GET("/deals/:dealid", handlers.CreateDealHandler(dealsRepo, mongoClient))
-	router.GET("/deals", handlers.CreateDealsHandler(mongoClient))
+	router.GET("/deals", handlers.CreateDealsHandler(dealsRepo, mongoClient))
 
 	log.Fatal(router.Run(":8080"))
 }
