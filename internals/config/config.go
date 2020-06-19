@@ -19,7 +19,7 @@ type Config struct {
 
 func LoadConfiguration() (*Config, error) {
 	// from the environment
-	viper.SetEnvPrefix("DT")
+	viper.SetEnvPrefix("CID")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 
