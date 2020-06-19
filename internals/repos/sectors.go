@@ -16,6 +16,7 @@ type SectorsRepo interface {
 	GetSector(sectorID uint64) (bsontypes.SectorInfo, error)
 	SetFaultSectors(sectors []uint64) error
 	SetRecoveriesSectors(sectors []uint64) error
+	SectorWithDeal(dealID uint64) (bsontypes.SectorInfo, error)
 }
 
 type MongoSectorsRepo struct {
@@ -73,7 +74,18 @@ func (r *MongoSectorsRepo) GetSector(sectorID uint64) (bsontypes.SectorInfo, err
 	return sector, nil
 }
 
-func (r *MongoSectorsRepo) updateBoolFields(filter bson.M, name string, value bool) error {
+func (r *MongoSectorsRepo) SectorWithDeal(dealID uint64) (bsontypes.SectorInfo, error) {
+	filter := bson.M{"info.info.dealids": dealID}
+
+	var sector bsontypes.SectorInfo
+	if err := r.collection.FindOne(context.Background(), filter).Decode(&sector); err != nil {
+		return bsontypes.SectorInfo{}, err
+	}
+
+	return sector, nil
+}
+
+func (r *MongoSectorsRepo) updateBoolField(filter bson.M, name string, value bool) error {
 	result, err := r.collection.UpdateMany(context.Background(), filter, bson.M{"$set": bson.M{name: value}})
 	if err != nil {
 		return err
@@ -90,17 +102,17 @@ func (r *MongoSectorsRepo) updateBoolFields(filter bson.M, name string, value bo
 
 func (r *MongoSectorsRepo) setSectors(sectors []uint64, field string) error {
 	if len(sectors) > 0 {
-		err := r.updateBoolFields(bson.M{"_id": bson.M{"$in": sectors}}, field, true)
+		err := r.updateBoolField(bson.M{"_id": bson.M{"$in": sectors}}, field, true)
 		if err != nil {
 			return err
 		}
 
-		err = r.updateBoolFields(bson.M{"_id": bson.M{"$nin": sectors}}, field, false)
+		err = r.updateBoolField(bson.M{"_id": bson.M{"$nin": sectors}}, field, false)
 		if err != nil {
 			return err
 		}
 	} else {
-		err := r.updateBoolFields(bson.M{}, field, false)
+		err := r.updateBoolField(bson.M{}, field, false)
 		if err != nil {
 			return err
 		}

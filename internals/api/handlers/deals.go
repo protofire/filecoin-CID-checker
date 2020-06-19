@@ -1,16 +1,13 @@
 package handlers
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
 	"github.com/protofire/filecoin-CID-checker/internals/repos"
 
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // DealResponse represents response format for deals related queries.
@@ -23,7 +20,7 @@ type DealResponse struct {
 
 // CreateDealsHandler creates handler for /deals requests.
 // Returns deals information by file CID or miner id (not CID, id in string form similar to "t01000").
-func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo, mongoClient *mongo.Client) gin.HandlerFunc {
+func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		pieceCID := c.Query("piececid")
 		minerID := c.Query("minerid")
@@ -32,8 +29,6 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 			c.JSON(http.StatusBadRequest, gin.H{"error": "request error: piececid or minerid requered"})
 			return
 		}
-
-		dealToSectorsCollection := mongoClient.Database("local").Collection("deals_to_sectors")
 
 		var filter bson.M
 
@@ -56,22 +51,7 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 		for _, deal := range deals {
 			dealID := deal.DealID
 
-			filter := bson.M{"_id": dealID}
-
-			var dealToSector bson.M
-			if err = dealToSectorsCollection.FindOne(context.Background(), filter).Decode(&dealToSector); err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-				return
-			}
-
-			sectorID, ok := dealToSector["sectorId"].(int64)
-			if !ok {
-				log.Error("failed to convert sectorId to uint64")
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
-				return
-			}
-
-			sector, err := sectorsRepo.GetSector(uint64(sectorID))
+			sector, err := sectorsRepo.SectorWithDeal(dealID)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
@@ -79,8 +59,8 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 
 			results = append(results, DealResponse{
 				DealInfo:   deal,
-				DealID:     uint64(dealID),
-				SectorID:   uint64(sectorID),
+				DealID:     dealID,
+				SectorID:   uint64(sector.ID),
 				SectorInfo: sector,
 			})
 		}
