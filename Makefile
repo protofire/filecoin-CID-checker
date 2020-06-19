@@ -10,3 +10,7 @@ test:
 .PHONY: fmt
 fmt:
 	go fmt ./...
+
+.PHONY: lint
+lint:
+	golint ./...
