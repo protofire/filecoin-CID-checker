@@ -32,9 +32,13 @@ func OpenTestDB(t *testing.T) *mongo.Client {
 	return mongoClient
 }
 
-func TestMongoSectorsRepo_SectorWithDeal(t *testing.T) {
+func mongoSectorsRepo(t *testing.T) *MongoSectorsRepo{
 	db := OpenTestDB(t)
-	repo := NewMongoSectorsRepo(db, "")
+	return NewMongoSectorsRepo(db, "local")
+}
+
+func TestMongoSectorsRepo_SectorWithDeal(t *testing.T) {
+	repo := mongoSectorsRepo(t)
 	seedSectors := []*api.ChainSectorInfo{
 		{ID: 1, Info: miner.SectorOnChainInfo{
 			Info: miner.SectorPreCommitInfo{
@@ -81,8 +85,7 @@ func TestMongoSectorsRepo_SectorWithDeal(t *testing.T) {
 }
 
 func TestMongoSectorsRepo_SetFaultSectors(t *testing.T) {
-	db := OpenTestDB(t)
-	repo := NewMongoSectorsRepo(db, "")
+	repo := mongoSectorsRepo(t)
 	seedSectors := []*api.ChainSectorInfo{{ID: 1}, {ID: 2}, {ID: 3}}
 	err := repo.BulkWrite(seedSectors)
 	assert.NoError(t, err)
@@ -109,8 +112,7 @@ func TestMongoSectorsRepo_SetFaultSectors(t *testing.T) {
 }
 
 func TestMongoSectorsRepo_SetRecoveriesSectors(t *testing.T) {
-	db := OpenTestDB(t)
-	repo := NewMongoSectorsRepo(db, "")
+	repo := mongoSectorsRepo(t)
 	seedSectors := []*api.ChainSectorInfo{{ID: 1}, {ID: 2}, {ID: 3}}
 	err := repo.BulkWrite(seedSectors)
 	require.NoError(t, err)
