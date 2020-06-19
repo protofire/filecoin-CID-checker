@@ -1,0 +1,5 @@
+lotus:
+  rpcUrl: ws://localhost:1234/rpc/v0
+db:
+  connectionString: mongodb://localhost:27017
+  name: local

@@ -18,14 +18,15 @@ type DealsRepo interface {
 	Miners() ([]string, error)
 }
 
+const dealsCollectionName = "deals"
+
 type MongoDealsRepo struct {
 	collection *mongo.Collection
 }
 
-func NewMongoDealsRepo(mongoClient *mongo.Client) *MongoDealsRepo {
+func NewMongoDealsRepo(mongoClient *mongo.Client, dbName string) *MongoDealsRepo {
 	return &MongoDealsRepo{
-		// TODO replace with config values
-		collection: mongoClient.Database("local").Collection("deals"),
+		collection: mongoClient.Database(dbName).Collection(dealsCollectionName),
 	}
 }
 

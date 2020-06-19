@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/protofire/filecoin-CID-checker/internals/api/handlers"
+	"github.com/protofire/filecoin-CID-checker/internals/config"
 	"github.com/protofire/filecoin-CID-checker/internals/lotusprocs"
 	"github.com/protofire/filecoin-CID-checker/internals/repos"
 
@@ -17,8 +18,13 @@ import (
 )
 
 func main() {
+	c, err := config.LoadConfiguration()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Set client options
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI(c.Db.ConnectionString)
 
 	// Connect to MongoDB
 	mongoClient, err := mongo.Connect(context.Background(), clientOptions)
@@ -36,10 +42,10 @@ func main() {
 
 	log.Info("Connected to MongoDB!")
 
-	dealsRepo := repos.NewMongoDealsRepo(mongoClient)
-	sectorsRepo := repos.NewMongoSectorsRepo(mongoClient)
+	dealsRepo := repos.NewMongoDealsRepo(mongoClient, c.Db.Name)
+	sectorsRepo := repos.NewMongoSectorsRepo(mongoClient, c.Db.Name)
 
-	lotusAPI, closer, err := client.NewFullNodeRPC("ws://localhost:1234/rpc/v0", http.Header{})
+	lotusAPI, closer, err := client.NewFullNodeRPC(c.Lotus.RpcUrl, http.Header{})
 	if err != nil {
 		log.WithError(err).Fatal("Failed to connect with Lotus Node")
 	}

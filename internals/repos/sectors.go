@@ -19,14 +19,15 @@ type SectorsRepo interface {
 	SectorWithDeal(dealID uint64) (bsontypes.SectorInfo, error)
 }
 
+const sectorsCollectionName = "sectors"
+
 type MongoSectorsRepo struct {
 	collection *mongo.Collection
 }
 
-func NewMongoSectorsRepo(mongoClient *mongo.Client) *MongoSectorsRepo {
+func NewMongoSectorsRepo(mongoClient *mongo.Client, dbName string) *MongoSectorsRepo {
 	return &MongoSectorsRepo{
-		// TODO replace with config values
-		collection: mongoClient.Database("local").Collection("sectors"),
+		collection: mongoClient.Database(dbName).Collection(sectorsCollectionName),
 	}
 }
 
