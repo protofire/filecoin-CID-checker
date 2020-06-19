@@ -2,9 +2,9 @@ package repos
 
 import (
 	"context"
+	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
 	"testing"
 
-	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/specs-actors/actors/abi"
 	"github.com/filecoin-project/specs-actors/actors/builtin/miner"
 	log "github.com/sirupsen/logrus"
@@ -39,18 +39,18 @@ func mongoSectorsRepo(t *testing.T) *MongoSectorsRepo {
 
 func TestMongoSectorsRepo_SectorWithDeal(t *testing.T) {
 	repo := mongoSectorsRepo(t)
-	seedSectors := []*api.ChainSectorInfo{
-		{ID: 1, Info: miner.SectorOnChainInfo{
+	seedSectors := []*bsontypes.SectorInfo{
+		{ID: 1, Info: bsontypes.SectorOnChainInfo{
 			Info: miner.SectorPreCommitInfo{
 				DealIDs: []abi.DealID{1, 4},
 			},
 		}},
-		{ID: 2, Info: miner.SectorOnChainInfo{
+		{ID: 2, Info: bsontypes.SectorOnChainInfo{
 			Info: miner.SectorPreCommitInfo{
 				DealIDs: []abi.DealID{3},
 			},
 		}},
-		{ID: 3, Info: miner.SectorOnChainInfo{
+		{ID: 3, Info: bsontypes.SectorOnChainInfo{
 			Info: miner.SectorPreCommitInfo{
 				DealIDs: []abi.DealID{2},
 			},
@@ -86,7 +86,7 @@ func TestMongoSectorsRepo_SectorWithDeal(t *testing.T) {
 
 func TestMongoSectorsRepo_SetFaultSectors(t *testing.T) {
 	repo := mongoSectorsRepo(t)
-	seedSectors := []*api.ChainSectorInfo{{ID: 1}, {ID: 2}, {ID: 3}}
+	seedSectors := []*bsontypes.SectorInfo{{ID: 1}, {ID: 2}, {ID: 3}}
 	err := repo.BulkWrite(seedSectors)
 	assert.NoError(t, err)
 
@@ -113,7 +113,7 @@ func TestMongoSectorsRepo_SetFaultSectors(t *testing.T) {
 
 func TestMongoSectorsRepo_SetRecoveriesSectors(t *testing.T) {
 	repo := mongoSectorsRepo(t)
-	seedSectors := []*api.ChainSectorInfo{{ID: 1}, {ID: 2}, {ID: 3}}
+	seedSectors := []*bsontypes.SectorInfo{{ID: 1}, {ID: 2}, {ID: 3}}
 	err := repo.BulkWrite(seedSectors)
 	require.NoError(t, err)
 

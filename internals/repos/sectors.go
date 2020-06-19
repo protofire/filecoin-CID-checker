@@ -5,14 +5,13 @@ import (
 
 	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
 
-	"github.com/filecoin-project/lotus/api"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type SectorsRepo interface {
-	BulkWrite(sectors []*api.ChainSectorInfo) error
+	BulkWrite(sectors []*bsontypes.SectorInfo) error
 	GetSector(sectorID uint64) (bsontypes.SectorInfo, error)
 	SetFaultSectors(sectors []uint64) error
 	SetRecoveriesSectors(sectors []uint64) error
@@ -31,7 +30,7 @@ func NewMongoSectorsRepo(mongoClient *mongo.Client, dbName string) *MongoSectors
 	}
 }
 
-func (r *MongoSectorsRepo) BulkWrite(sectors []*api.ChainSectorInfo) error {
+func (r *MongoSectorsRepo) BulkWrite(sectors []*bsontypes.SectorInfo) error {
 	var sectorsModels []mongo.WriteModel
 
 	for _, sector := range sectors {

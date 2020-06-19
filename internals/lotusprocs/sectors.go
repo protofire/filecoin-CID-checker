@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
 	"github.com/protofire/filecoin-CID-checker/internals/repos"
 
 	"github.com/filecoin-project/go-address"
@@ -23,7 +24,7 @@ func SectorsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, sectorsR
 			return err
 		}
 
-		var allSectors []*api.ChainSectorInfo
+		var allSectors []*bsontypes.SectorInfo
 
 		for _, minerID := range minersList {
 			minerAddr, err := address.NewFromString(minerID)
@@ -38,7 +39,9 @@ func SectorsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, sectorsR
 				return err
 			}
 
-			allSectors = append(allSectors, sectors...)
+			for _, sector := range sectors {
+				allSectors = append(allSectors, bsontypes.BsonSector(sector))
+			}
 		}
 
 		if err := sectorsRepo.BulkWrite(allSectors); err != nil {
