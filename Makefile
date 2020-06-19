@@ -5,7 +5,7 @@ build:
 .PHONY: test
 test:
 	docker-compose -f ./test/docker-compose.yaml up -d
-	go test -v ./...
+	go test -v -coverprofile cp.out ./...
 
 .PHONY: fmt
 fmt:
