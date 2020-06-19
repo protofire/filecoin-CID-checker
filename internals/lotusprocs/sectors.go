@@ -31,8 +31,7 @@ func SectorsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, sectorsR
 				return fmt.Errorf("failed to convert %s to miner address: %w", minerID, err)
 			}
 
-			// TODO make this Debugf()
-			log.Infof("Processing miner %s", minerAddr.String())
+			log.Debugf("Processing miner %s sectors", minerAddr.String())
 
 			sectors, err := lotusAPI.StateMinerSectors(context.Background(), minerAddr, nil, true, types.EmptyTSK)
 			if err != nil {
