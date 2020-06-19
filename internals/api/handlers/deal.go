@@ -11,7 +11,7 @@ import (
 
 // CreateDealHandler creates handler for /deal/:dealid requests.
 // Returns deal information by deal id (not CID, just integer id).
-func CreateDealHandler(repo repos.DealsRepo, sectorsRepo repos.SectorsRepo) gin.HandlerFunc {
+func CreateDealHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sDealID := c.Param("dealid")
 
@@ -21,7 +21,7 @@ func CreateDealHandler(repo repos.DealsRepo, sectorsRepo repos.SectorsRepo) gin.
 			return
 		}
 
-		deal, err := repo.GetDeal(dealID)
+		deal, err := dealsRepo.GetDeal(dealID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
