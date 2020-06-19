@@ -18,10 +18,10 @@ func BsonDeal(dealID uint64, deal api.MarketDeal) MarketDeal {
 
 			StartEpoch:           deal.Proposal.StartEpoch,
 			EndEpoch:             deal.Proposal.EndEpoch,
-			StoragePricePerEpoch: deal.Proposal.StoragePricePerEpoch,
+			StoragePricePerEpoch: deal.Proposal.StoragePricePerEpoch.String(),
 
-			ProviderCollateral: deal.Proposal.ProviderCollateral,
-			ClientCollateral:   deal.Proposal.ClientCollateral,
+			ProviderCollateral: deal.Proposal.ProviderCollateral.String(),
+			ClientCollateral:   deal.Proposal.ClientCollateral.String(),
 		},
 		State: DealState{
 			SectorStartEpoch: deal.State.SectorStartEpoch,
@@ -52,10 +52,10 @@ type DealProposal struct {
 	// otherwise it is invalid.
 	StartEpoch           abi.ChainEpoch
 	EndEpoch             abi.ChainEpoch
-	StoragePricePerEpoch abi.TokenAmount
+	StoragePricePerEpoch string
 
-	ProviderCollateral abi.TokenAmount
-	ClientCollateral   abi.TokenAmount
+	ProviderCollateral string
+	ClientCollateral   string
 }
 
 // DealState bson-compatible version of api.DealState.
