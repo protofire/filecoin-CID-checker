@@ -1,39 +1,19 @@
 package repos
 
 import (
-	"context"
-	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
 	"testing"
+
+	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
+	"github.com/protofire/filecoin-CID-checker/internals/test"
 
 	"github.com/filecoin-project/specs-actors/actors/abi"
 	"github.com/filecoin-project/specs-actors/actors/builtin/miner"
-	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func OpenTestDB(t *testing.T) *mongo.Client {
-	log.SetLevel(log.DebugLevel)
-
-	// TODO change to config variables
-
-	// Set client options
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:28017")
-
-	// Connect to MongoDB
-	mongoClient, err := mongo.Connect(context.Background(), clientOptions)
-	assert.NoError(t, err, "failed to connect with test database")
-
-	err = mongoClient.Database("local").Drop(context.Background())
-	assert.NoError(t, err, "failed to clear test database")
-
-	return mongoClient
-}
-
 func mongoSectorsRepo(t *testing.T) *MongoSectorsRepo {
-	db := OpenTestDB(t)
+	db := test.Setup(t)
 	return NewMongoSectorsRepo(db, "local")
 }
 
@@ -103,7 +83,7 @@ func TestMongoSectorsRepo_SetFaultSectors(t *testing.T) {
 		require.NoError(t, err)
 
 		for _, seedSector := range seedSectors {
-			isFault := uint64InSlice(uint64(seedSector.ID), tt.sectors)
+			isFault := test.Uint64InSlice(uint64(seedSector.ID), tt.sectors)
 			sector, err := repo.GetSector(uint64(seedSector.ID))
 			assert.NoError(t, err)
 			assert.Equal(t, sector.Fault, isFault)
@@ -130,19 +110,10 @@ func TestMongoSectorsRepo_SetRecoveriesSectors(t *testing.T) {
 		assert.NoError(t, err)
 
 		for _, seedSector := range seedSectors {
-			isRecovery := uint64InSlice(uint64(seedSector.ID), tt.sectors)
+			isRecovery := test.Uint64InSlice(uint64(seedSector.ID), tt.sectors)
 			sector, err := repo.GetSector(uint64(seedSector.ID))
 			assert.NoError(t, err)
 			assert.Equal(t, sector.Recovery, isRecovery)
 		}
 	}
-}
-
-func uint64InSlice(a uint64, list []uint64) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
-	}
-	return false
 }
