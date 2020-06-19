@@ -4,6 +4,7 @@ build:
 
 .PHONY: test
 test:
+	docker-compose -f ./test/docker-compose.yaml up -d
 	go test -v ./...
 
 .PHONY: fmt
