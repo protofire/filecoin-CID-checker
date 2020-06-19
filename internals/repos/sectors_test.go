@@ -32,7 +32,7 @@ func OpenTestDB(t *testing.T) *mongo.Client {
 	return mongoClient
 }
 
-func mongoSectorsRepo(t *testing.T) *MongoSectorsRepo{
+func mongoSectorsRepo(t *testing.T) *MongoSectorsRepo {
 	db := OpenTestDB(t)
 	return NewMongoSectorsRepo(db, "local")
 }
