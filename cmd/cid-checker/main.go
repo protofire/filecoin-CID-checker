@@ -43,6 +43,10 @@ func main() {
 	log.Info("Connected to MongoDB!")
 
 	dealsRepo := repos.NewMongoDealsRepo(mongoClient, c.Db.Name)
+	if err := dealsRepo.CreateIndexes(); err != nil {
+		log.Fatal(err)
+	}
+
 	sectorsRepo := repos.NewMongoSectorsRepo(mongoClient, c.Db.Name)
 
 	lotusAPI, closer, err := client.NewFullNodeRPC(c.Lotus.RpcUrl, http.Header{})

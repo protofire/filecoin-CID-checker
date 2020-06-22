@@ -3,6 +3,7 @@ package repos
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
 
@@ -16,6 +17,7 @@ type DealsRepo interface {
 	GetDeal(dealID uint64) (bsontypes.MarketDeal, error)
 	Find(filter bson.M) ([]bsontypes.MarketDeal, error)
 	Miners() ([]string, error)
+	CreateIndexes() error
 }
 
 const dealsCollectionName = "deals"
@@ -99,4 +101,20 @@ func (r *MongoDealsRepo) Miners() ([]string, error) {
 		minerIDs = append(minerIDs, minerID)
 	}
 	return minerIDs, nil
+}
+
+func (r *MongoDealsRepo) CreateIndexes() error {
+	models := []mongo.IndexModel{
+		{Keys: bson.M{"proposal.piececid": 1}},
+		{Keys: bson.M{"proposal.provider": 1}},
+	}
+
+	newIndexes, err := r.collection.Indexes().CreateMany(context.Background(), models)
+	if err != nil {
+		return err
+	}
+
+	log.Infof(`Collection "%s" indexes created: %s`, dealsCollectionName, strings.Join(newIndexes, ", "))
+
+	return nil
 }
