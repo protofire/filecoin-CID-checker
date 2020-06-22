@@ -2,6 +2,7 @@ package repos
 
 import (
 	"context"
+	"strings"
 
 	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
 
@@ -16,6 +17,7 @@ type SectorsRepo interface {
 	SetFaultSectors(sectors []uint64) error
 	SetRecoveriesSectors(sectors []uint64) error
 	SectorWithDeal(dealID uint64) (bsontypes.SectorInfo, error)
+	CreateIndexes() error
 }
 
 const sectorsCollectionName = "sectors"
@@ -127,4 +129,19 @@ func (r *MongoSectorsRepo) SetFaultSectors(sectors []uint64) error {
 
 func (r *MongoSectorsRepo) SetRecoveriesSectors(sectors []uint64) error {
 	return r.setSectors(sectors, "recovery")
+}
+
+func (r *MongoSectorsRepo) CreateIndexes() error {
+	models := []mongo.IndexModel{
+		{Keys: bson.M{"info.info.dealids": 1}},
+	}
+
+	newIndexes, err := r.collection.Indexes().CreateMany(context.Background(), models)
+	if err != nil {
+		return err
+	}
+
+	log.Infof(`Collection "%s" indexes created: %s`, sectorsCollectionName, strings.Join(newIndexes, ", "))
+
+	return nil
 }

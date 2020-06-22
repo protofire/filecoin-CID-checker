@@ -48,6 +48,9 @@ func main() {
 	}
 
 	sectorsRepo := repos.NewMongoSectorsRepo(mongoClient, c.Db.Name)
+	if err := sectorsRepo.CreateIndexes(); err != nil {
+		log.Fatal(err)
+	}
 
 	lotusAPI, closer, err := client.NewFullNodeRPC(c.Lotus.RpcUrl, http.Header{})
 	if err != nil {
