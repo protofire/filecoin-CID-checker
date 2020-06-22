@@ -20,7 +20,8 @@ func TestCreateDealHandler(t *testing.T) {
 		assert  func(*testing.T, *httptest.ResponseRecorder)
 	}{
 		{
-			prepare: func(t *testing.T, c *gin.Context, dealsRepoMock *mocks.DealsRepo, sectorsRepoMock *mocks.SectorsRepo) {},
+			prepare: func(t *testing.T, c *gin.Context, dealsRepoMock *mocks.DealsRepo, sectorsRepoMock *mocks.SectorsRepo) {
+			},
 			assert: func(t *testing.T, w *httptest.ResponseRecorder) {
 				assert.Equal(t, 400, w.Code)
 				assert.Contains(t, w.Body.String(), "dealid should be integer")
