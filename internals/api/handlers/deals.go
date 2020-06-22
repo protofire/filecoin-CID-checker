@@ -18,6 +18,8 @@ type DealResponse struct {
 	SectorInfo interface{}
 }
 
+type DealsResponse []DealResponse
+
 // CreateDealsHandler creates handler for /deals requests.
 // Returns deals information by file CID or miner id (not CID, id in string form similar to "t01000").
 func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo) gin.HandlerFunc {
@@ -46,7 +48,7 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 			return
 		}
 
-		var results []DealResponse
+		var results DealsResponse
 
 		for _, deal := range deals {
 			dealID := deal.DealID
