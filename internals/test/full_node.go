@@ -22,55 +22,134 @@ type FullNode interface {
 
 	// TODO: TipSetKeys
 
-	// chain
+	// MethodGroup: Chain
+	// The Chain method group contains methods for interacting with the
+	// blockchain, but that do not require any form of state computation
 
 	// ChainNotify returns channel with chain head updates
 	// First message is guaranteed to be of len == 1, and type == 'current'
 	ChainNotify(context.Context) (<-chan []*api.HeadChange, error)
+
+	// ChainHead returns the current head of the chain
 	ChainHead(context.Context) (*types.TipSet, error)
+
+	// ChainGetRandomness is used to sample the chain for randomness
 	ChainGetRandomness(ctx context.Context, tsk types.TipSetKey, personalization crypto.DomainSeparationTag, randEpoch abi.ChainEpoch, entropy []byte) (abi.Randomness, error)
+
+	// ChainGetBlock returns the block specified by the given CID
 	ChainGetBlock(context.Context, cid.Cid) (*types.BlockHeader, error)
 	ChainGetTipSet(context.Context, types.TipSetKey) (*types.TipSet, error)
-	ChainGetBlockMessages(context.Context, cid.Cid) (*api.BlockMessages, error)
-	ChainGetParentReceipts(context.Context, cid.Cid) ([]*types.MessageReceipt, error)
-	ChainGetParentMessages(context.Context, cid.Cid) ([]api.Message, error)
+
+	// ChainGetBlockMessages returns messages stored in the specified block
+	ChainGetBlockMessages(ctx context.Context, blockCid cid.Cid) (*api.BlockMessages, error)
+
+	// ChainGetParentReceipts returns receipts for messages in parent tipset of
+	// the specified block
+	ChainGetParentReceipts(ctx context.Context, blockCid cid.Cid) ([]*types.MessageReceipt, error)
+
+	// ChainGetParentReceipts returns messages stored in parent tipset of the
+	// specified block
+	ChainGetParentMessages(ctx context.Context, blockCid cid.Cid) ([]api.Message, error)
+
+	// ChainGetTipSetByHeight looks back for a tipset at the specified epoch.
+	// If there are no blocks at the specified epoch, a tipset at higher epoch
+	// will be returned
 	ChainGetTipSetByHeight(context.Context, abi.ChainEpoch, types.TipSetKey) (*types.TipSet, error)
+
+	// ChainReadObj reads ipld nodes referenced by the specified CID from chain
+	// blockstore and returns raw bytes
 	ChainReadObj(context.Context, cid.Cid) ([]byte, error)
+
+	// ChainHasObj checks if a given CID exists in the chain blockstore
 	ChainHasObj(context.Context, cid.Cid) (bool, error)
 	ChainStatObj(context.Context, cid.Cid, cid.Cid) (api.ObjStat, error)
+
+	// ChainSetHead forcefully sets current chain head. Use with caution
 	ChainSetHead(context.Context, types.TipSetKey) error
+
+	// ChainGetGenesis returns the genesis tipset
 	ChainGetGenesis(context.Context) (*types.TipSet, error)
+
+	// ChainTipSetWeight computes weight for the specified tipset
 	ChainTipSetWeight(context.Context, types.TipSetKey) (types.BigInt, error)
 	ChainGetNode(ctx context.Context, p string) (*api.IpldObject, error)
+
+	// ChainGetMessage reads a message referenced by the specified CID from the
+	// chain blockstore
 	ChainGetMessage(context.Context, cid.Cid) (*types.Message, error)
+
+	// ChainGetPath returns a set of revert/apply operations needed to get from
+	// one tipset to another, for example:
+	//```
+	//        to
+	//         ^
+	// from   tAA
+	//   ^     ^
+	// tBA    tAB
+	//  ^---*--^
+	//      ^
+	//     tRR
+	//```
+	// Would return `[revert(tBA), apply(tAB), apply(tAA)]`
 	ChainGetPath(ctx context.Context, from types.TipSetKey, to types.TipSetKey) ([]*api.HeadChange, error)
+
+	// ChainExport returns a stream of bytes with CAR dump of chain data
 	ChainExport(context.Context, types.TipSetKey) (<-chan []byte, error)
 
-	// syncer
+	// MethodGroup: Sync
+	// The Sync method group contains methods for interacting with and
+	// observing the lotus sync service
+
+	// SyncState returns the current status of the lotus sync system
 	SyncState(context.Context) (*api.SyncState, error)
+
+	// SyncSubmitBlock can be used to submit a newly created block to the
+	// network through this node
 	SyncSubmitBlock(ctx context.Context, blk *types.BlockMsg) error
+
+	// SyncIncomingBlocks returns a channel streaming incoming, potentially not
+	// yet synced block headers.
 	SyncIncomingBlocks(ctx context.Context) (<-chan *types.BlockHeader, error)
+
+	// SyncMarkBad marks a blocks as bad, meaning that it won't ever by synced.
+	// Use with extreme caution
 	SyncMarkBad(ctx context.Context, bcid cid.Cid) error
+
+	// SyncCheckBad checks if a block was marked as bad, and if it was, returns
+	// the reason
 	SyncCheckBad(ctx context.Context, bcid cid.Cid) (string, error)
 
-	// messages
+	// MethodGroup: Mpool
+	// The Mpool methods are for interacting with the message pool. The message pool
+	// manages all incoming and outgoing 'messages' going over the network.
+
+	// MpoolPending returns pending mempool messages
 	MpoolPending(context.Context, types.TipSetKey) ([]*types.SignedMessage, error)
+
+	// MpoolPush pushes a signed message to mempool
 	MpoolPush(context.Context, *types.SignedMessage) (cid.Cid, error)
-	MpoolPushMessage(context.Context, *types.Message) (*types.SignedMessage, error) // get nonce, sign, push
+
+	// MpoolPushMessage atomically assigns a nonce, signs, and pushes a message
+	// to mempool
+	MpoolPushMessage(context.Context, *types.Message) (*types.SignedMessage, error)
+
+	// MpoolGetNonce gets next nonce for the specified sender.
+	// Note that this method may not be atomic. Use MpoolPushMessage instead
 	MpoolGetNonce(context.Context, address.Address) (uint64, error)
 	MpoolSub(context.Context) (<-chan api.MpoolUpdate, error)
-	MpoolEstimateGasPrice(context.Context, uint64, address.Address, int64, types.TipSetKey) (types.BigInt, error)
 
-	// FullNodeStruct
+	// MpoolEstimateGasPrice estimates what gas price should be used for a
+	// message to have high likelihood of inclusion in `nblocksincl` epochs
+	MpoolEstimateGasPrice(ctx context.Context, nblocksincl uint64, sender address.Address, gaslimit int64, tsk types.TipSetKey) (types.BigInt, error)
 
-	// miner
+	// MethodGroup: Miner
 
 	MinerGetBaseInfo(context.Context, address.Address, abi.ChainEpoch, types.TipSetKey) (*api.MiningBaseInfo, error)
 	MinerCreateBlock(context.Context, *api.BlockTemplate) (*types.BlockMsg, error)
 
 	// // UX ?
 
-	// wallet
+	// MethodGroup: Wallet
 
 	WalletNew(context.Context, crypto.SigType) (address.Address, error)
 	WalletHas(context.Context, address.Address) (bool, error)
@@ -83,17 +162,25 @@ type FullNode interface {
 	WalletSetDefault(context.Context, address.Address) error
 	WalletExport(context.Context, address.Address) (*types.KeyInfo, error)
 	WalletImport(context.Context, *types.KeyInfo) (address.Address, error)
+	WalletDelete(context.Context, address.Address) error
 
 	// Other
 
+	// MethodGroup: Client
+	// The Client methods all have to do with interacting with the storage and
+	// retrieval markets as a client
+
 	// ClientImport imports file under the specified path into filestore
 	ClientImport(ctx context.Context, ref api.FileRef) (cid.Cid, error)
+	// ClientStartDeal proposes a deal with a miner
 	ClientStartDeal(ctx context.Context, params *api.StartDealParams) (*cid.Cid, error)
+	// ClientGetDeal info returns the latest information about a given deal
 	ClientGetDealInfo(context.Context, cid.Cid) (*api.DealInfo, error)
 	ClientListDeals(ctx context.Context) ([]api.DealInfo, error)
 	ClientHasLocal(ctx context.Context, root cid.Cid) (bool, error)
 	ClientFindData(ctx context.Context, root cid.Cid) ([]api.QueryOffer, error)
-	ClientRetrieve(ctx context.Context, order api.RetrievalOrder, ref api.FileRef) error
+	ClientMinerQueryOffer(ctx context.Context, root cid.Cid, miner address.Address) (api.QueryOffer, error)
+	ClientRetrieve(ctx context.Context, order api.RetrievalOrder, ref *api.FileRef) error
 	ClientQueryAsk(ctx context.Context, p peer.ID, miner address.Address) (*storagemarket.SignedStorageAsk, error)
 	ClientCalcCommP(ctx context.Context, inpath string, miner address.Address) (*api.CommPRet, error)
 	ClientGenCar(ctx context.Context, ref api.FileRef, outpath string) error
@@ -105,6 +192,9 @@ type FullNode interface {
 	ClientListImports(ctx context.Context) ([]api.Import, error)
 
 	//ClientListAsks() []Ask
+
+	// MethodGroup: State
+	// The State methods are used to query, inspect, and interact with chain state
 
 	// if tipset is nil, we'll use heaviest
 	StateCall(context.Context, *types.Message, types.TipSetKey) (*api.InvocResult, error)
@@ -118,14 +208,18 @@ type FullNode interface {
 	StateMinerProvingSet(context.Context, address.Address, types.TipSetKey) ([]*api.ChainSectorInfo, error)
 	StateMinerProvingDeadline(context.Context, address.Address, types.TipSetKey) (*miner.DeadlineInfo, error)
 	StateMinerPower(context.Context, address.Address, types.TipSetKey) (*api.MinerPower, error)
-	StateMinerInfo(context.Context, address.Address, types.TipSetKey) (miner.MinerInfo, error)
+	StateMinerInfo(context.Context, address.Address, types.TipSetKey) (api.MinerInfo, error)
 	StateMinerDeadlines(context.Context, address.Address, types.TipSetKey) (*miner.Deadlines, error)
-	StateMinerFaults(context.Context, address.Address, types.TipSetKey) ([]abi.SectorNumber, error)
+	StateMinerFaults(context.Context, address.Address, types.TipSetKey) (*abi.BitField, error)
+	// Returns all non-expired Faults that occur within lookback epochs of the given tipset
+	StateAllMinerFaults(ctx context.Context, lookback abi.ChainEpoch, ts types.TipSetKey) ([]*api.Fault, error)
+	StateMinerRecoveries(context.Context, address.Address, types.TipSetKey) (*abi.BitField, error)
 	StateMinerInitialPledgeCollateral(context.Context, address.Address, abi.SectorNumber, types.TipSetKey) (types.BigInt, error)
 	StateMinerAvailableBalance(context.Context, address.Address, types.TipSetKey) (types.BigInt, error)
 	StateSectorPreCommitInfo(context.Context, address.Address, abi.SectorNumber, types.TipSetKey) (miner.SectorPreCommitOnChainInfo, error)
+	StateSectorGetInfo(context.Context, address.Address, abi.SectorNumber, types.TipSetKey) (*miner.SectorOnChainInfo, error)
 	StatePledgeCollateral(context.Context, types.TipSetKey) (types.BigInt, error)
-	StateWaitMsg(context.Context, cid.Cid) (*api.MsgLookup, error)
+	StateWaitMsg(ctx context.Context, cid cid.Cid, confidence uint64) (*api.MsgLookup, error)
 	StateSearchMsg(context.Context, cid.Cid) (*api.MsgLookup, error)
 	StateListMiners(context.Context, types.TipSetKey) ([]address.Address, error)
 	StateListActors(context.Context, types.TipSetKey) ([]address.Address, error)
@@ -140,6 +234,10 @@ type FullNode interface {
 	StateMinerSectorCount(context.Context, address.Address, types.TipSetKey) (api.MinerSectors, error)
 	StateCompute(context.Context, abi.ChainEpoch, []*types.Message, types.TipSetKey) (*api.ComputeStateOutput, error)
 
+	// MethodGroup: Msig
+	// The Msig methods are used to interact with multisig wallets on the
+	// filecoin network
+
 	MsigGetAvailableBalance(context.Context, address.Address, types.TipSetKey) (types.BigInt, error)
 	MsigCreate(context.Context, int64, []address.Address, types.BigInt, address.Address, types.BigInt) (cid.Cid, error)
 	MsigPropose(context.Context, address.Address, address.Address, types.BigInt, address.Address, uint64, []byte) (cid.Cid, error)
@@ -148,6 +246,9 @@ type FullNode interface {
 
 	MarketEnsureAvailable(context.Context, address.Address, address.Address, types.BigInt) (cid.Cid, error)
 	// MarketFreeBalance
+
+	// MethodGroup: Paych
+	// The Paych methods are for interacting with and managing payment channels
 
 	PaychGet(ctx context.Context, from, to address.Address, ensureFunds types.BigInt) (*api.ChannelInfo, error)
 	PaychList(context.Context) ([]address.Address, error)

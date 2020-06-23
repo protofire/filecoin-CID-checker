@@ -8,6 +8,8 @@ import (
 
 	api "github.com/filecoin-project/lotus/api"
 
+	auth "github.com/filecoin-project/go-jsonrpc/auth"
+
 	big "github.com/filecoin-project/specs-actors/actors/abi/big"
 
 	bitfield "github.com/filecoin-project/go-bitfield"
@@ -41,11 +43,11 @@ type FullNode struct {
 }
 
 // AuthNew provides a mock function with given fields: ctx, perms
-func (_m *FullNode) AuthNew(ctx context.Context, perms []string) ([]byte, error) {
+func (_m *FullNode) AuthNew(ctx context.Context, perms []auth.Permission) ([]byte, error) {
 	ret := _m.Called(ctx, perms)
 
 	var r0 []byte
-	if rf, ok := ret.Get(0).(func(context.Context, []string) []byte); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, []auth.Permission) []byte); ok {
 		r0 = rf(ctx, perms)
 	} else {
 		if ret.Get(0) != nil {
@@ -54,7 +56,7 @@ func (_m *FullNode) AuthNew(ctx context.Context, perms []string) ([]byte, error)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, []string) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, []auth.Permission) error); ok {
 		r1 = rf(ctx, perms)
 	} else {
 		r1 = ret.Error(1)
@@ -64,15 +66,15 @@ func (_m *FullNode) AuthNew(ctx context.Context, perms []string) ([]byte, error)
 }
 
 // AuthVerify provides a mock function with given fields: ctx, token
-func (_m *FullNode) AuthVerify(ctx context.Context, token string) ([]string, error) {
+func (_m *FullNode) AuthVerify(ctx context.Context, token string) ([]auth.Permission, error) {
 	ret := _m.Called(ctx, token)
 
-	var r0 []string
-	if rf, ok := ret.Get(0).(func(context.Context, string) []string); ok {
+	var r0 []auth.Permission
+	if rf, ok := ret.Get(0).(func(context.Context, string) []auth.Permission); ok {
 		r0 = rf(ctx, token)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]string)
+			r0 = ret.Get(0).([]auth.Permission)
 		}
 	}
 
@@ -132,13 +134,13 @@ func (_m *FullNode) ChainGetBlock(_a0 context.Context, _a1 cid.Cid) (*types.Bloc
 	return r0, r1
 }
 
-// ChainGetBlockMessages provides a mock function with given fields: _a0, _a1
-func (_m *FullNode) ChainGetBlockMessages(_a0 context.Context, _a1 cid.Cid) (*api.BlockMessages, error) {
-	ret := _m.Called(_a0, _a1)
+// ChainGetBlockMessages provides a mock function with given fields: ctx, blockCid
+func (_m *FullNode) ChainGetBlockMessages(ctx context.Context, blockCid cid.Cid) (*api.BlockMessages, error) {
+	ret := _m.Called(ctx, blockCid)
 
 	var r0 *api.BlockMessages
 	if rf, ok := ret.Get(0).(func(context.Context, cid.Cid) *api.BlockMessages); ok {
-		r0 = rf(_a0, _a1)
+		r0 = rf(ctx, blockCid)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*api.BlockMessages)
@@ -147,7 +149,7 @@ func (_m *FullNode) ChainGetBlockMessages(_a0 context.Context, _a1 cid.Cid) (*ap
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, cid.Cid) error); ok {
-		r1 = rf(_a0, _a1)
+		r1 = rf(ctx, blockCid)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -224,13 +226,13 @@ func (_m *FullNode) ChainGetNode(ctx context.Context, p string) (*api.IpldObject
 	return r0, r1
 }
 
-// ChainGetParentMessages provides a mock function with given fields: _a0, _a1
-func (_m *FullNode) ChainGetParentMessages(_a0 context.Context, _a1 cid.Cid) ([]api.Message, error) {
-	ret := _m.Called(_a0, _a1)
+// ChainGetParentMessages provides a mock function with given fields: ctx, blockCid
+func (_m *FullNode) ChainGetParentMessages(ctx context.Context, blockCid cid.Cid) ([]api.Message, error) {
+	ret := _m.Called(ctx, blockCid)
 
 	var r0 []api.Message
 	if rf, ok := ret.Get(0).(func(context.Context, cid.Cid) []api.Message); ok {
-		r0 = rf(_a0, _a1)
+		r0 = rf(ctx, blockCid)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]api.Message)
@@ -239,7 +241,7 @@ func (_m *FullNode) ChainGetParentMessages(_a0 context.Context, _a1 cid.Cid) ([]
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, cid.Cid) error); ok {
-		r1 = rf(_a0, _a1)
+		r1 = rf(ctx, blockCid)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -247,13 +249,13 @@ func (_m *FullNode) ChainGetParentMessages(_a0 context.Context, _a1 cid.Cid) ([]
 	return r0, r1
 }
 
-// ChainGetParentReceipts provides a mock function with given fields: _a0, _a1
-func (_m *FullNode) ChainGetParentReceipts(_a0 context.Context, _a1 cid.Cid) ([]*types.MessageReceipt, error) {
-	ret := _m.Called(_a0, _a1)
+// ChainGetParentReceipts provides a mock function with given fields: ctx, blockCid
+func (_m *FullNode) ChainGetParentReceipts(ctx context.Context, blockCid cid.Cid) ([]*types.MessageReceipt, error) {
+	ret := _m.Called(ctx, blockCid)
 
 	var r0 []*types.MessageReceipt
 	if rf, ok := ret.Get(0).(func(context.Context, cid.Cid) []*types.MessageReceipt); ok {
-		r0 = rf(_a0, _a1)
+		r0 = rf(ctx, blockCid)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*types.MessageReceipt)
@@ -262,7 +264,7 @@ func (_m *FullNode) ChainGetParentReceipts(_a0 context.Context, _a1 cid.Cid) ([]
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, cid.Cid) error); ok {
-		r1 = rf(_a0, _a1)
+		r1 = rf(ctx, blockCid)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -679,6 +681,27 @@ func (_m *FullNode) ClientListImports(ctx context.Context) ([]api.Import, error)
 	return r0, r1
 }
 
+// ClientMinerQueryOffer provides a mock function with given fields: ctx, root, _a2
+func (_m *FullNode) ClientMinerQueryOffer(ctx context.Context, root cid.Cid, _a2 address.Address) (api.QueryOffer, error) {
+	ret := _m.Called(ctx, root, _a2)
+
+	var r0 api.QueryOffer
+	if rf, ok := ret.Get(0).(func(context.Context, cid.Cid, address.Address) api.QueryOffer); ok {
+		r0 = rf(ctx, root, _a2)
+	} else {
+		r0 = ret.Get(0).(api.QueryOffer)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, cid.Cid, address.Address) error); ok {
+		r1 = rf(ctx, root, _a2)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // ClientQueryAsk provides a mock function with given fields: ctx, p, _a2
 func (_m *FullNode) ClientQueryAsk(ctx context.Context, p peer.ID, _a2 address.Address) (*storagemarket.SignedStorageAsk, error) {
 	ret := _m.Called(ctx, p, _a2)
@@ -703,11 +726,11 @@ func (_m *FullNode) ClientQueryAsk(ctx context.Context, p peer.ID, _a2 address.A
 }
 
 // ClientRetrieve provides a mock function with given fields: ctx, order, ref
-func (_m *FullNode) ClientRetrieve(ctx context.Context, order api.RetrievalOrder, ref api.FileRef) error {
+func (_m *FullNode) ClientRetrieve(ctx context.Context, order api.RetrievalOrder, ref *api.FileRef) error {
 	ret := _m.Called(ctx, order, ref)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, api.RetrievalOrder, api.FileRef) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, api.RetrievalOrder, *api.FileRef) error); ok {
 		r0 = rf(ctx, order, ref)
 	} else {
 		r0 = ret.Error(0)
@@ -732,6 +755,29 @@ func (_m *FullNode) ClientStartDeal(ctx context.Context, params *api.StartDealPa
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *api.StartDealParams) error); ok {
 		r1 = rf(ctx, params)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Closing provides a mock function with given fields: _a0
+func (_m *FullNode) Closing(_a0 context.Context) (<-chan struct{}, error) {
+	ret := _m.Called(_a0)
+
+	var r0 <-chan struct{}
+	if rf, ok := ret.Get(0).(func(context.Context) <-chan struct{}); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(<-chan struct{})
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -864,20 +910,20 @@ func (_m *FullNode) MinerGetBaseInfo(_a0 context.Context, _a1 address.Address, _
 	return r0, r1
 }
 
-// MpoolEstimateGasPrice provides a mock function with given fields: _a0, _a1, _a2, _a3, _a4
-func (_m *FullNode) MpoolEstimateGasPrice(_a0 context.Context, _a1 uint64, _a2 address.Address, _a3 int64, _a4 types.TipSetKey) (big.Int, error) {
-	ret := _m.Called(_a0, _a1, _a2, _a3, _a4)
+// MpoolEstimateGasPrice provides a mock function with given fields: ctx, nblocksincl, sender, gaslimit, tsk
+func (_m *FullNode) MpoolEstimateGasPrice(ctx context.Context, nblocksincl uint64, sender address.Address, gaslimit int64, tsk types.TipSetKey) (big.Int, error) {
+	ret := _m.Called(ctx, nblocksincl, sender, gaslimit, tsk)
 
 	var r0 big.Int
 	if rf, ok := ret.Get(0).(func(context.Context, uint64, address.Address, int64, types.TipSetKey) big.Int); ok {
-		r0 = rf(_a0, _a1, _a2, _a3, _a4)
+		r0 = rf(ctx, nblocksincl, sender, gaslimit, tsk)
 	} else {
 		r0 = ret.Get(0).(big.Int)
 	}
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, uint64, address.Address, int64, types.TipSetKey) error); ok {
-		r1 = rf(_a0, _a1, _a2, _a3, _a4)
+		r1 = rf(ctx, nblocksincl, sender, gaslimit, tsk)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -1215,6 +1261,29 @@ func (_m *FullNode) NetPeers(_a0 context.Context) ([]peer.AddrInfo, error) {
 	return r0, r1
 }
 
+// NetPubsubScores provides a mock function with given fields: _a0
+func (_m *FullNode) NetPubsubScores(_a0 context.Context) ([]api.PubsubScore, error) {
+	ret := _m.Called(_a0)
+
+	var r0 []api.PubsubScore
+	if rf, ok := ret.Get(0).(func(context.Context) []api.PubsubScore); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]api.PubsubScore)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // PaychAllocateLane provides a mock function with given fields: ctx, ch
 func (_m *FullNode) PaychAllocateLane(ctx context.Context, ch address.Address) (uint64, error) {
 	ret := _m.Called(ctx, ch)
@@ -1472,6 +1541,20 @@ func (_m *FullNode) PaychVoucherSubmit(_a0 context.Context, _a1 address.Address,
 	return r0, r1
 }
 
+// Shutdown provides a mock function with given fields: _a0
+func (_m *FullNode) Shutdown(_a0 context.Context) error {
+	ret := _m.Called(_a0)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // StateAccountKey provides a mock function with given fields: _a0, _a1, _a2
 func (_m *FullNode) StateAccountKey(_a0 context.Context, _a1 address.Address, _a2 types.TipSetKey) (address.Address, error) {
 	ret := _m.Called(_a0, _a1, _a2)
@@ -1486,6 +1569,29 @@ func (_m *FullNode) StateAccountKey(_a0 context.Context, _a1 address.Address, _a
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, address.Address, types.TipSetKey) error); ok {
 		r1 = rf(_a0, _a1, _a2)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// StateAllMinerFaults provides a mock function with given fields: ctx, lookback, ts
+func (_m *FullNode) StateAllMinerFaults(ctx context.Context, lookback abi.ChainEpoch, ts types.TipSetKey) ([]*api.Fault, error) {
+	ret := _m.Called(ctx, lookback, ts)
+
+	var r0 []*api.Fault
+	if rf, ok := ret.Get(0).(func(context.Context, abi.ChainEpoch, types.TipSetKey) []*api.Fault); ok {
+		r0 = rf(ctx, lookback, ts)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*api.Fault)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, abi.ChainEpoch, types.TipSetKey) error); ok {
+		r1 = rf(ctx, lookback, ts)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -1833,15 +1939,15 @@ func (_m *FullNode) StateMinerDeadlines(_a0 context.Context, _a1 address.Address
 }
 
 // StateMinerFaults provides a mock function with given fields: _a0, _a1, _a2
-func (_m *FullNode) StateMinerFaults(_a0 context.Context, _a1 address.Address, _a2 types.TipSetKey) ([]abi.SectorNumber, error) {
+func (_m *FullNode) StateMinerFaults(_a0 context.Context, _a1 address.Address, _a2 types.TipSetKey) (*bitfield.BitField, error) {
 	ret := _m.Called(_a0, _a1, _a2)
 
-	var r0 []abi.SectorNumber
-	if rf, ok := ret.Get(0).(func(context.Context, address.Address, types.TipSetKey) []abi.SectorNumber); ok {
+	var r0 *bitfield.BitField
+	if rf, ok := ret.Get(0).(func(context.Context, address.Address, types.TipSetKey) *bitfield.BitField); ok {
 		r0 = rf(_a0, _a1, _a2)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]abi.SectorNumber)
+			r0 = ret.Get(0).(*bitfield.BitField)
 		}
 	}
 
@@ -1856,14 +1962,14 @@ func (_m *FullNode) StateMinerFaults(_a0 context.Context, _a1 address.Address, _
 }
 
 // StateMinerInfo provides a mock function with given fields: _a0, _a1, _a2
-func (_m *FullNode) StateMinerInfo(_a0 context.Context, _a1 address.Address, _a2 types.TipSetKey) (miner.MinerInfo, error) {
+func (_m *FullNode) StateMinerInfo(_a0 context.Context, _a1 address.Address, _a2 types.TipSetKey) (api.MinerInfo, error) {
 	ret := _m.Called(_a0, _a1, _a2)
 
-	var r0 miner.MinerInfo
-	if rf, ok := ret.Get(0).(func(context.Context, address.Address, types.TipSetKey) miner.MinerInfo); ok {
+	var r0 api.MinerInfo
+	if rf, ok := ret.Get(0).(func(context.Context, address.Address, types.TipSetKey) api.MinerInfo); ok {
 		r0 = rf(_a0, _a1, _a2)
 	} else {
-		r0 = ret.Get(0).(miner.MinerInfo)
+		r0 = ret.Get(0).(api.MinerInfo)
 	}
 
 	var r1 error
@@ -1953,6 +2059,29 @@ func (_m *FullNode) StateMinerProvingSet(_a0 context.Context, _a1 address.Addres
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*api.ChainSectorInfo)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, address.Address, types.TipSetKey) error); ok {
+		r1 = rf(_a0, _a1, _a2)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// StateMinerRecoveries provides a mock function with given fields: _a0, _a1, _a2
+func (_m *FullNode) StateMinerRecoveries(_a0 context.Context, _a1 address.Address, _a2 types.TipSetKey) (*bitfield.BitField, error) {
+	ret := _m.Called(_a0, _a1, _a2)
+
+	var r0 *bitfield.BitField
+	if rf, ok := ret.Get(0).(func(context.Context, address.Address, types.TipSetKey) *bitfield.BitField); ok {
+		r0 = rf(_a0, _a1, _a2)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*bitfield.BitField)
 		}
 	}
 
@@ -2121,6 +2250,29 @@ func (_m *FullNode) StateSearchMsg(_a0 context.Context, _a1 cid.Cid) (*api.MsgLo
 	return r0, r1
 }
 
+// StateSectorGetInfo provides a mock function with given fields: _a0, _a1, _a2, _a3
+func (_m *FullNode) StateSectorGetInfo(_a0 context.Context, _a1 address.Address, _a2 abi.SectorNumber, _a3 types.TipSetKey) (*miner.SectorOnChainInfo, error) {
+	ret := _m.Called(_a0, _a1, _a2, _a3)
+
+	var r0 *miner.SectorOnChainInfo
+	if rf, ok := ret.Get(0).(func(context.Context, address.Address, abi.SectorNumber, types.TipSetKey) *miner.SectorOnChainInfo); ok {
+		r0 = rf(_a0, _a1, _a2, _a3)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*miner.SectorOnChainInfo)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, address.Address, abi.SectorNumber, types.TipSetKey) error); ok {
+		r1 = rf(_a0, _a1, _a2, _a3)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // StateSectorPreCommitInfo provides a mock function with given fields: _a0, _a1, _a2, _a3
 func (_m *FullNode) StateSectorPreCommitInfo(_a0 context.Context, _a1 address.Address, _a2 abi.SectorNumber, _a3 types.TipSetKey) (miner.SectorPreCommitOnChainInfo, error) {
 	ret := _m.Called(_a0, _a1, _a2, _a3)
@@ -2142,13 +2294,13 @@ func (_m *FullNode) StateSectorPreCommitInfo(_a0 context.Context, _a1 address.Ad
 	return r0, r1
 }
 
-// StateWaitMsg provides a mock function with given fields: _a0, _a1
-func (_m *FullNode) StateWaitMsg(_a0 context.Context, _a1 cid.Cid) (*api.MsgLookup, error) {
-	ret := _m.Called(_a0, _a1)
+// StateWaitMsg provides a mock function with given fields: ctx, _a1, confidence
+func (_m *FullNode) StateWaitMsg(ctx context.Context, _a1 cid.Cid, confidence uint64) (*api.MsgLookup, error) {
+	ret := _m.Called(ctx, _a1, confidence)
 
 	var r0 *api.MsgLookup
-	if rf, ok := ret.Get(0).(func(context.Context, cid.Cid) *api.MsgLookup); ok {
-		r0 = rf(_a0, _a1)
+	if rf, ok := ret.Get(0).(func(context.Context, cid.Cid, uint64) *api.MsgLookup); ok {
+		r0 = rf(ctx, _a1, confidence)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*api.MsgLookup)
@@ -2156,8 +2308,8 @@ func (_m *FullNode) StateWaitMsg(_a0 context.Context, _a1 cid.Cid) (*api.MsgLook
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, cid.Cid) error); ok {
-		r1 = rf(_a0, _a1)
+	if rf, ok := ret.Get(1).(func(context.Context, cid.Cid, uint64) error); ok {
+		r1 = rf(ctx, _a1, confidence)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -2321,6 +2473,20 @@ func (_m *FullNode) WalletDefaultAddress(_a0 context.Context) (address.Address, 
 	}
 
 	return r0, r1
+}
+
+// WalletDelete provides a mock function with given fields: _a0, _a1
+func (_m *FullNode) WalletDelete(_a0 context.Context, _a1 address.Address) error {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, address.Address) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // WalletExport provides a mock function with given fields: _a0, _a1

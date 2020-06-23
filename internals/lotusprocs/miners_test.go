@@ -66,7 +66,12 @@ func testMinerState(t *testing.T) *miner.State {
 
 	periodBoundary := abi.ChainEpoch(0)
 
-	state, err := miner.ConstructState(emptyArray, emptyMap, emptyDeadlinesCid, owner, worker, "peer", abi.RegisteredProof_StackedDRG2KiBSeal, periodBoundary)
+	testMultiaddrs := []abi.Multiaddrs{
+		{1},
+		{2},
+	}
+
+	state, err := miner.ConstructState(emptyArray, emptyMap, emptyDeadlinesCid, owner, worker, abi.PeerID("peer"), testMultiaddrs, abi.RegisteredSealProof_StackedDrg2KiBV1, periodBoundary)
 	require.NoError(t, err)
 
 	return state

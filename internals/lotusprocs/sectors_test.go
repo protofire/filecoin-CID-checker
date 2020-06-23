@@ -1,7 +1,6 @@
 package lotusprocs
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
@@ -44,7 +43,6 @@ func TestSectorsProcessor(t *testing.T) {
 				return false
 			}
 		}
-		fmt.Printf("%+v\n", sectors)
 		return true
 	})).Return(nil)
 
