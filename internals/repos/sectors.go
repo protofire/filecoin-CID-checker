@@ -16,7 +16,7 @@ type SectorsRepo interface {
 	GetSector(sectorID uint64) (bsontypes.SectorInfo, error)
 	SetFaultSectors(sectors []uint64) error
 	SetRecoveriesSectors(sectors []uint64) error
-	SectorWithDeal(dealID uint64) (bsontypes.SectorInfo, error)
+	SectorWithDeal(dealID uint64) (*bsontypes.SectorInfo, error)
 	CreateIndexes() error
 }
 
@@ -76,15 +76,19 @@ func (r *MongoSectorsRepo) GetSector(sectorID uint64) (bsontypes.SectorInfo, err
 	return sector, nil
 }
 
-func (r *MongoSectorsRepo) SectorWithDeal(dealID uint64) (bsontypes.SectorInfo, error) {
+func (r *MongoSectorsRepo) SectorWithDeal(dealID uint64) (*bsontypes.SectorInfo, error) {
 	filter := bson.M{"info.info.dealids": dealID}
 
 	var sector bsontypes.SectorInfo
 	if err := r.collection.FindOne(context.Background(), filter).Decode(&sector); err != nil {
-		return bsontypes.SectorInfo{}, err
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+
+		return nil, err
 	}
 
-	return sector, nil
+	return &sector, nil
 }
 
 func (r *MongoSectorsRepo) updateBoolField(filter bson.M, name string, value bool) error {

@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -16,25 +15,13 @@ import (
 )
 
 func TestCreateDealsHandler(t *testing.T) {
+	// TODO add more test cases
 	tests := []struct {
 		prepare func(*testing.T, *gin.Context, *mocks.DealsRepo, *mocks.SectorsRepo)
 		assert  func(*testing.T, *httptest.ResponseRecorder)
 	}{
 		{
 			prepare: func(t *testing.T, c *gin.Context, dealsRepoMock *mocks.DealsRepo, sectorsRepoMock *mocks.SectorsRepo) {
-				req, _ := http.NewRequest("GET", "http://host/deals", nil)
-				c.Request = req
-			},
-			assert: func(t *testing.T, w *httptest.ResponseRecorder) {
-				assert.Equal(t, 400, w.Code)
-				assert.Contains(t, w.Body.String(), "piececid or minerid requered")
-			},
-		},
-		{
-			prepare: func(t *testing.T, c *gin.Context, dealsRepoMock *mocks.DealsRepo, sectorsRepoMock *mocks.SectorsRepo) {
-				req, _ := http.NewRequest("GET", "http://host/deals?piececid=abc", nil)
-				c.Request = req
-
 				dealsRepoMock.On("Find", mock.Anything).
 					Return([]bsontypes.MarketDeal{}, fmt.Errorf("Find error"))
 			},
@@ -45,9 +32,6 @@ func TestCreateDealsHandler(t *testing.T) {
 		},
 		{
 			prepare: func(t *testing.T, c *gin.Context, dealsRepoMock *mocks.DealsRepo, sectorsRepoMock *mocks.SectorsRepo) {
-				req, _ := http.NewRequest("GET", "http://host/deals?piececid=abc", nil)
-				c.Request = req
-
 				dealsRepoMock.On("Find", mock.Anything).
 					Return([]bsontypes.MarketDeal{
 						{DealID: 1},
@@ -55,9 +39,9 @@ func TestCreateDealsHandler(t *testing.T) {
 					}, nil)
 
 				sectorsRepoMock.On("SectorWithDeal", uint64(1)).
-					Return(bsontypes.SectorInfo{ID: 11}, nil)
+					Return(&bsontypes.SectorInfo{ID: 11}, nil)
 				sectorsRepoMock.On("SectorWithDeal", uint64(2)).
-					Return(bsontypes.SectorInfo{ID: 12}, nil)
+					Return(&bsontypes.SectorInfo{ID: 12}, nil)
 
 			},
 			assert: func(t *testing.T, w *httptest.ResponseRecorder) {

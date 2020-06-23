@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
 	"github.com/protofire/filecoin-CID-checker/internals/repos"
@@ -16,36 +17,46 @@ type DealResponse struct {
 	SectorID   uint64
 	DealInfo   bsontypes.MarketDeal
 	SectorInfo interface{}
+	State      string
 }
 
 type DealsResponse []DealResponse
 
 // CreateDealsHandler creates handler for /deals requests.
-// Returns deals information by file CID or miner id (not CID, id in string form similar to "t01000").
+// Returns deals information by deal ID (not CID, just integer id), file CID or miner id (not CID, id in string form similar to "t01000").
 func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		pieceCID := c.Query("piececid")
-		minerID := c.Query("minerid")
+		selector := c.Param("selector")
 
-		if pieceCID == "" && minerID == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "request error: piececid or minerid requered"})
-			return
-		}
+		// TODO add pagination
 
-		var filter bson.M
+		var deals []bsontypes.MarketDeal
 
-		if pieceCID != "" {
-			filter = bson.M{"proposal.piececid": pieceCID}
-		}
+		dealID, err := strconv.ParseUint(selector, 10, 64)
+		if err == nil {
+			deal, err := dealsRepo.GetDeal(dealID)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
 
-		if minerID != "" {
-			filter = bson.M{"proposal.provider": minerID}
-		}
+			deals = append(deals, deal)
+		} else if selector == "" {
+			filter := bson.M{}
 
-		deals, err := dealsRepo.Find(filter)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
+			deals, err = dealsRepo.Find(filter)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+		} else {
+			filter := bson.M{"$or": bson.A{bson.M{"proposal.piececid": selector}, bson.M{"proposal.provider": selector}}}
+
+			deals, err = dealsRepo.Find(filter)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
 		}
 
 		var results DealsResponse
@@ -59,11 +70,26 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 				return
 			}
 
+			var state string
+			var sectorID uint64
+			if sector != nil {
+				if sector.Recovery {
+					state = "Recovery"
+				} else if sector.Fault {
+					state = "Fault"
+				} else {
+					state = "Active"
+				}
+
+				sectorID = uint64(sector.ID)
+			}
+
 			results = append(results, DealResponse{
 				DealInfo:   deal,
 				DealID:     dealID,
-				SectorID:   uint64(sector.ID),
+				SectorID:   sectorID,
 				SectorInfo: sector,
+				State:      state,
 			})
 		}
 

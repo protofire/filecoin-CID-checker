@@ -62,14 +62,16 @@ func (_m *SectorsRepo) GetSector(sectorID uint64) (bsontypes.SectorInfo, error) 
 }
 
 // SectorWithDeal provides a mock function with given fields: dealID
-func (_m *SectorsRepo) SectorWithDeal(dealID uint64) (bsontypes.SectorInfo, error) {
+func (_m *SectorsRepo) SectorWithDeal(dealID uint64) (*bsontypes.SectorInfo, error) {
 	ret := _m.Called(dealID)
 
-	var r0 bsontypes.SectorInfo
-	if rf, ok := ret.Get(0).(func(uint64) bsontypes.SectorInfo); ok {
+	var r0 *bsontypes.SectorInfo
+	if rf, ok := ret.Get(0).(func(uint64) *bsontypes.SectorInfo); ok {
 		r0 = rf(dealID)
 	} else {
-		r0 = ret.Get(0).(bsontypes.SectorInfo)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*bsontypes.SectorInfo)
+		}
 	}
 
 	var r1 error

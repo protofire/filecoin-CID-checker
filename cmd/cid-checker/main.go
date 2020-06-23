@@ -72,7 +72,7 @@ func main() {
 	router := gin.New()
 	router.Use(ginlogrus.Logger(log.New()), gin.Recovery())
 
-	router.GET("/deals/:dealid", handlers.CreateDealHandler(dealsRepo, sectorsRepo))
+	router.GET("/deals/:selector", handlers.CreateDealsHandler(dealsRepo, sectorsRepo))
 	router.GET("/deals", handlers.CreateDealsHandler(dealsRepo, sectorsRepo))
 
 	log.Fatal(router.Run(":8080"))

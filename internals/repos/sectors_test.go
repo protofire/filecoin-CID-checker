@@ -54,7 +54,7 @@ func TestMongoSectorsRepo_SectorWithDeal(t *testing.T) {
 	for _, tt := range tests {
 		sector, err := repo.SectorWithDeal(tt.dealID)
 		if tt.expectNotFound {
-			assert.EqualError(t, err, "mongo: no documents in result")
+			assert.Nil(t, sector)
 			continue
 		}
 
