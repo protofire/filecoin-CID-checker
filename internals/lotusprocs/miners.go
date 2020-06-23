@@ -34,19 +34,19 @@ func MinersProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, sectorsRe
 
 			minerActor, err := lotusAPI.StateGetActor(context.Background(), minerAddr, types.EmptyTSK)
 			if err != nil {
-				return err
+				return fmt.Errorf("failed StateGetActor: %w", err)
 			}
 
 			minerStateBytes, err := lotusAPI.ChainReadObj(context.Background(), minerActor.Head)
 			if err != nil {
-				return err
+				return fmt.Errorf("failed ChainReadObj: %w", err)
 			}
 
 			minerStateBuf := bytes.NewBuffer(minerStateBytes)
 			minerState := miner.State{}
 
 			if err := minerState.UnmarshalCBOR(minerStateBuf); err != nil {
-				return err
+				return fmt.Errorf("failed minerState.UnmarshalCBOR: %w", err)
 			}
 
 			faultSectors, err := minerState.Faults.All(^uint64(0))
