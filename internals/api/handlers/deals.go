@@ -15,12 +15,20 @@ import (
 type DealResponse struct {
 	DealID     uint64
 	SectorID   uint64
-	DealInfo   bsontypes.MarketDeal
+	DealInfo   *bsontypes.MarketDeal
 	SectorInfo interface{}
 	State      string
 }
 
-type DealsResponse []DealResponse
+type DealsResponse struct {
+	Pagination struct {
+		Page       uint64
+		PerPage    uint64
+		PagesCount uint64
+		TotalCount uint64
+	}
+	Deals []DealResponse
+}
 
 // CreateDealsHandler creates handler for /deals requests.
 // Returns deals information by deal ID (not CID, just integer id), file CID or miner id (not CID, id in string form similar to "t01000").
@@ -30,7 +38,7 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 
 		// TODO add pagination
 
-		var deals []bsontypes.MarketDeal
+		var deals []*bsontypes.MarketDeal
 
 		dealID, err := strconv.ParseUint(selector, 10, 64)
 		if err == nil {
@@ -39,18 +47,14 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
 			}
-
-			deals = append(deals, deal)
-		} else if selector == "" {
-			filter := bson.M{}
-
-			deals, err = dealsRepo.Find(filter)
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-				return
+			if deal != nil {
+				deals = append(deals, deal)
 			}
 		} else {
-			filter := bson.M{"$or": bson.A{bson.M{"proposal.piececid": selector}, bson.M{"proposal.provider": selector}}}
+			var filter bson.M
+			if selector != "" {
+				filter = bson.M{"$or": bson.A{bson.M{"proposal.piececid": selector}, bson.M{"proposal.provider": selector}}}
+			}
 
 			deals, err = dealsRepo.Find(filter)
 			if err != nil {
@@ -59,7 +63,7 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 			}
 		}
 
-		var results DealsResponse
+		var results []DealResponse
 
 		for _, deal := range deals {
 			dealID := deal.DealID
@@ -93,6 +97,10 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 			})
 		}
 
-		c.JSON(http.StatusOK, results)
+		response := DealsResponse{
+			Deals: results,
+		}
+
+		c.JSON(http.StatusOK, response)
 	}
 }

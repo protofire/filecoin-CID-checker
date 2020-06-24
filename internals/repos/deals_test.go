@@ -17,7 +17,7 @@ func mongoDealsRepo(t *testing.T) *MongoDealsRepo {
 
 func TestMongoDealsRepo_GetDeal(t *testing.T) {
 	repo := mongoDealsRepo(t)
-	seedDeals := []bsontypes.MarketDeal{
+	seedDeals := []*bsontypes.MarketDeal{
 		{
 			DealID: 1,
 			Proposal: bsontypes.DealProposal{
@@ -55,7 +55,7 @@ func TestMongoDealsRepo_GetDeal(t *testing.T) {
 func TestMongoDealsRepo_Miners(t *testing.T) {
 	repo := mongoDealsRepo(t)
 
-	seedDeals := []bsontypes.MarketDeal{
+	seedDeals := []*bsontypes.MarketDeal{
 		{
 			DealID: 1,
 			Proposal: bsontypes.DealProposal{

@@ -15,11 +15,11 @@ type DealsRepo struct {
 }
 
 // BulkWrite provides a mock function with given fields: deals
-func (_m *DealsRepo) BulkWrite(deals []bsontypes.MarketDeal) error {
+func (_m *DealsRepo) BulkWrite(deals []*bsontypes.MarketDeal) error {
 	ret := _m.Called(deals)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func([]bsontypes.MarketDeal) error); ok {
+	if rf, ok := ret.Get(0).(func([]*bsontypes.MarketDeal) error); ok {
 		r0 = rf(deals)
 	} else {
 		r0 = ret.Error(0)
@@ -43,15 +43,15 @@ func (_m *DealsRepo) CreateIndexes() error {
 }
 
 // Find provides a mock function with given fields: filter
-func (_m *DealsRepo) Find(filter primitive.M) ([]bsontypes.MarketDeal, error) {
+func (_m *DealsRepo) Find(filter primitive.M) ([]*bsontypes.MarketDeal, error) {
 	ret := _m.Called(filter)
 
-	var r0 []bsontypes.MarketDeal
-	if rf, ok := ret.Get(0).(func(primitive.M) []bsontypes.MarketDeal); ok {
+	var r0 []*bsontypes.MarketDeal
+	if rf, ok := ret.Get(0).(func(primitive.M) []*bsontypes.MarketDeal); ok {
 		r0 = rf(filter)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]bsontypes.MarketDeal)
+			r0 = ret.Get(0).([]*bsontypes.MarketDeal)
 		}
 	}
 
@@ -66,14 +66,16 @@ func (_m *DealsRepo) Find(filter primitive.M) ([]bsontypes.MarketDeal, error) {
 }
 
 // GetDeal provides a mock function with given fields: dealID
-func (_m *DealsRepo) GetDeal(dealID uint64) (bsontypes.MarketDeal, error) {
+func (_m *DealsRepo) GetDeal(dealID uint64) (*bsontypes.MarketDeal, error) {
 	ret := _m.Called(dealID)
 
-	var r0 bsontypes.MarketDeal
-	if rf, ok := ret.Get(0).(func(uint64) bsontypes.MarketDeal); ok {
+	var r0 *bsontypes.MarketDeal
+	if rf, ok := ret.Get(0).(func(uint64) *bsontypes.MarketDeal); ok {
 		r0 = rf(dealID)
 	} else {
-		r0 = ret.Get(0).(bsontypes.MarketDeal)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*bsontypes.MarketDeal)
+		}
 	}
 
 	var r1 error

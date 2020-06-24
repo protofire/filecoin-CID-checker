@@ -32,7 +32,7 @@ func TestDealsProcessor(t *testing.T) {
 	lotusMock.On("StateMarketDeals", mock.Anything, mock.Anything).
 		Return(arguments, nil)
 
-	dealsRepoMock.On("BulkWrite", mock.MatchedBy(func(deals []bsontypes.MarketDeal) bool {
+	dealsRepoMock.On("BulkWrite", mock.MatchedBy(func(deals []*bsontypes.MarketDeal) bool {
 		var dealsIds []uint64
 		for _, deal := range deals {
 			dealsIds = append(dealsIds, deal.DealID)
