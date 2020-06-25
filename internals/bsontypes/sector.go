@@ -3,13 +3,20 @@ package bsontypes
 import (
 	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/specs-actors/actors/abi"
-	"github.com/filecoin-project/specs-actors/actors/builtin/miner"
 )
 
 func BsonSector(info *api.ChainSectorInfo) *SectorInfo {
 	return &SectorInfo{
 		Info: SectorOnChainInfo{
-			Info:               info.Info.Info,
+			Info: SectorPreCommitInfo{
+				SealProof:     info.Info.Info.SealProof,
+				SectorNumber:  info.Info.Info.SectorNumber,
+				SealedCID:     info.Info.Info.SealedCID.String(),
+				SealRandEpoch: info.Info.Info.SealRandEpoch,
+				DealIDs:       info.Info.Info.DealIDs,
+				Expiration:    info.Info.Info.Expiration,
+			},
+
 			ActivationEpoch:    info.Info.ActivationEpoch,
 			DealWeight:         info.Info.DealWeight.String(),
 			VerifiedDealWeight: info.Info.VerifiedDealWeight.String(),
@@ -27,8 +34,17 @@ type SectorInfo struct {
 }
 
 type SectorOnChainInfo struct {
-	Info               miner.SectorPreCommitInfo
+	Info               SectorPreCommitInfo
 	ActivationEpoch    abi.ChainEpoch // Epoch at which SectorProveCommit is accepted
 	DealWeight         string         // Integral of active deals over sector lifetime
 	VerifiedDealWeight string         // Integral of active verified deals over sector lifetime
+}
+
+type SectorPreCommitInfo struct {
+	SealProof     abi.RegisteredSealProof
+	SectorNumber  abi.SectorNumber
+	SealedCID     string // CommR
+	SealRandEpoch abi.ChainEpoch
+	DealIDs       []abi.DealID
+	Expiration    abi.ChainEpoch // Sector Expiration
 }
