@@ -42,13 +42,13 @@ func (_m *DealsRepo) CreateIndexes() error {
 	return r0
 }
 
-// Find provides a mock function with given fields: filter
-func (_m *DealsRepo) Find(filter primitive.M) ([]*bsontypes.MarketDeal, error) {
-	ret := _m.Called(filter)
+// Find provides a mock function with given fields: filter, page, perPage
+func (_m *DealsRepo) Find(filter primitive.M, page uint64, perPage uint64) ([]*bsontypes.MarketDeal, error) {
+	ret := _m.Called(filter, page, perPage)
 
 	var r0 []*bsontypes.MarketDeal
-	if rf, ok := ret.Get(0).(func(primitive.M) []*bsontypes.MarketDeal); ok {
-		r0 = rf(filter)
+	if rf, ok := ret.Get(0).(func(primitive.M, uint64, uint64) []*bsontypes.MarketDeal); ok {
+		r0 = rf(filter, page, perPage)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*bsontypes.MarketDeal)
@@ -56,8 +56,8 @@ func (_m *DealsRepo) Find(filter primitive.M) ([]*bsontypes.MarketDeal, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(primitive.M) error); ok {
-		r1 = rf(filter)
+	if rf, ok := ret.Get(1).(func(primitive.M, uint64, uint64) error); ok {
+		r1 = rf(filter, page, perPage)
 	} else {
 		r1 = ret.Error(1)
 	}

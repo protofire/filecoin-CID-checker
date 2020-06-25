@@ -16,14 +16,13 @@ import (
 )
 
 func TestCreateDealsHandler(t *testing.T) {
-	// TODO add more test cases
 	tests := []struct {
 		prepare func(*testing.T, *gin.Context, *mocks.DealsRepo, *mocks.SectorsRepo)
 		assert  func(*testing.T, *httptest.ResponseRecorder)
 	}{
 		{
 			prepare: func(t *testing.T, c *gin.Context, dealsRepoMock *mocks.DealsRepo, sectorsRepoMock *mocks.SectorsRepo) {
-				dealsRepoMock.On("Find", mock.Anything).
+				dealsRepoMock.On("Find", mock.Anything, mock.Anything, mock.Anything).
 					Return([]*bsontypes.MarketDeal{}, fmt.Errorf("Find error"))
 			},
 			assert: func(t *testing.T, w *httptest.ResponseRecorder) {
@@ -33,7 +32,7 @@ func TestCreateDealsHandler(t *testing.T) {
 		},
 		{
 			prepare: func(t *testing.T, c *gin.Context, dealsRepoMock *mocks.DealsRepo, sectorsRepoMock *mocks.SectorsRepo) {
-				dealsRepoMock.On("Find", mock.Anything).
+				dealsRepoMock.On("Find", mock.Anything, mock.Anything, mock.Anything).
 					Return([]*bsontypes.MarketDeal{
 						{DealID: 1},
 						{DealID: 2},
@@ -71,7 +70,11 @@ func TestCreateDealsHandler(t *testing.T) {
 			prepare: func(t *testing.T, c *gin.Context, dealsRepoMock *mocks.DealsRepo, sectorsRepoMock *mocks.SectorsRepo) {
 				selector := "###"
 				c.Params = gin.Params{gin.Param{Key: "selector", Value: selector}}
-				dealsRepoMock.On("Find", bson.M{"$or": bson.A{bson.M{"proposal.piececid": selector}, bson.M{"proposal.provider": selector}}}).
+				dealsRepoMock.On("Find",
+					bson.M{"$or": bson.A{bson.M{"proposal.piececid": selector}, bson.M{"proposal.provider": selector}}},
+					mock.Anything,
+					mock.Anything,
+				).
 					Return([]*bsontypes.MarketDeal{}, nil)
 
 			},
@@ -105,6 +108,23 @@ func TestCreateDealsHandler(t *testing.T) {
 				assert.NoError(t, err)
 			},
 		},
+
+		// pagination
+		{
+			prepare: func(t *testing.T, c *gin.Context, dealsRepoMock *mocks.DealsRepo, sectorsRepoMock *mocks.SectorsRepo) {
+				c.Request = httptest.NewRequest("GET", "http://test/deals?page=3&per_page=25", nil)
+
+				dealsRepoMock.On("Find", mock.Anything, uint64(3), uint64(25)).
+					Return([]*bsontypes.MarketDeal{}, nil)
+			},
+			assert: func(t *testing.T, w *httptest.ResponseRecorder) {
+				assert.Equal(t, 200, w.Code)
+
+				var dr DealsResponse
+				err := json.Unmarshal(w.Body.Bytes(), &dr)
+				assert.NoError(t, err)
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -113,6 +133,7 @@ func TestCreateDealsHandler(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		c, _ := gin.CreateTestContext(w)
+		c.Request = httptest.NewRequest("GET", "http://test/deals", nil)
 
 		tt.prepare(t, c, dealsRepoMock, sectorsRepoMock)
 

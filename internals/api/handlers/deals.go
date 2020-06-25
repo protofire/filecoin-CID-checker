@@ -20,14 +20,14 @@ type DealResponse struct {
 	State      string
 }
 
+type Pagination struct {
+	Page    uint64 `form:"page"`
+	PerPage uint64 `form:"per_page"`
+}
+
 type DealsResponse struct {
-	Pagination struct {
-		Page       uint64
-		PerPage    uint64
-		PagesCount uint64
-		TotalCount uint64
-	}
-	Deals []DealResponse
+	Pagination *Pagination
+	Deals      []DealResponse
 }
 
 // CreateDealsHandler creates handler for /deals requests.
@@ -36,7 +36,11 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 	return func(c *gin.Context) {
 		selector := c.Param("selector")
 
-		// TODO add pagination
+		pagination, err := bindAndValidatePagination(c)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 
 		var deals []*bsontypes.MarketDeal
 
@@ -56,7 +60,7 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 				filter = bson.M{"$or": bson.A{bson.M{"proposal.piececid": selector}, bson.M{"proposal.provider": selector}}}
 			}
 
-			deals, err = dealsRepo.Find(filter)
+			deals, err = dealsRepo.Find(filter, pagination.Page, pagination.PerPage)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
@@ -98,9 +102,35 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 		}
 
 		response := DealsResponse{
-			Deals: results,
+			Pagination: pagination,
+			Deals:      results,
 		}
 
 		c.JSON(http.StatusOK, response)
 	}
+}
+
+const maxPerPage = 100
+const defaultPerPage = 10
+
+func bindAndValidatePagination(c *gin.Context) (*Pagination, error) {
+	var pagination Pagination
+	err := c.BindQuery(&pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	if pagination.Page <= 0 {
+		pagination.Page = 1
+	}
+
+	if pagination.PerPage <= 0 {
+		pagination.PerPage = defaultPerPage
+	}
+
+	if pagination.PerPage > maxPerPage {
+		pagination.PerPage = defaultPerPage
+	}
+
+	return &pagination, nil
 }
