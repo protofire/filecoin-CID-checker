@@ -7,7 +7,6 @@ import (
 	"github.com/protofire/filecoin-CID-checker/internals/test"
 
 	"github.com/filecoin-project/specs-actors/actors/abi"
-	"github.com/filecoin-project/specs-actors/actors/builtin/miner"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -21,17 +20,17 @@ func TestMongoSectorsRepo_SectorWithDeal(t *testing.T) {
 	repo := mongoSectorsRepo(t)
 	seedSectors := []*bsontypes.SectorInfo{
 		{ID: 1, Info: bsontypes.SectorOnChainInfo{
-			Info: miner.SectorPreCommitInfo{
+			Info: bsontypes.SectorPreCommitInfo{
 				DealIDs: []abi.DealID{1, 4},
 			},
 		}},
 		{ID: 2, Info: bsontypes.SectorOnChainInfo{
-			Info: miner.SectorPreCommitInfo{
+			Info: bsontypes.SectorPreCommitInfo{
 				DealIDs: []abi.DealID{3},
 			},
 		}},
 		{ID: 3, Info: bsontypes.SectorOnChainInfo{
-			Info: miner.SectorPreCommitInfo{
+			Info: bsontypes.SectorPreCommitInfo{
 				DealIDs: []abi.DealID{2},
 			},
 		}},

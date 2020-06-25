@@ -12,7 +12,6 @@ import (
 	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/lotus/chain/types"
 	"github.com/filecoin-project/specs-actors/actors/abi"
-	"github.com/filecoin-project/specs-actors/actors/builtin/miner"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -27,12 +26,12 @@ func TestSectorStatesOverwrite(t *testing.T) {
 
 	seedSectors := []*bsontypes.SectorInfo{
 		{ID: 1, Info: bsontypes.SectorOnChainInfo{
-			Info: miner.SectorPreCommitInfo{
+			Info: bsontypes.SectorPreCommitInfo{
 				DealIDs: []abi.DealID{1, 2},
 			},
 		}},
 		{ID: 2, Info: bsontypes.SectorOnChainInfo{
-			Info: miner.SectorPreCommitInfo{
+			Info: bsontypes.SectorPreCommitInfo{
 				DealIDs: []abi.DealID{3},
 			},
 		}},
