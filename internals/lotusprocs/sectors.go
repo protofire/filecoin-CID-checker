@@ -44,7 +44,7 @@ func SectorsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, sectorsR
 			}
 		}
 
-		if err := sectorsRepo.BulkWrite(allSectors); err != nil {
+		if err := sectorsRepo.BulkWriteInfo(allSectors); err != nil {
 			return err
 		}
 

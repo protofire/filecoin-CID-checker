@@ -26,6 +26,20 @@ func (_m *SectorsRepo) BulkWrite(sectors []*bsontypes.SectorInfo) error {
 	return r0
 }
 
+// BulkWriteInfo provides a mock function with given fields: sectors
+func (_m *SectorsRepo) BulkWriteInfo(sectors []*bsontypes.SectorInfo) error {
+	ret := _m.Called(sectors)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func([]*bsontypes.SectorInfo) error); ok {
+		r0 = rf(sectors)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // CreateIndexes provides a mock function with given fields:
 func (_m *SectorsRepo) CreateIndexes() error {
 	ret := _m.Called()
