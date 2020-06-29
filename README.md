@@ -28,3 +28,89 @@ If you are a total beginner to this, start here!
 
 - Install the CID checker to your Filecoin (Lotus) node:
 *instructions are in progress*
+
+
+## Deployment
+
+Simplest way to deploy is with docker-compose.
+
+Specify environment variable:
+- CID_LOTUS_RPCURL - url of available through network and fully synced Lotus node.
+
+Instructions on how to run Lotus node - https://lotu.sh/en+getting-started
+
+Build backend container with: 
+```
+make docker_build
+```
+
+Run docker-compose:
+```
+docker-compose -d up
+```
+
+## Application structure
+ 
+Backend is a golang application with two parts.
+- API server - Gin framework & api handler
+- Data harvester - group of lotus processors, each fetches data from Lotus node and store to MongoDB 
+
+
+### API
+
+Two API endpoints available:
+#### :8080/deals
+Get all deals information from database.
+#### :8080/deals/:selector
+Get deals by selector: file CID, miner ID and deal ID.
+
+Both endpoints support pagination.
+
+More detailed information on API with examples:
+https://documenter.getpostman.com/view/6638692/T17AiA6S?version=latest
+
+
+### Lotus processors
+
+BlockWatcher periodically checks network for new blocks.
+Every time new block occurs, watcher runs processors. 
+
+#### DealsProcessor
+
+Processor calls Lotus StateMarketDeals() method and saved all deals into "deals" collection.
+
+#### SectorsProcessor
+
+Goal is to fetch sector information and discover connection of deals and sector.
+Processor calls StateMinerSectors() for each miner and saves to "sectors" collection.    
+
+#### MinersProcessor
+
+Goal is to discover sector states
+Combination of StateGetActor() and ChainReadObj() used to fetch miner information
+in miner.State struct.
+Miner state have Faults and Recoveries fields of type abi.BitField with sectors ids.
+Sectors in "sectors" collection modified based on this values.
+
+
+### Database collections
+
+* Deals - stores deals information 
+* Sectors - stores sectors information
+
+To work with collection there are data abstraction layer in
+/internals/repos.
+
+### Configuration
+
+Application could be configured by config.yaml file and by environment variables.
+
+Lotus configuration:
+
+* CID_LOTUS_RPCURL - url of fully synced Lotus node
+
+Database configuration:
+
+* CID_DB_CONNECTIONSTRING - MongoDB connection string
+* CID_DB_NAME - Database name
+
