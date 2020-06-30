@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/490348c8-523d-4a05-a492-daadc9179975/deploy-status)](https://app.netlify.com/sites/filecoincidchecker/deploys)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
