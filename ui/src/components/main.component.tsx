@@ -1,5 +1,5 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import { DOCUMENT_DESCRIPTION, DOCUMENT_TITLE } from '../config/constants'
@@ -10,19 +10,21 @@ import { MainWrapper } from './common/layout/mainWrapper.component'
 
 export const Main = () => {
   return (
-    <Router>
-      <MainWrapper>
-        <Helmet>
-          <title>{DOCUMENT_TITLE}</title>
-          <meta content={DOCUMENT_DESCRIPTION} name="description" />
-        </Helmet>
-        <Header />
-        <Body>
-          <Switch>
-            <Route path="/:search?" component={Home} />
-          </Switch>
-        </Body>
-      </MainWrapper>
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <MainWrapper>
+          <Helmet>
+            <title>{DOCUMENT_TITLE}</title>
+            <meta content={DOCUMENT_DESCRIPTION} name="description" />
+          </Helmet>
+          <Header />
+          <Body>
+            <Switch>
+              <Route path="/:search?" component={Home} />
+            </Switch>
+          </Body>
+        </MainWrapper>
+      </Router>
+    </HelmetProvider>
   )
 }
