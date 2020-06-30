@@ -33,6 +33,7 @@ const Table = styled.table`
 `
 
 const TDTitle = styled.td`
+  padding: 6px;
   opacity: 0.5;
   font-family: Poppins;
   font-size: 15px;
@@ -41,6 +42,7 @@ const TDTitle = styled.td`
   color: #cfe0ff;
 `
 const TDValue = styled.td`
+  padding: 6px;
   text-align: right;
   font-family: Poppins;
   font-size: 16px;
