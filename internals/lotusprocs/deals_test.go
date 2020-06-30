@@ -5,6 +5,7 @@ import (
 
 	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
 	repomocks "github.com/protofire/filecoin-CID-checker/internals/repos/mocks"
+	"github.com/protofire/filecoin-CID-checker/internals/test"
 	"github.com/protofire/filecoin-CID-checker/internals/test/mocks"
 
 	"github.com/filecoin-project/lotus/api"
@@ -27,21 +28,29 @@ func TestDealsProcessor(t *testing.T) {
 			State:    market.DealState{},
 		},
 	}
-	expectedWrites := []bsontypes.MarketDeal{
-		bsontypes.BsonDeal(1, arguments["1"]),
-		bsontypes.BsonDeal(2, arguments["2"]),
-	}
 
 	lotusMock.On("StateMarketDeals", mock.Anything, mock.Anything).
 		Return(arguments, nil)
 
-	dealsRepoMock.On("BulkWrite", mock.Anything).
-		Return(nil)
+	dealsRepoMock.On("BulkWrite", mock.MatchedBy(func(deals []*bsontypes.MarketDeal) bool {
+		var dealsIds []uint64
+		for _, deal := range deals {
+			dealsIds = append(dealsIds, deal.DealID)
+		}
+
+		for id := uint64(1); id <= 2; id++ {
+			if !test.Uint64InSlice(id, dealsIds) {
+				return false
+			}
+		}
+
+		return true
+	})).Return(nil)
 
 	h := DealsProcessor(lotusMock, dealsRepoMock)
 	err := h()
 
-	dealsRepoMock.AssertCalled(t, "BulkWrite", expectedWrites)
+	dealsRepoMock.AssertNumberOfCalls(t, "BulkWrite", 1)
 
 	assert.NoError(t, err)
 }

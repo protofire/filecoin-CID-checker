@@ -1,7 +1,6 @@
 package lotusprocs
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
@@ -33,7 +32,7 @@ func TestSectorsProcessor(t *testing.T) {
 	lotusMock.On("StateMinerSectors", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).
 		Return(chainSectorInfos[1], nil).Once()
 
-	sectorsRepoMock.On("BulkWrite", mock.MatchedBy(func(sectors []*bsontypes.SectorInfo) bool {
+	sectorsRepoMock.On("BulkWriteInfo", mock.MatchedBy(func(sectors []*bsontypes.SectorInfo) bool {
 		var sectorIds []uint64
 		for _, sector := range sectors {
 			sectorIds = append(sectorIds, uint64(sector.ID))
@@ -44,7 +43,6 @@ func TestSectorsProcessor(t *testing.T) {
 				return false
 			}
 		}
-		fmt.Printf("%+v\n", sectors)
 		return true
 	})).Return(nil)
 
@@ -53,5 +51,5 @@ func TestSectorsProcessor(t *testing.T) {
 
 	assert.NoError(t, err)
 
-	sectorsRepoMock.AssertNumberOfCalls(t, "BulkWrite", 1)
+	sectorsRepoMock.AssertNumberOfCalls(t, "BulkWriteInfo", 1)
 }

@@ -26,6 +26,20 @@ func (_m *SectorsRepo) BulkWrite(sectors []*bsontypes.SectorInfo) error {
 	return r0
 }
 
+// BulkWriteInfo provides a mock function with given fields: sectors
+func (_m *SectorsRepo) BulkWriteInfo(sectors []*bsontypes.SectorInfo) error {
+	ret := _m.Called(sectors)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func([]*bsontypes.SectorInfo) error); ok {
+		r0 = rf(sectors)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // CreateIndexes provides a mock function with given fields:
 func (_m *SectorsRepo) CreateIndexes() error {
 	ret := _m.Called()
@@ -62,14 +76,16 @@ func (_m *SectorsRepo) GetSector(sectorID uint64) (bsontypes.SectorInfo, error) 
 }
 
 // SectorWithDeal provides a mock function with given fields: dealID
-func (_m *SectorsRepo) SectorWithDeal(dealID uint64) (bsontypes.SectorInfo, error) {
+func (_m *SectorsRepo) SectorWithDeal(dealID uint64) (*bsontypes.SectorInfo, error) {
 	ret := _m.Called(dealID)
 
-	var r0 bsontypes.SectorInfo
-	if rf, ok := ret.Get(0).(func(uint64) bsontypes.SectorInfo); ok {
+	var r0 *bsontypes.SectorInfo
+	if rf, ok := ret.Get(0).(func(uint64) *bsontypes.SectorInfo); ok {
 		r0 = rf(dealID)
 	} else {
-		r0 = ret.Get(0).(bsontypes.SectorInfo)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*bsontypes.SectorInfo)
+		}
 	}
 
 	var r1 error

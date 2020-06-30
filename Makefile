@@ -14,3 +14,7 @@ fmt:
 .PHONY: lint
 lint:
 	golint ./...
+
+.PHONY: docker_build
+docker_build:
+	docker build -t cid-checker .

@@ -24,7 +24,7 @@ func DealsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo) BlockEvent
 			log.WithError(err).Error("Failed to execute StateMarketDeals")
 		}
 
-		var bDeals []bsontypes.MarketDeal
+		var bDeals []*bsontypes.MarketDeal
 
 		for sDealID, deal := range deals {
 			dealID, err := strconv.ParseUint(sDealID, 10, 64)
@@ -32,7 +32,8 @@ func DealsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo) BlockEvent
 				return err
 			}
 
-			bDeals = append(bDeals, bsontypes.BsonDeal(dealID, deal))
+			bDeal := bsontypes.BsonDeal(dealID, deal)
+			bDeals = append(bDeals, &bDeal)
 		}
 
 		if err := dealsRepo.BulkWrite(bDeals); err != nil {

@@ -10,12 +10,13 @@ import (
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type DealsRepo interface {
-	BulkWrite(deals []bsontypes.MarketDeal) error
-	GetDeal(dealID uint64) (bsontypes.MarketDeal, error)
-	Find(filter bson.M) ([]bsontypes.MarketDeal, error)
+	BulkWrite(deals []*bsontypes.MarketDeal) error
+	GetDeal(dealID uint64) (*bsontypes.MarketDeal, error)
+	Find(filter bson.M, page uint64, perPage uint64) ([]*bsontypes.MarketDeal, error)
 	Miners() ([]string, error)
 	CreateIndexes() error
 }
@@ -32,7 +33,7 @@ func NewMongoDealsRepo(mongoClient *mongo.Client, dbName string) *MongoDealsRepo
 	}
 }
 
-func (r *MongoDealsRepo) BulkWrite(deals []bsontypes.MarketDeal) error {
+func (r *MongoDealsRepo) BulkWrite(deals []*bsontypes.MarketDeal) error {
 	var models []mongo.WriteModel
 
 	for _, deal := range deals {
@@ -61,24 +62,32 @@ func (r *MongoDealsRepo) BulkWrite(deals []bsontypes.MarketDeal) error {
 	return nil
 }
 
-func (r *MongoDealsRepo) GetDeal(dealID uint64) (bsontypes.MarketDeal, error) {
+func (r *MongoDealsRepo) GetDeal(dealID uint64) (*bsontypes.MarketDeal, error) {
 	filter := bson.M{"_id": dealID}
 
 	var deal bsontypes.MarketDeal
 	if err := r.collection.FindOne(context.Background(), filter).Decode(&deal); err != nil {
-		return bsontypes.MarketDeal{}, err
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
 	}
 
-	return deal, nil
+	return &deal, nil
 }
 
-func (r *MongoDealsRepo) Find(filter bson.M) ([]bsontypes.MarketDeal, error) {
-	cursor, err := r.collection.Find(context.Background(), filter)
+func (r *MongoDealsRepo) Find(filter bson.M, page uint64, perPage uint64) ([]*bsontypes.MarketDeal, error) {
+	cursor, err := r.collection.Find(context.Background(), filter,
+		options.Find().
+			SetSkip(int64(perPage*(page-1))).
+			SetLimit(int64(perPage)).
+			SetSort(bson.D{{"_id", -1}}),
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	var deals []bsontypes.MarketDeal
+	var deals []*bsontypes.MarketDeal
 	if err := cursor.All(context.Background(), &deals); err != nil {
 		return nil, err
 	}

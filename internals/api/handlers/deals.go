@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
 	"github.com/protofire/filecoin-CID-checker/internals/repos"
@@ -14,41 +15,59 @@ import (
 type DealResponse struct {
 	DealID     uint64
 	SectorID   uint64
-	DealInfo   bsontypes.MarketDeal
+	DealInfo   *bsontypes.MarketDeal
 	SectorInfo interface{}
+	State      string
 }
 
-type DealsResponse []DealResponse
+type Pagination struct {
+	Page    uint64 `form:"page"`
+	PerPage uint64 `form:"per_page"`
+}
+
+type DealsResponse struct {
+	Pagination *Pagination
+	Deals      []DealResponse
+}
 
 // CreateDealsHandler creates handler for /deals requests.
-// Returns deals information by file CID or miner id (not CID, id in string form similar to "t01000").
+// Returns deals information by deal ID (not CID, just integer id), file CID or miner id (not CID, id in string form similar to "t01000").
 func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		pieceCID := c.Query("piececid")
-		minerID := c.Query("minerid")
+		selector := c.Param("selector")
 
-		if pieceCID == "" && minerID == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "request error: piececid or minerid requered"})
-			return
-		}
-
-		var filter bson.M
-
-		if pieceCID != "" {
-			filter = bson.M{"proposal.piececid": pieceCID}
-		}
-
-		if minerID != "" {
-			filter = bson.M{"proposal.provider": minerID}
-		}
-
-		deals, err := dealsRepo.Find(filter)
+		pagination, err := bindAndValidatePagination(c)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		var results DealsResponse
+		var deals []*bsontypes.MarketDeal
+
+		dealID, err := strconv.ParseUint(selector, 10, 64)
+		if err == nil {
+			deal, err := dealsRepo.GetDeal(dealID)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+			if deal != nil {
+				deals = append(deals, deal)
+			}
+		} else {
+			var filter bson.M
+			if selector != "" {
+				filter = bson.M{"$or": bson.A{bson.M{"proposal.piececid": selector}, bson.M{"proposal.provider": selector}}}
+			}
+
+			deals, err = dealsRepo.Find(filter, pagination.Page, pagination.PerPage)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+		}
+
+		var results []DealResponse
 
 		for _, deal := range deals {
 			dealID := deal.DealID
@@ -59,14 +78,59 @@ func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo
 				return
 			}
 
+			var state string
+			var sectorID uint64
+			if sector != nil {
+				if sector.Recovery {
+					state = "Recovery"
+				} else if sector.Fault {
+					state = "Fault"
+				} else {
+					state = "Active"
+				}
+
+				sectorID = uint64(sector.ID)
+			}
+
 			results = append(results, DealResponse{
 				DealInfo:   deal,
 				DealID:     dealID,
-				SectorID:   uint64(sector.ID),
+				SectorID:   sectorID,
 				SectorInfo: sector,
+				State:      state,
 			})
 		}
 
-		c.JSON(http.StatusOK, results)
+		response := DealsResponse{
+			Pagination: pagination,
+			Deals:      results,
+		}
+
+		c.JSON(http.StatusOK, response)
 	}
+}
+
+const maxPerPage = 100
+const defaultPerPage = 10
+
+func bindAndValidatePagination(c *gin.Context) (*Pagination, error) {
+	var pagination Pagination
+	err := c.BindQuery(&pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	if pagination.Page <= 0 {
+		pagination.Page = 1
+	}
+
+	if pagination.PerPage <= 0 {
+		pagination.PerPage = defaultPerPage
+	}
+
+	if pagination.PerPage > maxPerPage {
+		pagination.PerPage = defaultPerPage
+	}
+
+	return &pagination, nil
 }

@@ -13,10 +13,11 @@ import (
 
 type SectorsRepo interface {
 	BulkWrite(sectors []*bsontypes.SectorInfo) error
+	BulkWriteInfo(sectors []*bsontypes.SectorInfo) error
 	GetSector(sectorID uint64) (bsontypes.SectorInfo, error)
 	SetFaultSectors(sectors []uint64) error
 	SetRecoveriesSectors(sectors []uint64) error
-	SectorWithDeal(dealID uint64) (bsontypes.SectorInfo, error)
+	SectorWithDeal(dealID uint64) (*bsontypes.SectorInfo, error)
 	CreateIndexes() error
 }
 
@@ -65,6 +66,40 @@ func (r *MongoSectorsRepo) BulkWrite(sectors []*bsontypes.SectorInfo) error {
 	return nil
 }
 
+// BulkWriteInfo update only Info and ID fields, other remains unchanged.
+func (r *MongoSectorsRepo) BulkWriteInfo(sectors []*bsontypes.SectorInfo) error {
+	var sectorsModels []mongo.WriteModel
+
+	for _, sector := range sectors {
+		filter := bson.M{"_id": sector.ID}
+
+		sectorsModels = append(sectorsModels, mongo.NewUpdateOneModel().
+			SetFilter(filter).
+			SetUpdate(bson.M{"$set": bson.M{"id": sector.ID, "info": sector.Info}}).
+			SetUpsert(true))
+	}
+
+	if len(sectorsModels) > 0 {
+		result, err := r.collection.BulkWrite(context.Background(), sectorsModels)
+		if err != nil {
+			log.WithError(err).Error("Failed to insert sectors data")
+			return err
+		}
+
+		log.WithFields(log.Fields{
+			"InsertedCount": result.InsertedCount,
+			"MatchedCount":  result.MatchedCount,
+			"ModifiedCount": result.ModifiedCount,
+			"DeletedCount":  result.DeletedCount,
+			"UpsertedCount": result.UpsertedCount,
+		}).Debugf("Sectors updated")
+
+		log.Debugf("UpsertedIDs %v", result.UpsertedIDs)
+	}
+
+	return nil
+}
+
 func (r *MongoSectorsRepo) GetSector(sectorID uint64) (bsontypes.SectorInfo, error) {
 	filter := bson.M{"_id": sectorID}
 
@@ -76,15 +111,19 @@ func (r *MongoSectorsRepo) GetSector(sectorID uint64) (bsontypes.SectorInfo, err
 	return sector, nil
 }
 
-func (r *MongoSectorsRepo) SectorWithDeal(dealID uint64) (bsontypes.SectorInfo, error) {
+func (r *MongoSectorsRepo) SectorWithDeal(dealID uint64) (*bsontypes.SectorInfo, error) {
 	filter := bson.M{"info.info.dealids": dealID}
 
 	var sector bsontypes.SectorInfo
 	if err := r.collection.FindOne(context.Background(), filter).Decode(&sector); err != nil {
-		return bsontypes.SectorInfo{}, err
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+
+		return nil, err
 	}
 
-	return sector, nil
+	return &sector, nil
 }
 
 func (r *MongoSectorsRepo) updateBoolField(filter bson.M, name string, value bool) error {
