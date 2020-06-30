@@ -28,11 +28,15 @@ const ModalTitle = styled.label`
 const Footer = styled.div`
   margin: 30px auto 5px auto;
 `
-const Table = styled.table`
-  border: none;
+
+const Dots = styled.span`
+  display: block;
+  background: radial-gradient(circle, rgba(207, 224, 255, 0.62) 1px, transparent 1px) repeat-x;
+  background-size: 6px 39px;
+  flex-grow: 10;
 `
 
-const TDTitle = styled.td`
+const SpanTitle = styled.span`
   padding: 6px;
   opacity: 0.5;
   font-family: Poppins;
@@ -41,7 +45,8 @@ const TDTitle = styled.td`
   text-align: left;
   color: #cfe0ff;
 `
-const TDValue = styled.td`
+
+const SpanValue = styled.span`
   padding: 6px;
   font-family: Poppins;
   font-size: 16px;
@@ -61,78 +66,90 @@ export const DealDetailModal = (props: Props) => {
   return (
     <ModalWrapper isOpen={isOpen} onRequestClose={onClose}>
       <ModalTitle>Details</ModalTitle>
-      <Table>
-        <tbody>
-          <tr>
-            <TDTitle>{DealTitles.FileCID}</TDTitle>
-            <TDValue title={deal.FileCID}>{truncateStringInTheMiddle(deal.FileCID, 6, 4)}</TDValue>
-          </tr>
 
-          <tr>
-            <TDTitle>{DealTitles.DealID}</TDTitle>
-            <TDValue>{deal.DealID}</TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.MinerID}</TDTitle>
-            <TDValue>{deal.MinerID}</TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.Sector}</TDTitle>
-            <TDValue>{deal.Sector}</TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.Client}</TDTitle>
-            <TDValue>{deal.Client}</TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.PieceSize}</TDTitle>
-            <TDValue>{deal.PieceSize}</TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.VerifiedDeal}</TDTitle>
-            <TDValue>{deal.VerifiedDeal ? 'True' : 'False'}</TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.SealedCID}</TDTitle>
-            <TDValue title={deal.SealedCID}>
-              {deal.SealedCID !== DealValueNotAvailable
-                ? truncateStringInTheMiddle(deal.SealedCID, 6, 4)
-                : deal.SealedCID}
-            </TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.StartEpoch}</TDTitle>
-            <TDValue>{deal.StartEpoch}</TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.EndEpoch}</TDTitle>
-            <TDValue>{deal.EndEpoch}</TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.Expiration}</TDTitle>
-            <TDValue>{deal.Expiration}</TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.StoragePricePerEpoch}</TDTitle>
-            <TDValue>{deal.StoragePricePerEpoch}</TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.ProviderCollateral}</TDTitle>
-            <TDValue>{deal.ProviderCollateral}</TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.ClientCollateral}</TDTitle>
-            <TDValue>{deal.ClientCollateral}</TDValue>
-          </tr>
-          <tr>
-            <TDTitle>{DealTitles.State}</TDTitle>
-            <TDValue className="is-right is-center">
-              <DealStatusIcon status={deal.State} />
-              {deal.State}
-            </TDValue>
-          </tr>
-        </tbody>
-      </Table>
+      <div className="row">
+        <SpanTitle>{DealTitles.FileCID}</SpanTitle>
+        <Dots />
+        <SpanValue title={deal.FileCID}>{truncateStringInTheMiddle(deal.FileCID, 6, 4)}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.DealID}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.DealID}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.MinerID}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.MinerID}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.Sector}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.Sector}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.Client}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.Client}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.PieceSize}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.PieceSize}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.VerifiedDeal}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.VerifiedDeal ? 'True' : 'False'}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.SealedCID}</SpanTitle>
+        <Dots />
+        <SpanValue title={deal.SealedCID}>
+          {deal.SealedCID !== DealValueNotAvailable
+            ? truncateStringInTheMiddle(deal.SealedCID, 6, 4)
+            : deal.SealedCID}
+        </SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.StartEpoch}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.StartEpoch}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.EndEpoch}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.EndEpoch}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.Expiration}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.Expiration}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.StoragePricePerEpoch}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.StoragePricePerEpoch}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.ProviderCollateral}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.ProviderCollateral}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.ClientCollateral}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.ClientCollateral}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.State}</SpanTitle>
+        <Dots />
+        <SpanValue className="is-right is-center">
+          {' '}
+          <DealStatusIcon status={deal.State} />
+          {deal.State}
+        </SpanValue>
+      </div>
 
       <Footer>
         <Button className="is-center" onClick={onClose}>
