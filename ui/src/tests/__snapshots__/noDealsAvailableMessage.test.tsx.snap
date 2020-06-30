@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<NoDealsAvailableMessage /> spec renders the component 1`] = `
+<div>
+  <div
+    class="sc-AxjAm eHTNpM"
+  >
+    No Deals available
+  </div>
+</div>
+`;

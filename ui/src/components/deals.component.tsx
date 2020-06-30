@@ -89,7 +89,7 @@ export const Deals = (props: Props) => {
           </BlockWrapper>
         )}
         {RemoteData.is.loading(deals) && (
-          <BlockWrapper className="col is-center">
+          <BlockWrapper className="col is-center" data-testid="loading">
             <Loader visible={true} type="ThreeDots" color="#42C1CA" height={50} width={50} />
           </BlockWrapper>
         )}
