@@ -43,7 +43,6 @@ const TDTitle = styled.td`
 `
 const TDValue = styled.td`
   padding: 6px;
-  text-align: right;
   font-family: Poppins;
   font-size: 16px;
   font-weight: 500;
