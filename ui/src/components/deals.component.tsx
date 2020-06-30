@@ -9,6 +9,7 @@ import { NoDealsAvailableMessage } from './noDealsAvailableMessage.component'
 import { DealsErrorMessage } from './dealsErrorMessage.component'
 import { DealsList } from './dealsList.component'
 import { DealTitles } from '../utils/types'
+import { Button } from './button.component'
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   search: string
@@ -30,12 +31,8 @@ const BlockWrapper = styled.div`
 const THead = styled.thead`
   border-bottom: none;
 `
-const ShowMoreButton = styled.button`
+const ShowMoreButton = styled(Button)`
   margin: 20px auto 20px auto;
-  width: 212px;
-  height: 56px;
-  border-radius: 28px;
-  background-color: #42c1ca;
 `
 
 export const Deals = (props: Props) => {
@@ -50,7 +47,11 @@ export const Deals = (props: Props) => {
 
   const showMoreButton = !search && !RemoteData.is.loading(deals) && (
     <div className="row is-center">
-      <ShowMoreButton disabled={RemoteData.is.reloading(deals)} onClick={showMore}>
+      <ShowMoreButton
+        className="is-center"
+        disabled={RemoteData.is.reloading(deals)}
+        onClick={showMore}
+      >
         {RemoteData.is.reloading(deals) ? 'Loading...' : 'Show more'}
       </ShowMoreButton>
     </div>
