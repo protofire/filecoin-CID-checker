@@ -4,31 +4,37 @@ import (
 	"context"
 	"time"
 
-	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/specs-actors/actors/abi"
 	log "github.com/sirupsen/logrus"
 )
 
 // BlocksWatcher responsible for watching new blocks and run blockEventHandlers.
 type BlocksWatcher struct {
-	lotusAPI           api.FullNode
+	lotusClient        LotusClient
 	height             abi.ChainEpoch
 	blockEventHandlers []BlockEventHandler
 }
 
 // NewBlocksWatcher create new BlocksWatcher instance.
-func NewBlocksWatcher(lotusAPI api.FullNode) *BlocksWatcher {
-	return &BlocksWatcher{lotusAPI: lotusAPI}
+func NewBlocksWatcher(lotusClient LotusClient) *BlocksWatcher {
+	return &BlocksWatcher{lotusClient: lotusClient}
 }
 
 // Start runs in infinite cycle and triggers handlers from blockEventHandlers each new block.
 func (w *BlocksWatcher) Start() {
 	go func() {
 		for {
-			ts, err := w.lotusAPI.ChainHead(context.Background())
+			ts, err := w.lotusClient.LotusAPI().ChainHead(context.Background())
 			if err != nil {
-				log.WithError(err).Error("Failed to get ChainHead from Lotus API")
+				log.WithError(err).Error("Failed to get ChainHead from Lotus")
+
+				err := w.lotusClient.Reconnect()
+				if err != nil {
+					log.WithError(err).Error("Failed to reconnect with Lotus")
+				}
+
 				time.Sleep(5 * time.Second)
+
 				continue
 			}
 

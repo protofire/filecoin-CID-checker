@@ -42,8 +42,8 @@ func TestSectorStatesOverwrite(t *testing.T) {
 	seedDeals := []*bsontypes.MarketDeal{{Proposal: bsontypes.DealProposal{Provider: "t01000"}}}
 	require.NoError(t, dealsRepo.BulkWrite(seedDeals))
 
-	sectorsProcessor := SectorsProcessor(lotusMock, dealsRepo, sectorsRepo)
-	minersProcessor := MinersProcessor(lotusMock, dealsRepo, sectorsRepo)
+	sectorsProcessor := SectorsProcessor(CreateLotusClientMock(lotusMock), dealsRepo, sectorsRepo)
+	minersProcessor := MinersProcessor(CreateLotusClientMock(lotusMock), dealsRepo, sectorsRepo)
 
 	lotusMock.On("StateGetActor", mock.Anything, mock.Anything, mock.Anything).
 		Return(&types.Actor{}, nil)

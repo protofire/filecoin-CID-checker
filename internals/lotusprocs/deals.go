@@ -8,18 +8,17 @@ import (
 	"github.com/protofire/filecoin-CID-checker/internals/bsontypes"
 	"github.com/protofire/filecoin-CID-checker/internals/repos"
 
-	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/lotus/chain/types"
 	log "github.com/sirupsen/logrus"
 )
 
 // DealsProcessor read deals from lotus, trough lotusAPI and save to "deals" mongo collection.
-func DealsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo) BlockEventHandler {
+func DealsProcessor(lotusClient LotusClient, dealsRepo repos.DealsRepo) BlockEventHandler {
 	return func() error {
 		log.Info("Fetching deals from Lotus node")
 
 		ctx := context.Background()
-		deals, err := lotusAPI.StateMarketDeals(ctx, types.EmptyTSK)
+		deals, err := lotusClient.LotusAPI().StateMarketDeals(ctx, types.EmptyTSK)
 		if err != nil {
 			log.WithError(err).Error("Failed to execute StateMarketDeals")
 		}

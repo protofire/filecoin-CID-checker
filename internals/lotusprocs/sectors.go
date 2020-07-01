@@ -8,14 +8,13 @@ import (
 	"github.com/protofire/filecoin-CID-checker/internals/repos"
 
 	"github.com/filecoin-project/go-address"
-	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/lotus/chain/types"
 	log "github.com/sirupsen/logrus"
 )
 
 // SectorsProcessor read sectors from lotus, trough lotusAPI.
 // Saves sectors info to "sectors" collection.
-func SectorsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo) BlockEventHandler {
+func SectorsProcessor(lotusClient LotusClient, dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo) BlockEventHandler {
 	return func() error {
 		log.Info("Fetching sectors from Lotus node")
 
@@ -34,7 +33,7 @@ func SectorsProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, sectorsR
 
 			log.Debugf("Processing miner %s sectors", minerAddr.String())
 
-			sectors, err := lotusAPI.StateMinerSectors(context.Background(), minerAddr, nil, true, types.EmptyTSK)
+			sectors, err := lotusClient.LotusAPI().StateMinerSectors(context.Background(), minerAddr, nil, true, types.EmptyTSK)
 			if err != nil {
 				return err
 			}

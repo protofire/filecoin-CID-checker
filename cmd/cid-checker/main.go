@@ -2,16 +2,13 @@ package main
 
 import (
 	"context"
-	"net/http"
 
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/protofire/filecoin-CID-checker/internals/api/handlers"
 	"github.com/protofire/filecoin-CID-checker/internals/config"
 	"github.com/protofire/filecoin-CID-checker/internals/lotusprocs"
 	"github.com/protofire/filecoin-CID-checker/internals/repos"
-
-	"github.com/filecoin-project/lotus/api/client"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"github.com/toorop/gin-logrus"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -53,21 +50,21 @@ func main() {
 		log.Fatal(err)
 	}
 
-	lotusAPI, closer, err := client.NewFullNodeRPC(c.Lotus.RpcUrl, http.Header{})
-	if err != nil {
-		log.WithError(err).Fatal("Failed to connect with Lotus Node")
+	lotusClient := lotusprocs.CreateLotusClient(c.Lotus.RpcUrl)
+	if err := lotusClient.Connect(); err != nil {
+		log.WithError(err).Fatal("Failed to create Lotus client")
 	}
-	defer closer()
+	defer lotusClient.Disconnect()
 
-	head, err := lotusAPI.ChainHead(context.Background())
+	head, err := lotusClient.LotusAPI().ChainHead(context.Background())
 	if err != nil {
 		log.WithError(err).Fatal("Failed to connect with Lotus Node")
 	}
 	log.Infof("Connected to Lotus API, current chain height %d", head.Height())
-	lotusprocs.NewBlocksWatcher(lotusAPI).
-		AddBlockEventHandler(lotusprocs.DealsProcessor(lotusAPI, dealsRepo)).
-		AddBlockEventHandler(lotusprocs.SectorsProcessor(lotusAPI, dealsRepo, sectorsRepo)).
-		AddBlockEventHandler(lotusprocs.MinersProcessor(lotusAPI, dealsRepo, sectorsRepo)).
+	lotusprocs.NewBlocksWatcher(lotusClient).
+		AddBlockEventHandler(lotusprocs.DealsProcessor(lotusClient, dealsRepo)).
+		AddBlockEventHandler(lotusprocs.SectorsProcessor(lotusClient, dealsRepo, sectorsRepo)).
+		AddBlockEventHandler(lotusprocs.MinersProcessor(lotusClient, dealsRepo, sectorsRepo)).
 		Start()
 
 	router := gin.New()

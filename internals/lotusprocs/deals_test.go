@@ -47,7 +47,7 @@ func TestDealsProcessor(t *testing.T) {
 		return true
 	})).Return(nil)
 
-	h := DealsProcessor(lotusMock, dealsRepoMock)
+	h := DealsProcessor(CreateLotusClientMock(lotusMock), dealsRepoMock)
 	err := h()
 
 	dealsRepoMock.AssertNumberOfCalls(t, "BulkWrite", 1)

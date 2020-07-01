@@ -28,7 +28,7 @@ func TestNewBlocksWatcher(t *testing.T) {
 		return nil
 	}
 
-	bw := NewBlocksWatcher(lotusMock)
+	bw := NewBlocksWatcher(CreateLotusClientMock(lotusMock))
 	bw.AddBlockEventHandler(testHandler)
 	bw.Start()
 

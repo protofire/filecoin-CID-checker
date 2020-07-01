@@ -46,7 +46,7 @@ func TestSectorsProcessor(t *testing.T) {
 		return true
 	})).Return(nil)
 
-	h := SectorsProcessor(lotusMock, dealsRepoMock, sectorsRepoMock)
+	h := SectorsProcessor(CreateLotusClientMock(lotusMock), dealsRepoMock, sectorsRepoMock)
 	err := h()
 
 	assert.NoError(t, err)

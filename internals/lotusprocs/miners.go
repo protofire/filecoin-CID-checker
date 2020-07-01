@@ -8,14 +8,13 @@ import (
 	"github.com/protofire/filecoin-CID-checker/internals/repos"
 
 	"github.com/filecoin-project/go-address"
-	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/lotus/chain/types"
 	"github.com/filecoin-project/specs-actors/actors/builtin/miner"
 	log "github.com/sirupsen/logrus"
 )
 
 // MinersProcessor read miners from lotus, trough lotusAPI and save miner sectors states to "sectors" mongo collection.
-func MinersProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo) BlockEventHandler {
+func MinersProcessor(lotusClient LotusClient, dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo) BlockEventHandler {
 	return func() error {
 		log.Info("Fetching miners from Lotus node")
 
@@ -32,12 +31,12 @@ func MinersProcessor(lotusAPI api.FullNode, dealsRepo repos.DealsRepo, sectorsRe
 				return fmt.Errorf("failed to convert %s to miner address: %w", minerID, err)
 			}
 
-			minerActor, err := lotusAPI.StateGetActor(context.Background(), minerAddr, types.EmptyTSK)
+			minerActor, err := lotusClient.LotusAPI().StateGetActor(context.Background(), minerAddr, types.EmptyTSK)
 			if err != nil {
 				return fmt.Errorf("failed StateGetActor: %w", err)
 			}
 
-			minerStateBytes, err := lotusAPI.ChainReadObj(context.Background(), minerActor.Head)
+			minerStateBytes, err := lotusClient.LotusAPI().ChainReadObj(context.Background(), minerActor.Head)
 			if err != nil {
 				return fmt.Errorf("failed ChainReadObj: %w", err)
 			}

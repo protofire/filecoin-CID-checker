@@ -41,7 +41,7 @@ func TestMinersProcessor(t *testing.T) {
 	sectorsRepoMock.On("SetFaultSectors", mock.Anything).Return(nil)
 	sectorsRepoMock.On("SetRecoveriesSectors", mock.Anything).Return(nil)
 
-	h := MinersProcessor(lotusMock, dealsRepoMock, sectorsRepoMock)
+	h := MinersProcessor(CreateLotusClientMock(lotusMock), dealsRepoMock, sectorsRepoMock)
 	err = h()
 
 	assert.NoError(t, err)
