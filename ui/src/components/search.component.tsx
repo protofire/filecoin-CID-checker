@@ -1,13 +1,10 @@
-import React, { HTMLAttributes, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { Lens } from './common/images/lens.component'
 import { Close } from './common/images/close.component'
-
-interface Props extends HTMLAttributes<HTMLDivElement> {
-  search: string
-}
+import { useSearchContext } from '../state/search.context'
 
 // Search Wrapper
 const SearchWrapper = styled.div`
@@ -113,20 +110,27 @@ const CloseImageWrapper = styled.div`
   padding: 8px;
 `
 
-export const Search = (props: Props) => {
-  const { search } = props
+export const Search = () => {
+  const { search, setCurrentPage, setCurrentSearch } = useSearchContext()
+
+  const [searchValueLocal, setSearchValueLocal] = useState(search)
+
+  useEffect(() => {
+    setSearchValueLocal(search)
+  }, [search])
 
   const history = useHistory()
-  const [searchValue, setSearchValue] = useState(search)
 
   const onSearch = () => {
-    // If the user write a backslash, this will throw an error, that is we remove, maybe a better option is to disallow the user to write a '/' or throw an error in the UI
-    const searchToPush = `/${searchValue.replace(/\//g, '')}`
-    history.push(searchToPush)
+    setCurrentSearch(searchValueLocal)
+    setCurrentPage(1)
+    history.push(searchValueLocal)
   }
 
   const onClear = () => {
-    setSearchValue('')
+    setSearchValueLocal('')
+    setCurrentSearch('')
+    setCurrentPage(1)
     history.push('/')
   }
 
@@ -137,7 +141,7 @@ export const Search = (props: Props) => {
           <Lens />
         </LensImageWrapper>
       </LensWrapper>
-      {searchValue && (
+      {searchValueLocal && (
         <CloseWrapper onClick={onClear}>
           <CloseImageWrapper>
             <Close />
@@ -146,8 +150,11 @@ export const Search = (props: Props) => {
       )}
       <Input
         className="search"
-        value={searchValue}
-        onChange={event => setSearchValue(event.target.value)}
+        value={searchValueLocal}
+        onChange={event => {
+          const searchValueLocalSanitized = event.target.value.replace(/\/\//g, '')
+          setSearchValueLocal(searchValueLocalSanitized)
+        }}
         onKeyPress={event => {
           if (event.key === 'Enter') onSearch()
         }}

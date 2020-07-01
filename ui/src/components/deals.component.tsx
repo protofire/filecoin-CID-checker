@@ -1,7 +1,8 @@
-import React, { HTMLAttributes, useState } from 'react'
+import React, { useEffect } from 'react'
 import Loader from 'react-loader-spinner'
 import styled from 'styled-components'
 import { Waypoint } from 'react-waypoint'
+import { useParams } from 'react-router-dom'
 
 import { useDeals } from '../hooks/useDeals.hook'
 import { RemoteData } from '../utils/remoteData'
@@ -10,10 +11,7 @@ import { DealsErrorMessage } from './dealsErrorMessage.component'
 import { DealsList } from './dealsList.component'
 import { DealTitles } from '../utils/types'
 import { Button } from './button.component'
-
-interface Props extends HTMLAttributes<HTMLDivElement> {
-  search: string
-}
+import { useSearchContext } from '../state/search.context'
 
 const TH = styled.th`
   font-family: Poppins;
@@ -35,14 +33,20 @@ const ShowMoreButton = styled(Button)`
   margin: 20px auto 20px auto;
 `
 
-export const Deals = (props: Props) => {
-  const { search } = props
+export const Deals = () => {
+  const { search, page, setCurrentPage, setCurrentSearch } = useSearchContext()
 
-  const [page, setPage] = useState(1)
+  const { search: searchFromParams } = useParams()
+
+  useEffect(() => {
+    if (searchFromParams) {
+      setCurrentSearch(searchFromParams)
+    }
+  }, [setCurrentSearch, searchFromParams])
 
   const { deals } = useDeals(search, page)
   const showMore = () => {
-    setPage(page => page + 1)
+    setCurrentPage(page + 1)
   }
 
   const showMoreButton = !search && !RemoteData.is.loading(deals) && (
