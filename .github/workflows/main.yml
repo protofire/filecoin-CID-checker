@@ -32,3 +32,6 @@ jobs:
 
       - name: Test
         run: make test
+
+      - name: Report card
+        uses: creekorful/goreportcard-action@v1.0
