@@ -20,22 +20,32 @@ One option would be to build 1 long table that shows each miner x sectors they a
 
 If you are a total beginner to this, start here!
 
-- Use remote CID checker service:
-1. Navigate to the vebsite: www.TBD
-2. Enter your Filecoin address 
-3. See the list of your CIDs and their currens status
-4. Query info by any specific CID or miner 
+**Use remote CID checker service:**
+1. Navigate to the website: www.filecoin.tools
+2. See the list of all file CIDs and related information:
+- Deal ID
+- Miner ID
+- Sector number
+- State
+3. Search a record by a File CID, Deal ID, or Miner ID
+4. Click on a chosen record and see other related details
 
-- Install the CID checker to your Filecoin (Lotus) node:
-*instructions are in progress*
+**If you are running an own Filecoin (Lotus) node:**
+
+Install the CID checker to your Filecoin (Lotus) node: see deployment instructions below
+
+**If you are an application developer:**
+
+Two API endpoints available to be used as a Storage Oracle (see the API section below) 
+
 
 
 ## Deployment
 
-The simplest way to deploy is with docker-compose.
+The simplest way to deploy the CID checker is doing it with docker-compose.
 
 Specify environment variable:
-- CID_LOTUS_RPCURL - URL of available through network and fully synced Lotus node.
+- CID_LOTUS_RPCURL - URL available through the network and fully synced Lotus node.
 
 Instructions on how to run Lotus node - https://lotu.sh/en+getting-started
 
@@ -60,46 +70,45 @@ Backend is a Golang application consist of two parts:
 
 Two API endpoints available:
 #### :8080/deals
-Get all deals information from database.
+Get deals information about all deals from the database.
 #### :8080/deals/:selector
-Get deals by selector: file CID, miner ID and deal ID.
+Get deals by selector: File CID, Miner ID and Deal ID.
 
 Both endpoints support pagination.
 
-More detailed information on API with examples:
+More detailed information on the API with examples can be found here:
 https://documenter.getpostman.com/view/6638692/T17AiA6S?version=latest
 
 
 ### Lotus processors
 
 BlockWatcher periodically checks the network for new blocks.
-Every time a new block occurs, watcher runs processors. 
+Every time a new block is added, the watcher runs processors. 
 
 #### DealsProcessor
 
-Processor calls Lotus StateMarketDeals() method and saved all deals into "deals" collection.
+The Processor calls Lotus StateMarketDeals() method and saves all deals into the "deals" collection.
 
 #### SectorsProcessor
 
 The goal is to fetch sector information and discover the connection between deals and sectors.
-Processor calls StateMinerSectors() for each miner and saves to "sectors" collection.    
+Thr Processor calls StateMinerSectors() for each miner and saves it to "sectors" collection.    
 
 #### MinersProcessor
 
-Goal is to discover sector states
-Combination of StateGetActor() and ChainReadObj() used to fetch miner information
-in miner.State struct.
-Miner state have Faults and Recoveries fields of type abi.BitField with sectors ids.
-Sectors in "sectors" collection modified based on these values.
+The goal is to discover sector states.
+The combination of StateGetActor() and ChainReadObj() is used to fetch miner information
+form the miner.State struct.
+The Miner state has two fields - Fault and Recovery - of type abi.BitField with sectors IDs.
+Sectors in the "sectors" collection are modified based on these values.
 
 
 ### Database collections
 
-* Deals - stores deals information 
-* Sectors - stores sectors information
+* Deals - stores the deals information 
+* Sectors - stores the sectors information
 
-To work with collections there is a data abstraction layer in
-/internals/repos.
+There is a data abstraction layer in /internals/repos intended for working with the collections.
 
 ### Configuration
 
