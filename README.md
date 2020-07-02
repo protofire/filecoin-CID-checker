@@ -21,7 +21,7 @@ One option would be to build 1 long table that shows each miner x sectors they a
 If you are a total beginner to this, start here!
 
 **Use remote CID checker service:**
-1. Navigate to the website: www.filecoin.tools
+1. Navigate to the website: [www.filecoin.tools](https://deploy-preview-20--filecoincidchecker.netlify.app/)
 2. See the list of all file CIDs and related information:
 - Deal ID
 - Miner ID
