@@ -1,0 +1,7 @@
+:80 {
+  route /api/* {
+    uri strip_prefix api
+    reverse_proxy http://cid-checker-backend:8080
+  }
+  reverse_proxy http://cid-checker-frontend:80
+}

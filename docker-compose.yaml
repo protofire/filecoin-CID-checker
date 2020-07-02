@@ -2,25 +2,33 @@ version: "3.8"
 
 services:
 
-#  lotus-node:
-#    build:
-#      context: ./docker/lotus-miner
-#    restart: always
-#
-#  lotus-miner:
-#    build:
-#      context: ./docker/lotus-node
-#    restart: always
-
   mongo:
     image: mongo
     restart: always
-    ports:
-    - 27017:27017
 
-
-  mongo-express:
-    image: mongo-express
+  cid-checker-frontend:
+    image: cid-checker-frontend
     restart: always
     ports:
-      - 8081:8081
+      - 8080:8080
+
+  cid-checker-backend:
+    image: cid-checker
+    restart: always
+    environment:
+      - CID_LOTUS_RPCURL=ws://3.9.46.104:1234/rpc/v0
+      - CID_DB_CONNECTIONSTRING=mongodb://mongo:27017
+
+  caddy:
+    image: caddy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+
+
+volumes:
+  caddy_data:

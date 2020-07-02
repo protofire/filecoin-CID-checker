@@ -18,3 +18,7 @@ lint:
 .PHONY: docker_build
 docker_build:
 	docker build -t cid-checker .
+
+.PHONY: docker_build_frontend
+docker_build_frontend:
+	docker build -t cid-checker-frontend  --build-arg REACT_APP_FILECOIN_CID_CHECKER_API=/api/ ./ui/
