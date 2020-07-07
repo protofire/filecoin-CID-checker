@@ -3,14 +3,14 @@ FROM node:12 as build-stage
 WORKDIR /app
 
 COPY package*.json /app/
-RUN npm install
+RUN yarn
 
 COPY . /app/
 
 ARG REACT_APP_FILECOIN_CID_CHECKER_API
 ENV REACT_APP_FILECOIN_CID_CHECKER_API $REACT_APP_FILECOIN_CID_CHECKER_API
 
-RUN npm run build
+RUN yarn build
 
-FROM nginx:1.19
-COPY --from=build-stage /app/build/ /usr/share/nginx/html
+RUN yarn global add serve
+ENTRYPOINT ["serve", "-s", "build"]

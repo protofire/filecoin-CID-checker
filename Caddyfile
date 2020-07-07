@@ -3,5 +3,5 @@
     uri strip_prefix api
     reverse_proxy http://cid-checker-backend:8080
   }
-  reverse_proxy http://cid-checker-frontend:80
+  reverse_proxy http://cid-checker-frontend:5000
 }
