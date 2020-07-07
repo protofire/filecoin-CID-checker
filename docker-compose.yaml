@@ -9,8 +9,6 @@ services:
   cid-checker-frontend:
     image: cid-checker-frontend
     restart: always
-    ports:
-      - 8080:8080
 
   cid-checker-backend:
     image: cid-checker

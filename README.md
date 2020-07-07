@@ -49,9 +49,10 @@ Specify environment variable:
 
 Instructions on how to run Lotus node - https://lotu.sh/en+getting-started
 
-Build backend container with: 
+Build backend and frontend containers with: 
 ```
 make docker_build
+make docker_build_frontend
 ```
 
 Run docker-compose:
