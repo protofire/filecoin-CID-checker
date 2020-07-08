@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 	"github.com/protofire/filecoin-CID-checker/internals/api/handlers"
 	"github.com/protofire/filecoin-CID-checker/internals/config"
 	"github.com/protofire/filecoin-CID-checker/internals/lotusprocs"
 	"github.com/protofire/filecoin-CID-checker/internals/repos"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"github.com/toorop/gin-logrus"
 	"go.mongodb.org/mongo-driver/mongo"
