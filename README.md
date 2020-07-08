@@ -3,9 +3,18 @@
 ![](https://github.com/protofire/filecoin-CID-checker/workflows/Build%20and%20test/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/protofire/filecoin-CID-checker)](https://goreportcard.com/report/github.com/protofire/filecoin-CID-checker)
 
-A website and API service that can list all CIDs along with their current status in the latest state tree. 
+Initial RFP: "A website and API service that can list all CIDs along with their current status in the latest state tree. 
 The page could also support queries by CID or miner. 
-One option would be to build 1 long table that shows each miner x sectors they are storing x state as a colored indicator: green - good | grey - capacity | red - failing.
+One option would be to build 1 long table that shows each miner x sectors they are storing x state as a colored indicator: green - good | grey - capacity | red - failing."
+
+The benefits of the CID checker and Storage Oracle:
+
+- for a User storing own files:
+the CID checker is the only service that allows you to quickly check information about your file by its CID or the Deal ID. In addition, you can find information about other CIDs stored by a chosen Miner.
+
+- for a Developer:
+you can use this service as a Storage Oracle providing the extended range of data related to a chosen CID, a Deal, or a Miner from the latest state tree.
+
 
 **Software requirements specification (the SRS) is** [here](https://hackmd.io/RMpGnE3YQm607jl0QevCoQ?view)
 
