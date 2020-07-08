@@ -22,7 +22,7 @@ The CID Checker as a service provides two REST endpoints, where you need to spec
 
 2. It combines responses of several JSON RPC methods (StateMarketDeals, StateMinerSectors, StateGetActor, ChainReadObj) into a single convenient summary (database).
 
-3. The Daemon automates the process of fetching the new data, which requires thousands of JSON RCP call for every loop.
+3. The Daemon automates the process of fetching the new data, which requires thousands of JSON RCP calls for every loop.
 
 4. Effective and reliable Mongo DB database with indexes provides fast paginated search by Deal ID, File CID, Miner ID.
 
