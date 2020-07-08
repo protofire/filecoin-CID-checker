@@ -15,6 +15,19 @@ the CID checker is the only service that allows you to quickly check information
 - for a Developer:
 you can use this service as a Storage Oracle providing the extended range of data related to a chosen CID, a Deal, or a Miner from the latest state tree.
 
+What it brings to you as a Developer in addition to the existing Lotus API:
+
+1. A simple REST API service.
+The CID Checker as a service provides two REST endpoints, where you need to specify a single search criteria to get the full CID summary (when the Lotus JSON RPC requires complicated JSON requests). 
+
+2. It combines responses of several JSON RPC methods (StateMarketDeals, StateMinerSectors, StateGetActor, ChainReadObj) into a single convenient summary (database).
+
+3. The Daemon automates the process of fetching the new data, which requires thousands of JSON RCP call for every loop.
+
+4. Effective and reliable Mongo DB database with indexes provides fast paginated search by Deal ID, File CID, Miner ID.
+
+5. UI provides rich details on deals.
+For the end user it doesn't require any developer skills to quickly get information on deals. 
 
 **Software requirements specification (the SRS) is** [here](https://hackmd.io/RMpGnE3YQm607jl0QevCoQ?view)
 
