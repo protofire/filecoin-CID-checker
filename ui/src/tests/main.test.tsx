@@ -20,7 +20,7 @@ describe('<Main /> spec', () => {
       </ThemeProvider>,
     )
 
-    expect(container.innerHTML).toMatch(/Search by File CID, Deal ID, or Miner ID/i)
+    expect(container.innerHTML).toMatch(/Search by Piece CID, Deal ID, or Miner ID/i)
 
     const loading = getByTestId('loading')
     expect(loading).toBeInTheDocument()

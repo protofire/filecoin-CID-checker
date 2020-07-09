@@ -26,7 +26,7 @@ export interface DealValue {
 }
 
 export enum DealTitles {
-  FileCID = 'File CID',
+  FileCID = 'Piece CID',
   DealID = 'Deal ID',
   MinerID = 'Miner ID',
   Sector = 'Sector',

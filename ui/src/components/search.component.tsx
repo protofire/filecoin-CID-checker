@@ -160,7 +160,7 @@ export const Search = () => {
         }}
         name="value"
         type="text"
-        placeholder="Search by File CID, Deal ID, or Miner ID"
+        placeholder="Search by Piece CID, Deal ID, or Miner ID"
       />
     </SearchWrapper>
   )

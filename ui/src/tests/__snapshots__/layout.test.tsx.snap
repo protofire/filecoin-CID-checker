@@ -138,7 +138,7 @@ exports[`<Header /> spec renders the component 1`] = `
         <input
           class="sc-AxmLO jzWVSR search"
           name="value"
-          placeholder="Search by File CID, Deal ID, or Miner ID"
+          placeholder="Search by Piece CID, Deal ID, or Miner ID"
           type="text"
           value=""
         />
