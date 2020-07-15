@@ -80,7 +80,7 @@ make docker_build_frontend
 
 Run docker-compose:
 ```
-docker-compose -d up
+docker-compose up -d
 ```
 
 ## Application structure
