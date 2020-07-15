@@ -66,7 +66,8 @@ Two API endpoints available to be used as a Storage Oracle (see the API section 
 
 The simplest way to deploy the CID checker is doing it with docker-compose.
 
-Specify environment variable:
+The CID checker is supposed to query the data from a running Lotus node.
+To connect the CID checker to a Lutus node we need to specify the Lotus node's address as an  environment variable in the docker-compose.yaml:
 - CID_LOTUS_RPCURL - URL available through the network and fully synced Lotus node.
 
 Instructions on how to run Lotus node - https://lotu.sh/en+getting-started
