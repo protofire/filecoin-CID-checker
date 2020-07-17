@@ -10,11 +10,24 @@ interface Props {
   title?: string
 }
 
-const Span = styled.span`
-  width: 16px;
-  height: 16px;
+const CopyWrapper = styled.div`
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border-radius: 24px;
   cursor: pointer;
-  margin: auto;
+  &:hover {
+    background-color: rgb(207, 224, 255, 0.1);
+  }
+  &:active,
+  &:focus-within {
+    background-color: rgb(207, 224, 255, 0.2);
+  }
+`
+
+const CopyImageWrapper = styled(Copy)`
+  margin-top: 8px;
+  margin-left: 8px;
 `
 
 export const CopyText = (props: Props) => {
@@ -22,9 +35,9 @@ export const CopyText = (props: Props) => {
 
   return (
     <CopyToClipboard text={text}>
-      <Span className={className} title={title}>
-        <Copy />
-      </Span>
+      <CopyWrapper className={className} title={title}>
+        <CopyImageWrapper />
+      </CopyWrapper>
     </CopyToClipboard>
   )
 }
