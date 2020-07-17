@@ -40,7 +40,11 @@ export const BackToTop = () => {
   window.addEventListener('scroll', checkScrollTop)
 
   return (
-    <ScrollToTopWrapper onClick={scrollTop} style={{ display: showScroll ? 'flex' : 'none' }}>
+    <ScrollToTopWrapper
+      onClick={scrollTop}
+      title="Back to top"
+      style={{ display: showScroll ? 'flex' : 'none' }}
+    >
       <Top />
     </ScrollToTopWrapper>
   )
