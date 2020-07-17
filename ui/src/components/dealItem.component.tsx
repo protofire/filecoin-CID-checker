@@ -1,5 +1,6 @@
 import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
+import { useHistory } from 'react-router-dom'
 
 import { DealValue } from '../utils/types'
 import { DealStatusIcon } from './dealStatusIcon.component'
@@ -39,8 +40,21 @@ const CopyTextWrapper = styled(CopyText)`
   margin-left: 4px;
 `
 
+const MinerSearch = styled.span`
+  &:hover {
+    color: #42c1ca;
+  }
+`
+
 export const DealItem = (props: Props) => {
   const { deal, onDoubleClick } = props
+
+  const history = useHistory()
+
+  const searchMiner = (minerId: string) => {
+    history.push(minerId)
+  }
+
   return (
     <TR onDoubleClick={onDoubleClick} title="You can double click to open a deal">
       <TD style={{ paddingLeft: '48px' }}>
@@ -52,7 +66,12 @@ export const DealItem = (props: Props) => {
         <CopyTextWrapper text={deal.DealID + ''} title="Click to copy Deal ID" />
       </TD>
       <TD style={{ width: '11%' }}>
-        {deal.MinerID}
+        <MinerSearch
+          onClick={() => searchMiner(deal.MinerID)}
+          title="Click to search by this Miner ID"
+        >
+          {deal.MinerID}
+        </MinerSearch>
         <CopyTextWrapper text={deal.MinerID} title="Click to copy Miner ID" />
       </TD>
       <td style={{ width: '8%' }}>{deal.Sector}</td>
