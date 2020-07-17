@@ -36,7 +36,7 @@ const ShowMoreButton = styled(Button)`
 export const Deals = () => {
   const { search, page, setCurrentPage, setCurrentSearch } = useSearchContext()
 
-  const { search: searchFromParams } = useParams()
+  const { search: searchFromParams, deal: dealIdFromParams } = useParams()
 
   useEffect(() => {
     if (searchFromParams) {
@@ -44,7 +44,14 @@ export const Deals = () => {
     }
   }, [setCurrentSearch, searchFromParams])
 
+  useEffect(() => {
+    if (dealIdFromParams) {
+      setCurrentSearch(dealIdFromParams)
+    }
+  }, [setCurrentSearch, dealIdFromParams])
+
   const { deals } = useDeals(search, page)
+
   const showMore = () => {
     setCurrentPage(page + 1)
   }
@@ -76,7 +83,7 @@ export const Deals = () => {
               </tr>
             </THead>
             <tbody>
-              <DealsList deals={deals} />
+              <DealsList deals={deals} openModal={!!dealIdFromParams} />
             </tbody>
           </table>
           {showMoreButton}

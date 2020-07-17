@@ -37,7 +37,8 @@ const TD = styled.td`
 
 const CopyTextWrapper = styled(CopyText)`
   position: absolute;
-  margin-left: 4px;
+  top: 14px;
+  margin-left: 10px;
 `
 
 const MinerSearch = styled.span`

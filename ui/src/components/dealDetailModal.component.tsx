@@ -7,6 +7,7 @@ import { DealStatusIcon } from './dealStatusIcon.component'
 import { truncateStringInTheMiddle } from '../utils/deals'
 import { Button } from './button.component'
 import { CopyText } from './copyText.component'
+import { ShareDeal } from './shareDeal.component'
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   isOpen: boolean
@@ -14,8 +15,8 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   deal: Maybe<DealValue>
 }
 
-const ModalTitle = styled.label`
-  width: 84px;
+const ModalTitle = styled.div`
+  width: 120px;
   height: 33px;
   font-family: Poppins;
   font-size: 24px;
@@ -57,6 +58,10 @@ const SpanValue = styled.span`
   color: #ffffff;
 `
 
+const CopyTextWrapper = styled(CopyText)`
+  margin-top: -2px;
+`
+
 export const DealDetailModal = (props: Props) => {
   const { onClose, isOpen, deal } = props
 
@@ -66,25 +71,27 @@ export const DealDetailModal = (props: Props) => {
 
   return (
     <ModalWrapper isOpen={isOpen} onRequestClose={onClose}>
-      <ModalTitle>Details</ModalTitle>
+      <ModalTitle>
+        Details <ShareDeal text={deal.FileCID} />
+      </ModalTitle>
 
       <div className="row">
         <SpanTitle>{DealTitles.FileCID}</SpanTitle>
         <Dots />
         <SpanValue title={deal.FileCID}>{truncateStringInTheMiddle(deal.FileCID, 6, 4)}</SpanValue>
-        <CopyText text={deal.FileCID} title="Click to copy Piece CID" />
+        <CopyTextWrapper text={deal.FileCID} title="Click to copy Piece CID" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.DealID}</SpanTitle>
         <Dots />
         <SpanValue>{deal.DealID}</SpanValue>
-        <CopyText text={deal.DealID + ''} title="Click to copy Deal ID" />
+        <CopyTextWrapper text={deal.DealID + ''} title="Click to copy Deal ID" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.MinerID}</SpanTitle>
         <Dots />
         <SpanValue>{deal.MinerID}</SpanValue>
-        <CopyText text={deal.MinerID} title="Click to copy Miner ID" />
+        <CopyTextWrapper text={deal.MinerID} title="Click to copy Miner ID" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.Sector}</SpanTitle>
