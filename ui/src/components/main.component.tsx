@@ -1,6 +1,6 @@
 import React from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 
 import { DOCUMENT_DESCRIPTION, DOCUMENT_TITLE } from '../config/constants'
 import { Body } from './common/layout/body.component'
@@ -22,7 +22,8 @@ export const Main = () => {
             <Header />
             <Body>
               <Switch>
-                <Route path="/:search?" component={Deals} />
+                <Route exact path={['/', '/deal/:deal', '/:search']} component={Deals} />
+                <Redirect to="/" />
               </Switch>
             </Body>
           </SearchProvider>
