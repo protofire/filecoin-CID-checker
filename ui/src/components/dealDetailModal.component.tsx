@@ -16,7 +16,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 }
 
 const ModalTitle = styled.div`
-  width: 120px;
+  width: 140px;
   height: 33px;
   font-family: Poppins;
   font-size: 24px;
