@@ -3,11 +3,12 @@ import styled from 'styled-components'
 
 import { DealValue } from '../utils/types'
 import { DealStatusIcon } from './dealStatusIcon.component'
+import { CopyText } from './copyText.component'
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   deal: DealValue
   key: number
-  onClick: () => void
+  onDoubleClick: () => void
 }
 
 const TR = styled.tr`
@@ -29,15 +30,33 @@ const TR = styled.tr`
   background-size: 100% 1px;
 `
 
+const TD = styled.td`
+  position: relative;
+`
+
+const CopyTextWrapper = styled(CopyText)`
+  position: absolute;
+  margin-left: 4px;
+`
+
 export const DealItem = (props: Props) => {
-  const { deal, onClick } = props
+  const { deal, onDoubleClick } = props
   return (
-    <TR onClick={onClick}>
-      <td style={{ paddingLeft: '48px' }}>{deal.FileCID}</td>
-      <td>{deal.DealID}</td>
-      <td>{deal.MinerID}</td>
-      <td>{deal.Sector}</td>
-      <td>
+    <TR onDoubleClick={onDoubleClick} title="You can double click to open a deal">
+      <TD style={{ paddingLeft: '48px' }}>
+        {deal.FileCID}
+        <CopyTextWrapper text={deal.FileCID} title="Click to copy Piece CID" />
+      </TD>
+      <TD style={{ width: '9%' }}>
+        {deal.DealID}
+        <CopyTextWrapper text={deal.DealID + ''} title="Click to copy Deal ID" />
+      </TD>
+      <TD style={{ width: '11%' }}>
+        {deal.MinerID}
+        <CopyTextWrapper text={deal.MinerID} title="Click to copy Miner ID" />
+      </TD>
+      <td style={{ width: '8%' }}>{deal.Sector}</td>
+      <td style={{ width: '10%' }}>
         <div className="is-left is-center">
           <DealStatusIcon status={deal.State} />
           {deal.State}

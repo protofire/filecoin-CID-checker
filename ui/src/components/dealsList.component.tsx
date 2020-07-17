@@ -23,7 +23,7 @@ export const DealsList = (props: Props) => {
             <DealItem
               key={index}
               deal={deal}
-              onClick={() => {
+              onDoubleClick={() => {
                 setModalOpen(true)
                 setClickedDeal(deal)
               }}

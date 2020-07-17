@@ -6,6 +6,7 @@ import { DealTitles, DealValue, DealValueNotAvailable } from '../utils/types'
 import { DealStatusIcon } from './dealStatusIcon.component'
 import { truncateStringInTheMiddle } from '../utils/deals'
 import { Button } from './button.component'
+import { CopyText } from './copyText.component'
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   isOpen: boolean
@@ -71,16 +72,19 @@ export const DealDetailModal = (props: Props) => {
         <SpanTitle>{DealTitles.FileCID}</SpanTitle>
         <Dots />
         <SpanValue title={deal.FileCID}>{truncateStringInTheMiddle(deal.FileCID, 6, 4)}</SpanValue>
+        <CopyText text={deal.FileCID} title="Click to copy Piece CID" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.DealID}</SpanTitle>
         <Dots />
         <SpanValue>{deal.DealID}</SpanValue>
+        <CopyText text={deal.DealID + ''} title="Click to copy Deal ID" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.MinerID}</SpanTitle>
         <Dots />
         <SpanValue>{deal.MinerID}</SpanValue>
+        <CopyText text={deal.MinerID} title="Click to copy Miner ID" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.Sector}</SpanTitle>
@@ -91,6 +95,7 @@ export const DealDetailModal = (props: Props) => {
         <SpanTitle>{DealTitles.Client}</SpanTitle>
         <Dots />
         <SpanValue>{deal.Client}</SpanValue>
+        <CopyText text={deal.Client} title="Click to copy Client" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.PieceSize}</SpanTitle>
@@ -110,6 +115,9 @@ export const DealDetailModal = (props: Props) => {
             ? truncateStringInTheMiddle(deal.SealedCID, 6, 4)
             : deal.SealedCID}
         </SpanValue>
+        {deal.SealedCID !== DealValueNotAvailable && (
+          <CopyText text={deal.SealedCID} title="Click to copy Sealed CID" />
+        )}
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.StartEpoch}</SpanTitle>
