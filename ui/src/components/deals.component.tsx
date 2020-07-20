@@ -57,7 +57,7 @@ export const Deals = () => {
   }
 
   const showMoreButton =
-    moreDeals && !search && !RemoteData.is.loading(deals) ? (
+    moreDeals && !RemoteData.is.loading(deals) ? (
       <div className="row is-center">
         <ShowMoreButton
           className="is-center"
@@ -107,7 +107,7 @@ export const Deals = () => {
           </BlockWrapper>
         )}
       </div>
-      {!search && RemoteData.is.success(deals) && moreDeals && <Waypoint onEnter={showMore} />}
+      {RemoteData.is.success(deals) && moreDeals && <Waypoint onEnter={showMore} />}
     </>
   )
 }

@@ -24,7 +24,7 @@ export const useDeals = (
 
         if (!didCancel) {
           setDeals(currentDeals =>
-            RemoteData.hasData(currentDeals) && !search && page !== 1
+            RemoteData.hasData(currentDeals) && page !== 1
               ? RemoteData.success(currentDeals.data.concat(deals))
               : RemoteData.success(deals),
           )
