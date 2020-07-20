@@ -138,7 +138,7 @@ export const Search = () => {
     if (!searchValueLocal) {
       onClear()
     }
-  }, [searchValueLocal])
+  }, [searchValueLocal, onClear])
 
   return (
     <SearchWrapper>
