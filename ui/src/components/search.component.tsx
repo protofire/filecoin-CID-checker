@@ -137,10 +137,10 @@ export const Search = () => {
   const onChange = (event: any) => {
     const searchValueLocalSanitized = event.target.value.replace(/\/\//g, '')
 
-    if(searchValueLocalSanitized) {
-        setSearchValueLocal(searchValueLocalSanitized)
+    if (searchValueLocalSanitized) {
+      setSearchValueLocal(searchValueLocalSanitized)
     } else {
-        onClear()
+      onClear()
     }
   }
 
