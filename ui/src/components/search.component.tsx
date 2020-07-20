@@ -134,11 +134,15 @@ export const Search = () => {
     history.push('/')
   }
 
-  useEffect(() => {
-    if (!searchValueLocal) {
-      onClear()
+  const onChange = (event: any) => {
+    const searchValueLocalSanitized = event.target.value.replace(/\/\//g, '')
+
+    if(searchValueLocalSanitized) {
+        setSearchValueLocal(searchValueLocalSanitized)
+    } else {
+        onClear()
     }
-  }, [searchValueLocal, onClear])
+  }
 
   return (
     <SearchWrapper>
@@ -157,10 +161,7 @@ export const Search = () => {
       <Input
         className="search"
         value={searchValueLocal}
-        onChange={event => {
-          const searchValueLocalSanitized = event.target.value.replace(/\/\//g, '')
-          setSearchValueLocal(searchValueLocalSanitized)
-        }}
+        onChange={onChange}
         onKeyPress={event => {
           if (event.key === 'Enter') onSearch()
         }}
