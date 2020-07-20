@@ -134,6 +134,12 @@ export const Search = () => {
     history.push('/')
   }
 
+  useEffect(() => {
+    if (!searchValueLocal) {
+      onClear()
+    }
+  }, [searchValueLocal])
+
   return (
     <SearchWrapper>
       <LensWrapper onClick={onSearch}>
