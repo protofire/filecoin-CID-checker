@@ -50,23 +50,24 @@ export const Deals = () => {
     }
   }, [setCurrentSearch, dealIdFromParams])
 
-  const { deals } = useDeals(search, page)
+  const { deals, moreDeals } = useDeals(search, page)
 
   const showMore = () => {
     setCurrentPage(page + 1)
   }
 
-  const showMoreButton = !search && !RemoteData.is.loading(deals) && (
-    <div className="row is-center">
-      <ShowMoreButton
-        className="is-center"
-        disabled={RemoteData.is.reloading(deals)}
-        onClick={showMore}
-      >
-        {RemoteData.is.reloading(deals) ? 'Loading...' : 'Show more'}
-      </ShowMoreButton>
-    </div>
-  )
+  const showMoreButton =
+    moreDeals && !search && !RemoteData.is.loading(deals) ? (
+      <div className="row is-center">
+        <ShowMoreButton
+          className="is-center"
+          disabled={RemoteData.is.reloading(deals)}
+          onClick={showMore}
+        >
+          {RemoteData.is.reloading(deals) ? 'Loading...' : 'Show more'}
+        </ShowMoreButton>
+      </div>
+    ) : null
 
   return (
     <>
@@ -106,7 +107,7 @@ export const Deals = () => {
           </BlockWrapper>
         )}
       </div>
-      {!search && RemoteData.is.success(deals) && <Waypoint onEnter={showMore} />}
+      {!search && RemoteData.is.success(deals) && moreDeals && <Waypoint onEnter={showMore} />}
     </>
   )
 }
