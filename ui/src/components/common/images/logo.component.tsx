@@ -1,18 +1,30 @@
 import React from 'react'
 import styled from 'styled-components'
-import { NavLink } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+
+import { useSearchContext } from '../../../state/search.context'
 
 const Svg = styled.svg``
 
-const LogoWrapper = styled(NavLink)`
+const LogoWrapper = styled.div`
   width: 154.4px;
   height: 40.1px;
   object-fit: contain;
+  cursor: pointer;
 `
 
 export const Logo = () => {
+  const { setCurrentPage, setCurrentSearch } = useSearchContext()
+  const history = useHistory()
+
+  const onClick = () => {
+    setCurrentSearch('')
+    setCurrentPage(1)
+    history.push('/')
+  }
+
   return (
-    <LogoWrapper to="/">
+    <LogoWrapper onClick={onClick}>
       <Svg
         fill="none"
         width="154.4"
