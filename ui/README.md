@@ -1,4 +1,4 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/490348c8-523d-4a05-a492-daadc9179975/deploy-status)](https://app.netlify.com/sites/filecoincidchecker/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/cc33b1e5-1bf1-4759-bf3f-e7ced95bc65c/deploy-status)](https://app.netlify.com/sites/peaceful-yalow-7b1e01/deploys)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
