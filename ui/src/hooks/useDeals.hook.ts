@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { fetchDeals } from '../utils/deals'
 import { RemoteData } from '../utils/remoteData'
 import { DealValue } from '../utils/types'
+import { PAGE_SIZE } from '../config/constants'
 
 export const useDeals = (
   search: string,
@@ -29,7 +30,7 @@ export const useDeals = (
               : RemoteData.success(deals),
           )
 
-          setMoreDeals(deals.length > 0)
+          setMoreDeals(deals.length === PAGE_SIZE)
         }
       } catch (e) {
         if (!didCancel) {
