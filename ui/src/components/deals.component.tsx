@@ -44,7 +44,7 @@ const THFirst = styled(TH)`
     padding-left: 0px;
   }
 `
-const THThird = styled(TH)`
+const THFive = styled(TH)`
   text-align: center;
 `
 
@@ -97,10 +97,10 @@ export const Deals = () => {
               <THead>
                 <tr>
                   <THFirst>{DealTitles.FileCID}</THFirst>
+                  <TH>{DealTitles.State}</TH>
                   <TH>{DealTitles.DealID}</TH>
                   <TH>{DealTitles.MinerID}</TH>
-                  <THThird>{DealTitles.Sector}</THThird>
-                  <TH>{DealTitles.State}</TH>
+                  <THFive>{DealTitles.Sector}</THFive>
                 </tr>
               </THead>
               <tbody>
