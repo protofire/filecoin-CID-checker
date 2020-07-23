@@ -72,7 +72,7 @@ export const DealDetailModal = (props: Props) => {
   return (
     <ModalWrapper isOpen={isOpen} onRequestClose={onClose}>
       <ModalTitle>
-        Details <ShareDeal text={deal.FileCID} />
+        Details <ShareDeal text={deal.DealID + ''} />
       </ModalTitle>
 
       <div className="row">
