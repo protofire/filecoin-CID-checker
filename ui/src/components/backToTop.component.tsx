@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import useEventListener from 'use-typed-event-listener'
 
 import { Top } from './common/images/top.component'
 import { Button } from './button.component'
@@ -37,7 +38,7 @@ export const BackToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  window.addEventListener('scroll', checkScrollTop)
+  useEventListener(window, 'scroll', checkScrollTop)
 
   return (
     <ScrollToTopWrapper
