@@ -34,10 +34,12 @@ export const CopyText = (props: Props) => {
   const { text, className, title = 'Click to copy' } = props
 
   return (
-    <CopyToClipboard text={text}>
-      <CopyWrapper className={className} title={title}>
-        <CopyImageWrapper />
-      </CopyWrapper>
-    </CopyToClipboard>
+    <div onClick={(e: any) => e.stopPropagation()}>
+      <CopyToClipboard onClick={(e: any) => e.stopPropagation()} text={text}>
+        <CopyWrapper className={className} title={title}>
+          <CopyImageWrapper />
+        </CopyWrapper>
+      </CopyToClipboard>
+    </div>
   )
 }

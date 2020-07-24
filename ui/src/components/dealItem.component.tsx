@@ -10,7 +10,7 @@ import { useSearchContext } from '../state/search.context'
 interface Props extends HTMLAttributes<HTMLDivElement> {
   deal: DealValue
   key: number
-  onDoubleClick: () => void
+  onClick: () => void
 }
 
 const TR = styled.tr`
@@ -39,16 +39,15 @@ const TD = styled.td`
 const CopyTextWrapper = styled(CopyText)`
   position: absolute;
   top: 14px;
-  margin-left: 2px;
 `
 
 const MinerSearch = styled.span`
+  padding-left: 35px;
   &:hover {
     color: #42c1ca;
   }
 `
 const TDFirst = styled(TD)`
-  padding-left: 48px;
   width: 62%;
   @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
     width: 62%;
@@ -167,6 +166,7 @@ const TDFive = styled(TD)`
 `
 
 const FileCidColumn = styled.span`
+  padding-left: 35px;
   @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
     display: block;
     overflow: hidden;
@@ -189,23 +189,14 @@ const FileCidColumn = styled.span`
     width: 100px;
   }
 `
-
-const CopyTextWrapperFileCid = styled(CopyTextWrapper)`
-  @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
-    left: 495px;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
-    left: 245px;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
-    left: 100px;
-  }
+const Span = styled.span`
+  padding-left: 35px;
 `
 
 export const DealItem = (props: Props) => {
   const { setCurrentPage, setCurrentSearch } = useSearchContext()
 
-  const { deal, onDoubleClick } = props
+  const { deal, onClick } = props
 
   const history = useHistory()
 
@@ -216,10 +207,10 @@ export const DealItem = (props: Props) => {
   }
 
   return (
-    <TR onDoubleClick={onDoubleClick} title="You can double click to open a deal">
+    <TR onClick={onClick} title="You can double click to open a deal">
       <TDFirst>
+        <CopyTextWrapper text={deal.FileCID} title="Click to copy Piece CID" />
         <FileCidColumn title={deal.FileCID}>{deal.FileCID}</FileCidColumn>
-        <CopyTextWrapperFileCid text={deal.FileCID} title="Click to copy Piece CID" />
       </TDFirst>
       <TDSecond>
         <div className="is-left is-center">
@@ -228,17 +219,17 @@ export const DealItem = (props: Props) => {
         </div>
       </TDSecond>
       <TDThird>
-        {deal.DealID}
         <CopyTextWrapper text={deal.DealID + ''} title="Click to copy Deal ID" />
+        <Span>{deal.DealID}</Span>
       </TDThird>
       <TDFour>
+        <CopyTextWrapper text={deal.MinerID} title="Click to copy Miner ID" />
         <MinerSearch
           onClick={() => searchMiner(deal.MinerID)}
           title="Click to search by this Miner ID"
         >
           {deal.MinerID}
         </MinerSearch>
-        <CopyTextWrapper text={deal.MinerID} title="Click to copy Miner ID" />
       </TDFour>
       <TDFive className="text-center">{deal.Sector}</TDFive>
     </TR>
