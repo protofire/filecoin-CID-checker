@@ -24,7 +24,7 @@ export const GlobalStyle = createGlobalStyle<{ theme: ThemeType }>`
   html,
   #root {
     height: 100vh;
-    width: 100vw;
+    width: 100%;
   }
   
 `
