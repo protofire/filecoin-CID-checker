@@ -3,7 +3,7 @@
 exports[`<Body /> spec renders the component 1`] = `
 <div>
   <div
-    class="sc-AxjAm fkxFvY"
+    class="sc-AxjAm gpsvdE"
   />
 </div>
 `;
@@ -16,10 +16,8 @@ exports[`<Header /> spec renders the component 1`] = `
     <div
       class="sc-fznKkj jWUpcO col-3"
     >
-      <a
-        aria-current="page"
-        class="sc-AxiKw fEXxYg active"
-        href="/"
+      <div
+        class="sc-AxiKw iOggae"
       >
         <svg
           class="sc-AxirZ ktnnZK"
@@ -71,13 +69,13 @@ exports[`<Header /> spec renders the component 1`] = `
             />
           </g>
         </svg>
-      </a>
+      </div>
     </div>
     <div
       class="sc-fznyAO iUZDJj col"
     >
       <div
-        class="sc-Axmtr gkHjmQ"
+        class="sc-Axmtr dKlsQQ"
       >
         <div
           class="sc-fzozJi giMkNq"
@@ -136,7 +134,7 @@ exports[`<Header /> spec renders the component 1`] = `
         </div>
         
         <input
-          class="sc-AxmLO jzWVSR search"
+          class="sc-AxmLO girvcY search"
           name="value"
           placeholder="Search by Piece CID, Deal ID, or Miner ID"
           type="text"

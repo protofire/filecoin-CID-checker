@@ -6,6 +6,8 @@ import { DealTitles, DealValue, DealValueNotAvailable } from '../utils/types'
 import { DealStatusIcon } from './dealStatusIcon.component'
 import { truncateStringInTheMiddle } from '../utils/deals'
 import { Button } from './button.component'
+import { CopyText } from './copyText.component'
+import { ShareDeal } from './shareDeal.component'
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   isOpen: boolean
@@ -13,8 +15,8 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   deal: Maybe<DealValue>
 }
 
-const ModalTitle = styled.label`
-  width: 84px;
+const ModalTitle = styled.div`
+  width: 140px;
   height: 33px;
   font-family: Poppins;
   font-size: 24px;
@@ -56,6 +58,10 @@ const SpanValue = styled.span`
   color: #ffffff;
 `
 
+const CopyTextWrapper = styled(CopyText)`
+  margin-top: -2px;
+`
+
 export const DealDetailModal = (props: Props) => {
   const { onClose, isOpen, deal } = props
 
@@ -65,22 +71,27 @@ export const DealDetailModal = (props: Props) => {
 
   return (
     <ModalWrapper isOpen={isOpen} onRequestClose={onClose}>
-      <ModalTitle>Details</ModalTitle>
+      <ModalTitle>
+        Details <ShareDeal text={deal.DealID + ''} />
+      </ModalTitle>
 
       <div className="row">
         <SpanTitle>{DealTitles.FileCID}</SpanTitle>
         <Dots />
         <SpanValue title={deal.FileCID}>{truncateStringInTheMiddle(deal.FileCID, 6, 4)}</SpanValue>
+        <CopyTextWrapper text={deal.FileCID} title="Click to copy Piece CID" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.DealID}</SpanTitle>
         <Dots />
         <SpanValue>{deal.DealID}</SpanValue>
+        <CopyTextWrapper text={deal.DealID + ''} title="Click to copy Deal ID" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.MinerID}</SpanTitle>
         <Dots />
         <SpanValue>{deal.MinerID}</SpanValue>
+        <CopyTextWrapper text={deal.MinerID} title="Click to copy Miner ID" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.Sector}</SpanTitle>
@@ -91,6 +102,7 @@ export const DealDetailModal = (props: Props) => {
         <SpanTitle>{DealTitles.Client}</SpanTitle>
         <Dots />
         <SpanValue>{deal.Client}</SpanValue>
+        <CopyText text={deal.Client} title="Click to copy Client" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.PieceSize}</SpanTitle>
@@ -110,6 +122,9 @@ export const DealDetailModal = (props: Props) => {
             ? truncateStringInTheMiddle(deal.SealedCID, 6, 4)
             : deal.SealedCID}
         </SpanValue>
+        {deal.SealedCID !== DealValueNotAvailable && (
+          <CopyText text={deal.SealedCID} title="Click to copy Sealed CID" />
+        )}
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.StartEpoch}</SpanTitle>

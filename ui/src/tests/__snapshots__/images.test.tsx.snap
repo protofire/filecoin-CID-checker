@@ -85,10 +85,8 @@ exports[`<Lens /> spec renders the component 1`] = `
 
 exports[`<Logo /> spec renders the component 1`] = `
 <div>
-  <a
-    aria-current="page"
-    class="sc-AxgMl hXZWCD active"
-    href="/"
+  <div
+    class="sc-AxgMl izXAyx"
   >
     <svg
       class="sc-AxhUy kMyssT"
@@ -140,7 +138,7 @@ exports[`<Logo /> spec renders the component 1`] = `
         />
       </g>
     </svg>
-  </a>
+  </div>
    
 </div>
 `;

@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { PAGE_INDEX_START } from '../config/constants'
+
 export interface SearchContext {
   page: number
   search: string
@@ -8,7 +10,7 @@ export interface SearchContext {
 }
 
 export const SEARCH_CONTEXT_DEFAULT_VALUE = {
-  page: 1,
+  page: PAGE_INDEX_START,
   search: '',
   setCurrentPage: () => {},
   setCurrentSearch: () => {},
@@ -21,7 +23,7 @@ interface Props {
 }
 
 export const SearchProvider = (props: Props) => {
-  const [page, setPage] = React.useState(1)
+  const [page, setPage] = React.useState(PAGE_INDEX_START)
   const [search, setSearch] = React.useState('')
 
   const setCurrentPage = React.useCallback((page: number): void => {

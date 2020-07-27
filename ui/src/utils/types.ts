@@ -40,5 +40,5 @@ export enum DealTitles {
   StoragePricePerEpoch = 'Price',
   ProviderCollateral = 'Miner Collateral',
   ClientCollateral = 'Client Collateral',
-  State = 'State',
+  State = 'Status',
 }

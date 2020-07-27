@@ -10,6 +10,22 @@ import { useSearchContext } from '../state/search.context'
 const SearchWrapper = styled.div`
   position: relative;
   display: inline-block;
+  @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
+    width: 650px;
+  }
+  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
+    width: 500px;
+  }
+  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+    width: 300px;
+    margin-left: 50px;
+  }
+  @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
+    width: 250px;
+  }
+  @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
+    width: 250px;
+  }
 `
 
 // Input
@@ -54,6 +70,21 @@ export const Input = styled.input`
     border-right-style: solid !important;
     border-left-style: solid !important;
     border-bottom-style: solid !important;
+  }
+  @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
+    width: 650px !important;
+  }
+  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
+    width: 500px !important;
+  }
+  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+    width: 300px !important;
+  }
+  @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
+    width: 250px !important;
+  }
+  @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
+    width: 250px !important;
   }
 `
 
@@ -134,6 +165,16 @@ export const Search = () => {
     history.push('/')
   }
 
+  const onChange = (event: any) => {
+    const searchValueLocalSanitized = event.target.value.replace(/\/\//g, '')
+
+    if (searchValueLocalSanitized) {
+      setSearchValueLocal(searchValueLocalSanitized)
+    } else {
+      onClear()
+    }
+  }
+
   return (
     <SearchWrapper>
       <LensWrapper onClick={onSearch}>
@@ -151,10 +192,7 @@ export const Search = () => {
       <Input
         className="search"
         value={searchValueLocal}
-        onChange={event => {
-          const searchValueLocalSanitized = event.target.value.replace(/\/\//g, '')
-          setSearchValueLocal(searchValueLocalSanitized)
-        }}
+        onChange={onChange}
         onKeyPress={event => {
           if (event.key === 'Enter') onSearch()
         }}

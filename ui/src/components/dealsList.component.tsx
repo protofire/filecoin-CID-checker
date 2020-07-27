@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useState } from 'react'
+import React, { HTMLAttributes, useEffect, useState } from 'react'
 
 import { DealItem } from './dealItem.component'
 import { RemoteData } from '../utils/remoteData'
@@ -7,13 +7,21 @@ import { DealValue } from '../utils/types'
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   deals: RemoteData<DealValue[]>
+  openModal: boolean
 }
 
 export const DealsList = (props: Props) => {
-  const { deals } = props
+  const { deals, openModal } = props
 
   const [isModalOpen, setModalOpen] = useState(false)
   const [clickedDeal, setClickedDeal] = useState<Maybe<DealValue>>(null)
+
+  useEffect(() => {
+    if (RemoteData.hasData(deals)) {
+      setModalOpen(openModal)
+      setClickedDeal(deals.data[0])
+    }
+  }, [openModal, deals])
 
   return (
     <>

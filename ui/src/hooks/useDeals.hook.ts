@@ -3,9 +3,14 @@ import { useEffect, useState } from 'react'
 import { fetchDeals } from '../utils/deals'
 import { RemoteData } from '../utils/remoteData'
 import { DealValue } from '../utils/types'
+import { PAGE_SIZE } from '../config/constants'
 
-export const useDeals = (search: string, page: number): { deals: RemoteData<any[]> } => {
+export const useDeals = (
+  search: string,
+  page: number,
+): { deals: RemoteData<any[]>; moreDeals: boolean } => {
   const [deals, setDeals] = useState<RemoteData<DealValue[]>>(RemoteData.loading())
+  const [moreDeals, setMoreDeals] = useState(true)
 
   useEffect(() => {
     let didCancel = false
@@ -20,10 +25,12 @@ export const useDeals = (search: string, page: number): { deals: RemoteData<any[
 
         if (!didCancel) {
           setDeals(currentDeals =>
-            RemoteData.hasData(currentDeals) && !search && page !== 1
+            RemoteData.hasData(currentDeals) && page !== 1
               ? RemoteData.success(currentDeals.data.concat(deals))
               : RemoteData.success(deals),
           )
+
+          setMoreDeals(deals.length === PAGE_SIZE)
         }
       } catch (e) {
         if (!didCancel) {
@@ -41,5 +48,6 @@ export const useDeals = (search: string, page: number): { deals: RemoteData<any[
 
   return {
     deals,
+    moreDeals,
   }
 }
