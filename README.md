@@ -48,7 +48,7 @@ If you are a total beginner to this, start here!
 - Deal ID
 - Miner ID
 - Sector number
-- State
+- Status
 3. Search a record by a File CID, Deal ID, or Miner ID
 4. Click on a chosen record and see other related details
 
