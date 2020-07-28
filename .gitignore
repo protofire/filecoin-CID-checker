@@ -1,3 +1,4 @@
 .idea
 bin
 cp.out
+node_modules
