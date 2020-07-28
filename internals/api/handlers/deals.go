@@ -31,7 +31,7 @@ type DealsResponse struct {
 }
 
 // CreateDealsHandler creates handler for /deals requests.
-// Returns deals information by deal ID (not CID, just integer id), file CID or miner id (not CID, id in string form similar to "t01000").
+// Returns deals information by deal ID (not CID, just integer id), piece CID or miner id (not CID, id in string form similar to "t01000").
 func CreateDealsHandler(dealsRepo repos.DealsRepo, sectorsRepo repos.SectorsRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		selector := c.Param("selector")

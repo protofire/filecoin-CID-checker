@@ -24,7 +24,7 @@ The CID Checker as a service provides two REST endpoints, where you need to spec
 
 3. The back-end automates the process of fetching the new data, which requires thousands of JSON RCP calls for every loop.
 
-4. Effective and reliable Mongo DB database with indexes provides fast paginated search by Deal ID, File CID, Miner ID.
+4. Effective and reliable Mongo DB database with indexes provides fast paginated search by Deal ID, Piece CID, Miner ID.
 
 5. UI provides rich details on deals.
 For the end user it doesn't require any developer skills to quickly get information on deals. 
@@ -44,12 +44,12 @@ If you are a total beginner to this, start here!
 
 **Use remote CID checker service:**
 1. Navigate to the website: [www.filecoin.tools](https://deploy-preview-20--filecoincidchecker.netlify.app/)
-2. See the list of all file CIDs and related information:
+2. See the list of all piece CIDs and related information:
 - Deal ID
 - Miner ID
 - Sector number
 - Status
-3. Search a record by a File CID, Deal ID, or Miner ID
+3. Search a record by a Piece CID, Deal ID, or Miner ID
 4. Click on a chosen record and see other related details
 
 **If you are running an own Filecoin (Lotus) node:**
@@ -96,7 +96,7 @@ Two API endpoints available:
 #### :8080/deals
 Get deals information about all deals from the database.
 #### :8080/deals/:selector
-Get deals by selector: File CID, Miner ID and Deal ID.
+Get deals by selector: Piece CID, Miner ID and Deal ID.
 
 Both endpoints support pagination.
 

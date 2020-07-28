@@ -31,11 +31,11 @@ Scenario: Retrieve the info related to all CIDs
 ```
 >
 ```gherkin=
-Feature: search info by the file CID 
+Feature: search info by the piece CID 
 
   # indexing the Filecoin state by the CID
-  Scenario: Query the info related to file CID
-    When User enters the file CID into the Search window
+  Scenario: Query the info related to piece CID
+    When User enters the piece CID into the Search window
     Then the APP lists the Miners storing this CID,
 	  sectors they are storing,
 	  and the state as a colored indicator
@@ -70,7 +70,7 @@ User->APP: 1.URL
 Note right of APP: Navigating to the URL
 APP-->User: List of CIDs
 
-User->APP: 2.File CID
+User->APP: 2.Piece CID
 Note right of APP: indexing the latest state by the CID
 APP-->User: List of Miners storing this file
 
