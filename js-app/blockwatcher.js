@@ -71,7 +71,7 @@ const DealsProcessor = async () => {
 
         writeOps.push({
             "replaceOne": {
-                "filter": {"_id": key},
+                "filter": {"_id": parseInt(key)},
                 "replacement": deal,
                 "upsert": true
             }
