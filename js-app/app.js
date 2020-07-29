@@ -1,29 +1,24 @@
 const express = require('express')
 const cors = require('cors')
-const app = express()
-
-app.use(cors())
-
-const port = 3000
-
-
 const MongoClient = require('mongodb').MongoClient;
-// TODO env
-const url = "mongodb://localhost:27017/";
+
+const PORT = process.env.CID_PORT || 3000;
+const DB_CONNECTIONSTRING = process.env.CID_DB_CONNECTIONSTRING || "mongodb://localhost:27017/";
+const DB_NAME = process.env.CID_DB_NAME || "local_js_app";
 
 let dbo
 
-MongoClient.connect(url, function (err, db) {
-    dbo = db.db("local");
+MongoClient.connect(DB_CONNECTIONSTRING, function (err, db) {
+    dbo = db.db(DB_NAME)
 })
 
 function isNormalInteger(str) {
-    const n = Math.floor(Number(str));
-    return n !== Infinity && String(n) === str && n >= 0;
+    const n = Math.floor(Number(str))
+    return n !== Infinity && String(n) === str && n >= 0
 }
 
 const handler = async (req, res) => {
-    const selector = req.params.selector;
+    const selector = req.params.selector
 
     const perPage = isNormalInteger(req.query.per_page) ? parseInt(req.query.per_page) : 10
     const page = isNormalInteger(req.query.page) ? parseInt(req.query.page) : 1
@@ -35,7 +30,7 @@ const handler = async (req, res) => {
             const dealID = parseInt(selector)
             query = {"_id": dealID}
         } else {
-            query = {"$or": [{"proposal.piececid": selector}, {"proposal.provider": selector}]}
+            query = {"$or": [{"Proposal.PieceCID": selector}, {"Proposal.Provider": selector}]}
         }
     }
 
@@ -43,22 +38,22 @@ const handler = async (req, res) => {
 
     deals = await Promise.all(deals.map(async deal => {
 
-        const dealID = deal.dealid
-        const sector = await dbo.collection("sectors").findOne({"info.info.dealids": dealID})
+        const dealID = deal["_id"]
+        const sector = await dbo.collection("sectors").findOne({"Info.Info.DealIDs": dealID})
 
-        let Status = "";
-        let sectorID = "";
+        let State = ""
+        let sectorID = 0
 
         if (sector) {
             if (sector.Recovery) {
-                Status = "Recovery"
+                State = "Recovery"
             } else if (sector.Fault) {
-                Status = "Fault"
+                State = "Fault"
             } else {
-                Status = "Active"
+                State = "Active"
             }
 
-            sectorID = sector.ID
+            sectorID = parseInt(sector["_id"])
         }
 
         return {
@@ -66,7 +61,7 @@ const handler = async (req, res) => {
             "DealID": dealID,
             "SectorID": sectorID,
             "SectorInfo": sector,
-            "Status": Status
+            "State": State
         }
     }))
 
@@ -78,10 +73,13 @@ const handler = async (req, res) => {
         "Deals": deals
     }
 
-    res.send(response);
+    res.send(response)
 }
+
+const app = express()
+app.use(cors())
 
 app.get('/deals', handler)
 app.get('/deals/:selector', handler)
 
-app.listen(port, () => console.log(`CID checker app listening at http://localhost:${port}`))
+app.listen(PORT, () => console.log(`CID checker app listening at http://localhost:${PORT}`))
