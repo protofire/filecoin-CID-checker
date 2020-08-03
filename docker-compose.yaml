@@ -11,11 +11,27 @@ services:
     restart: always
 
   cid-checker-backend:
-    image: cid-checker
+    image: cid-checker-js
     restart: always
     environment:
-      - CID_LOTUS_RPCURL=ws://3.9.46.104:1234/rpc/v0
+      - CID_PORT=8080
       - CID_DB_CONNECTIONSTRING=mongodb://mongo:27017
+    depends_on:
+      - mongo
+
+  cid-checker-js-watcher:
+    image: cid-checker-js-watcher
+    restart: always
+    environment:
+      - CID_LOTUS_RPCURL=http://3.9.46.104:1234/rpc/v0
+      - CID_DECODER_URL=http://state-decoder:8080/
+      - CID_DB_CONNECTIONSTRING=mongodb://mongo:27017
+    depends_on:
+      - mongo
+
+  state-decoder:
+    image: state-decoder
+    restart: always
 
   caddy:
     image: caddy
