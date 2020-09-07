@@ -26,7 +26,7 @@ services:
     image: cid-checker-watcher
     restart: always
     environment:
-      - CID_DB_CONNECTIONSTRING=mongodb://mongodb:27017
+      - CID_DB_CONNECTIONSTRING=mongodb://mongo:27017
       - CID_DB_NAME='cid_checker_watcher'
       # TODO: localhost can't be used here
       - CID_LOTUS_RPCURL=http://localhost:1234/rpc/v0

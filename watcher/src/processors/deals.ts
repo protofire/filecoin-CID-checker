@@ -1,14 +1,15 @@
 import { getLogger } from '../helpers/logger'
-import { getMarketDeals } from '../helpers/lotusApi'
+import { getTipSetKeyByHeight, getMarketDeals } from '../helpers/lotusApi'
 import { getDbo } from '../helpers/db'
 
-export const DealsProcessor = async (): Promise<any> => {
+export const DealsProcessor = async (height: number): Promise<any> => {
   const logger = getLogger('debug:processors/deals')
   const dbo = await getDbo()
   const writeOps: any[] = []
 
-  const result = await getMarketDeals()
-  logger(result)
+  const tipSetKey = await getTipSetKeyByHeight(height)
+  const result = await getMarketDeals(tipSetKey)
+  logger('Got deals from Lotus API')
   Object.keys(result).forEach(function (key) {
     const deal = result[key]
     deal['DealID'] = parseInt(key)
@@ -23,5 +24,6 @@ export const DealsProcessor = async (): Promise<any> => {
     })
   })
 
+  logger(`Will perform deals upserts: ${writeOps.length}`)
   await dbo.collection('deals').bulkWrite(writeOps)
 }

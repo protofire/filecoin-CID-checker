@@ -12,11 +12,11 @@ const requestChainHead = {
   method: 'Filecoin.ChainHead',
   params: [],
 }
-const requestStateMarketDeals = {
+const requestStateMarketDeals = (tipSetKey: any) => ({
   ...baseBody,
   method: 'Filecoin.StateMarketDeals',
-  params: [[]],
-}
+  params: [tipSetKey],
+})
 const requestStateMinerSectors = (
   minerId: string,
   bitfield: null | [number] = null,
@@ -61,11 +61,21 @@ export const getChainHead = async (): Promise<any> => {
   return response.body.result
 }
 
+const memoizedTipSetKey = {
+  Cids: null,
+  height: -1,
+}
 export const getTipSetKeyByHeight = async (height: number): Promise<any> => {
   const logger = getLogger('debug:helpers/lotusApi')
+  if (memoizedTipSetKey.Cids !== null && memoizedTipSetKey.height === height) {
+    logger(`Returning memoized TipSetKey by height: ${height}`)
+    return memoizedTipSetKey.Cids
+  }
   logger(`Fetching TipSetKey by height: ${height}`)
   const response: any = await gotPost(requestChainGetTipSetByHeight(height))
   const tipSetKey: any = response.body.result.Cids
+  memoizedTipSetKey.height = height
+  memoizedTipSetKey.Cids = tipSetKey
   logger(tipSetKey)
   return tipSetKey
 }
@@ -113,9 +123,9 @@ export const getMinerSectorRecoveriesByTipSetKey = async (
   return sectors
 }
 
-export const getMarketDeals = async (): Promise<any> => {
+export const getMarketDeals = async (tipSetKey: any): Promise<any> => {
   const logger = getLogger('debug:helpers/lotusApi')
   logger('Fetching deals from Lotus node')
-  const response: any = await gotPost(requestStateMarketDeals)
+  const response: any = await gotPost(requestStateMarketDeals(tipSetKey))
   return response.body.result
 }

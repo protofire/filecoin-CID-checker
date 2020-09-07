@@ -1,4 +1,4 @@
-import { SLEEP_RUNPROCESSORSDELAY_MS } from '../config'
+import { SLEEP_RUNPROCESSORSDELAY_MS, START_HEIGHT } from '../config'
 import { getLogger } from '../helpers/logger'
 import { sleep } from '../helpers/sleep'
 import { DealsProcessor } from '../processors/deals'
@@ -11,9 +11,9 @@ export const runProcessors = async (height: number): Promise<any> => {
   const logger = getLogger('processors/runProcessors')
   try {
     logger(`Running DealsProcessor at height: ${height}...`)
-    await DealsProcessor()
+    await DealsProcessor(height)
     logger(`Running SectorsProcessor at height: ${height}...`)
-    await SectorsProcessor()
+    await SectorsProcessor(height)
     logger(`Running MinersProcessor at height: ${height}...`)
     await MinersProcessor(height)
 
@@ -45,10 +45,16 @@ export const runProcessorsUptoChainHeadHeight = async (): Promise<any> => {
   let status = await dbo
     .collection('status')
     .findOne({ height: { $exists: true } })
-  status = status === null ? { height: 1 } : status
 
   const chainHead = await getChainHead()
   const chainHeadHeight = chainHead.Height
+  if (status === null) {
+    // Start indexing from START_HEIGHT, otherwise just from from current
+    // blockchain height
+    status = START_HEIGHT
+      ? { height: START_HEIGHT }
+      : { height: chainHeadHeight }
+  }
   logger({
     'status.height': status.height,
     'chainHead.Height': chainHeadHeight,
@@ -59,5 +65,8 @@ export const runProcessorsUptoChainHeadHeight = async (): Promise<any> => {
       await sleep(SLEEP_RUNPROCESSORSDELAY_MS)
       await runProcessors(i)
     }
+  } else if (chainHeadHeight === status.height) {
+    // This should only happen once
+    await runProcessors(chainHeadHeight)
   }
 }

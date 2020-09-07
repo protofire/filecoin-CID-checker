@@ -56,8 +56,8 @@ export const MinersProcessor = async (height: number): Promise<any> => {
   allFaults = allFaults.filter(onlyUnique)
   allRecoveries = allRecoveries.filter(onlyUnique)
 
-  logger('Fault sectors:', allFaults)
-  logger('Recovery sectors:', allRecoveries)
+  logger('All fault sectors count:', allFaults.length)
+  logger('All recovery sectors count:', allRecoveries.length)
 
   await setSectors(allFaults, 'Fault')
   await setSectors(allRecoveries, 'Recovery')

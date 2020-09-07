@@ -24,3 +24,7 @@ export const SLEEP_RUNPROCESSORSDELAY_MS = Number.parseInt(
   process.env.SLEEP_RUNPROCESSORSDELAY_MS as string,
   10,
 ) as number
+export const START_HEIGHT = Number.parseInt(
+  process.env.START_HEIGHT as string,
+  10,
+) as number
