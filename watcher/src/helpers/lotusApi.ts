@@ -27,6 +27,15 @@ const requestStateMinerSectors = (
   method: 'Filecoin.StateMinerSectors',
   params: [minerId, bitfield, include, tipSetKey],
 })
+const requestStateMinerActiveSectors = (
+  minerId: string,
+  tipSetKey: undefined | any = null,
+) => ({
+  ...baseBody,
+  method: 'Filecoin.StateMinerActiveSectors',
+  params: [minerId, tipSetKey],
+})
+
 const requestChainGetTipSetByHeight = (height: number) => ({
   ...baseBody,
   method: 'Filecoin.ChainGetTipSetByHeight',
@@ -43,6 +52,7 @@ const requestStateMinerRecoveries = (address: string, tipSetKey: any) => ({
   params: [address, tipSetKey],
 })
 
+// @TODO: log response size, timeout, retry, etc here
 const gotPost = (json: any): Promise<any> => {
   const options: any = {
     responseType: 'json',
@@ -88,6 +98,17 @@ export const getStateMinerSectors = async (
 ): Promise<any> => {
   const response: any = await gotPost(
     requestStateMinerSectors(minerId, bitfield, include, tipSetKey),
+  )
+  const sectors = response.body.result
+  return sectors
+}
+
+export const getStateMinerActiveSectors = async (
+  minerId: string,
+  tipSetKey: undefined | any = null,
+): Promise<any> => {
+  const response: any = await gotPost(
+    requestStateMinerActiveSectors(minerId, tipSetKey),
   )
   const sectors = response.body.result
   return sectors

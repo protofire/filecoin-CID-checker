@@ -8,10 +8,10 @@ export enum DealStatus {
 export const DealValueNotAvailable = 'Not Available'
 
 export interface DealValue {
-  FileCID: string
+  PieceCID: string
   DealID: number
   MinerID: string
-  Sector: string
+  SectorNumber: string
   Client: string
   PieceSize: number
   VerifiedDeal: boolean
@@ -26,7 +26,7 @@ export interface DealValue {
 }
 
 export enum DealTitles {
-  FileCID = 'Piece CID',
+  PieceCID = 'Piece CID',
   DealID = 'Deal ID',
   MinerID = 'Miner ID',
   Sector = 'Sector',

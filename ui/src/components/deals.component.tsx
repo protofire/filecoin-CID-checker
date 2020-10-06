@@ -96,7 +96,7 @@ export const Deals = () => {
             <Table>
               <THead>
                 <tr>
-                  <THFirst>{DealTitles.FileCID}</THFirst>
+                  <THFirst>{DealTitles.PieceCID}</THFirst>
                   <TH>{DealTitles.State}</TH>
                   <TH>{DealTitles.DealID}</TH>
                   <TH>{DealTitles.MinerID}</TH>

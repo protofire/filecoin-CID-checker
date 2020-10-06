@@ -28,10 +28,10 @@ export const fetchDeals = async (search: string, page: number): Promise<DealValu
   const deals = data?.Deals ?? []
 
   const formattedDeals: DealValue[] = deals.map((deal: any) => {
-    const { DealInfo, SectorInfo, SectorID: Sector = null, State } = deal
+    const { DealInfo, SectorInfo } = deal
 
     const {
-      PieceCID: FileCID,
+      PieceCID,
       Provider: MinerID,
       Client,
       PieceSize,
@@ -43,14 +43,16 @@ export const fetchDeals = async (search: string, page: number): Promise<DealValu
       ClientCollateral,
     } = DealInfo?.Proposal
     const DealID = DealInfo?.DealID || DealValueNotAvailable
-    const Expiration = SectorInfo?.Info?.Info?.Expiration || DealValueNotAvailable
-    const SealedCID = SectorInfo?.Info?.Info?.SealedCID || DealValueNotAvailable
+    const Expiration = SectorInfo?.Expiration || DealValueNotAvailable
+    const SealedCID = SectorInfo?.SealedCID ? SectorInfo?.SealedCID['/'] : DealValueNotAvailable
+    const SectorNumber = SectorInfo?.SectorNumber
+    const State = DealInfo.State.SectorStartEpoch > -1 ? 'Active' : DealStatus.Unknown
 
     return {
-      FileCID,
+      PieceCID: PieceCID['/'],
       DealID,
       MinerID,
-      Sector,
+      SectorNumber,
       Client,
       PieceSize,
       VerifiedDeal,
@@ -61,7 +63,7 @@ export const fetchDeals = async (search: string, page: number): Promise<DealValu
       Expiration,
       ProviderCollateral,
       ClientCollateral,
-      State: State || DealStatus.Unknown,
+      State,
     }
   })
 

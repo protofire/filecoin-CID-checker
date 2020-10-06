@@ -76,10 +76,12 @@ export const DealDetailModal = (props: Props) => {
       </ModalTitle>
 
       <div className="row">
-        <SpanTitle>{DealTitles.FileCID}</SpanTitle>
+        <SpanTitle>{DealTitles.PieceCID}</SpanTitle>
         <Dots />
-        <SpanValue title={deal.FileCID}>{truncateStringInTheMiddle(deal.FileCID, 6, 4)}</SpanValue>
-        <CopyTextWrapper text={deal.FileCID} title="Click to copy Piece CID" />
+        <SpanValue title={deal.PieceCID}>
+          {truncateStringInTheMiddle(deal.PieceCID, 6, 4)}
+        </SpanValue>
+        <CopyTextWrapper text={deal.PieceCID} title="Click to copy Piece CID" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.DealID}</SpanTitle>
@@ -96,7 +98,7 @@ export const DealDetailModal = (props: Props) => {
       <div className="row">
         <SpanTitle>{DealTitles.Sector}</SpanTitle>
         <Dots />
-        <SpanValue>{deal.Sector}</SpanValue>
+        <SpanValue>{deal.SectorNumber}</SpanValue>
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.Client}</SpanTitle>

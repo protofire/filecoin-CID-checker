@@ -53,29 +53,11 @@ export async function getDeals(
         const dealID = deal['_id']
         const sector = await dbo
           .collection('sectors')
-          .findOne({ 'Info.Info.DealIDs': dealID })
-
-        let State = ''
-        let sectorID = 0
-
-        if (sector) {
-          if (sector.Recovery) {
-            State = 'Recovery'
-          } else if (sector.Fault) {
-            State = 'Fault'
-          } else {
-            State = 'Active'
-          }
-
-          sectorID = parseInt(sector['_id'])
-        }
-
+          .findOne({ DealIDs: dealID })
         return {
           DealInfo: deal,
           DealID: dealID,
-          SectorID: sectorID,
           SectorInfo: sector,
-          State: State,
         }
       }),
     )

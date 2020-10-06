@@ -207,10 +207,10 @@ export const DealItem = (props: Props) => {
   }
 
   return (
-    <TR onClick={onClick} title="You can double click to open a deal">
+    <TR onClick={onClick} title="Click to see the deal's details">
       <TDFirst>
-        <CopyTextWrapper text={deal.FileCID} title="Click to copy Piece CID" />
-        <FileCidColumn title={deal.FileCID}>{deal.FileCID}</FileCidColumn>
+        <CopyTextWrapper text={deal.PieceCID} title="Click to copy Piece CID" />
+        <FileCidColumn title={deal.PieceCID}>{deal.PieceCID}</FileCidColumn>
       </TDFirst>
       <TDSecond>
         <div className="is-left is-center">
@@ -231,7 +231,7 @@ export const DealItem = (props: Props) => {
           {deal.MinerID}
         </MinerSearch>
       </TDFour>
-      <TDFive className="text-center">{deal.Sector}</TDFive>
+      <TDFive className="text-center">{deal.SectorNumber}</TDFive>
     </TR>
   )
 }
