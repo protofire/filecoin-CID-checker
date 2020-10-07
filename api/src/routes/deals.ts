@@ -33,6 +33,7 @@ export async function getDeals(
         query = {
           $or: [
             { 'Proposal.PieceCID': selector },
+            { 'Proposal.Label': selector },
             { 'Proposal.Provider': selector },
           ],
         }
@@ -40,27 +41,17 @@ export async function getDeals(
     }
 
     const dbo = await getDbo()
-    let deals = await dbo
+    const queryResults = await dbo
       .collection('deals')
       .find(query)
       .limit(perPage)
       .skip(skip)
       .sort({ _id: -1 })
       .toArray()
-
-    deals = await Promise.all(
-      deals.map(async (deal: any) => {
-        const dealID = deal['_id']
-        const sector = await dbo
-          .collection('sectors')
-          .findOne({ DealIDs: dealID })
-        return {
-          DealInfo: deal,
-          DealID: dealID,
-          SectorInfo: sector,
-        }
-      }),
-    )
+    const deals = queryResults.map((deal: any) => ({
+      DealID: deal['_id'],
+      DealInfo: deal,
+    }))
 
     const response = {
       Pagination: {

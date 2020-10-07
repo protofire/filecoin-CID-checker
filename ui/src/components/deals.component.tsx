@@ -45,7 +45,7 @@ const THFirst = styled(TH)`
   }
 `
 const THFive = styled(TH)`
-  text-align: center;
+  text-align: right;
 `
 
 const ShowMoreButton = styled(Button)`
@@ -100,7 +100,7 @@ export const Deals = () => {
                   <TH>{DealTitles.State}</TH>
                   <TH>{DealTitles.DealID}</TH>
                   <TH>{DealTitles.MinerID}</TH>
-                  <THFive>{DealTitles.Sector}</THFive>
+                  <THFive>{DealTitles.PayloadCID}</THFive>
                 </tr>
               </THead>
               <tbody>

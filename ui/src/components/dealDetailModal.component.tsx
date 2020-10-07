@@ -96,11 +96,6 @@ export const DealDetailModal = (props: Props) => {
         <CopyTextWrapper text={deal.MinerID} title="Click to copy Miner ID" />
       </div>
       <div className="row">
-        <SpanTitle>{DealTitles.Sector}</SpanTitle>
-        <Dots />
-        <SpanValue>{deal.SectorNumber}</SpanValue>
-      </div>
-      <div className="row">
         <SpanTitle>{DealTitles.Client}</SpanTitle>
         <Dots />
         <SpanValue>{deal.Client}</SpanValue>
@@ -117,18 +112,6 @@ export const DealDetailModal = (props: Props) => {
         <SpanValue>{deal.VerifiedDeal ? 'True' : 'False'}</SpanValue>
       </div>
       <div className="row">
-        <SpanTitle>{DealTitles.SealedCID}</SpanTitle>
-        <Dots />
-        <SpanValue title={deal.SealedCID}>
-          {deal.SealedCID !== DealValueNotAvailable
-            ? truncateStringInTheMiddle(deal.SealedCID, 6, 4)
-            : deal.SealedCID}
-        </SpanValue>
-        {deal.SealedCID !== DealValueNotAvailable && (
-          <CopyText text={deal.SealedCID} title="Click to copy Sealed CID" />
-        )}
-      </div>
-      <div className="row">
         <SpanTitle>{DealTitles.StartEpoch}</SpanTitle>
         <Dots />
         <SpanValue>{deal.StartEpoch}</SpanValue>
@@ -137,11 +120,6 @@ export const DealDetailModal = (props: Props) => {
         <SpanTitle>{DealTitles.EndEpoch}</SpanTitle>
         <Dots />
         <SpanValue>{deal.EndEpoch}</SpanValue>
-      </div>
-      <div className="row">
-        <SpanTitle>{DealTitles.Expiration}</SpanTitle>
-        <Dots />
-        <SpanValue>{deal.Expiration}</SpanValue>
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.StoragePricePerEpoch}</SpanTitle>
