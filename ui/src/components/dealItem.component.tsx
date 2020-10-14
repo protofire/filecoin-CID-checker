@@ -48,17 +48,6 @@ const MinerSearch = styled.span`
   }
 `
 const TDFirst = styled(TD)`
-  width: 35%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
-    width: 35%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
-    width: 35%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
-    padding-left: 3px;
-    width: 30%;
-  }
   @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
     padding-left: 3px;
     & > div {
@@ -74,16 +63,7 @@ const TDFirst = styled(TD)`
 `
 
 const TDSecond = styled(TD)`
-  width: 10%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
-    width: 10%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
-    & > div > span {
-      display: none;
-    }
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
+  @media (max-width: ${props => props.theme.themeBreakPoints.lg}) {
     & > div > span {
       display: none;
     }
@@ -91,16 +71,10 @@ const TDSecond = styled(TD)`
 `
 
 const TDThird = styled(TD)`
-  width: 10%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
-    width: 10%;
+  @media (max-width: ${props => props.theme.themeBreakPoints.lg}) {
+    width: 20%;
   }
   @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
-    & > div {
-      display: none;
-    }
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
     & > div {
       display: none;
     }
@@ -108,9 +82,8 @@ const TDThird = styled(TD)`
 `
 
 const TDFour = styled(TD)`
-  width: 10%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
-    width: 10%;
+  @media (max-width: ${props => props.theme.themeBreakPoints.lg}) {
+    width: 20%;
   }
   @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
     & > div {
@@ -126,9 +99,6 @@ const TDFour = styled(TD)`
 
 const TDFive = styled(TD)`
   width: 35%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
-    width: 35%;
-  }
   @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
     & > div {
       display: none;
@@ -139,6 +109,10 @@ const TDFive = styled(TD)`
       display: none;
     }
   }
+  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+    padding-left: 0px;
+    width: 25%;
+  }
 `
 
 const FileCidColumn = styled.span`
@@ -147,13 +121,13 @@ const FileCidColumn = styled.span`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  max-width: 500px;
+  max-width: 100%;
   @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
     display: block;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    max-width: 150px;
+    max-width: 100%;
   }
 `
 const Span = styled.span`
