@@ -84,6 +84,13 @@ export const DealDetailModal = (props: Props) => {
         <CopyTextWrapper text={deal.PieceCID} title="Click to copy Piece CID" />
       </div>
       <div className="row">
+        <SpanTitle>{DealTitles.PayloadCID}</SpanTitle>
+        <Dots />
+        <SpanValue title={deal.Label}>{truncateStringInTheMiddle(deal.Label, 6, 4)}</SpanValue>
+        <CopyTextWrapper text={deal.Label} title="Click to copy PayloadCID CID" />
+      </div>
+
+      <div className="row">
         <SpanTitle>{DealTitles.DealID}</SpanTitle>
         <Dots />
         <SpanValue>{deal.DealID}</SpanValue>
