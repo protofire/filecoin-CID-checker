@@ -32,7 +32,7 @@ export async function getDeals(
       } else {
         query = {
           $or: [
-            { 'Proposal.PieceCID': selector },
+            { 'Proposal.PieceCID': { '/': selector } },
             { 'Proposal.Label': selector },
             { 'Proposal.Provider': selector },
           ],
