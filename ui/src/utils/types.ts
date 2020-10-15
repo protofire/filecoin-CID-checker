@@ -5,35 +5,32 @@ export enum DealStatus {
   Unknown = 'Unknown',
 }
 
-export const DealValueNotAvailable = 'Not Available'
+export const DealValueNotAvailable = 'N/A'
 
 export interface DealValue {
-  FileCID: string
+  PieceCID: string
   DealID: number
   MinerID: string
-  Sector: string
   Client: string
   PieceSize: number
   VerifiedDeal: boolean
-  SealedCID: string
   StartEpoch: number
   EndEpoch: number
-  Expiration: string
   StoragePricePerEpoch: number
   ProviderCollateral: number
   ClientCollateral: number
   State: DealStatus
+  Label: string
 }
 
 export enum DealTitles {
-  FileCID = 'Piece CID',
+  PieceCID = 'Piece CID',
   DealID = 'Deal ID',
   MinerID = 'Miner ID',
-  Sector = 'Sector',
+  PayloadCID = 'Payload CID',
   Client = 'Client',
   PieceSize = 'Piece Size',
   VerifiedDeal = 'Verified Deal',
-  SealedCID = 'Sealed CID',
   StartEpoch = 'Start Deal',
   EndEpoch = 'End Deal',
   Expiration = 'Expiration',

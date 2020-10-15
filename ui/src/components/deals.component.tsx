@@ -18,6 +18,7 @@ const BlockWrapper = styled.div`
 `
 
 const Table = styled.table`
+  table-layout: fixed;
   width: 100%;
 `
 
@@ -36,16 +37,26 @@ const THead = styled.thead`
 `
 
 const THFirst = styled(TH)`
-  padding-left: 48px;
-  @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
-    padding-left: 0px;
-  }
+  width: 35%;
   @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
-    padding-left: 0px;
+    width: 20%;
   }
 `
+const THSecond = styled(TH)`
+  @media (max-width: ${props => props.theme.themeBreakPoints.lg}) {
+    width: 30px;
+    visibility: hidden;
+  }
+`
+const THThird = styled(TH)``
+const THFourth = styled(TH)``
 const THFive = styled(TH)`
-  text-align: center;
+  width: 35%;
+  text-align: right;
+  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+    padding-left: 0px;
+    width: 20%;
+  }
 `
 
 const ShowMoreButton = styled(Button)`
@@ -96,11 +107,11 @@ export const Deals = () => {
             <Table>
               <THead>
                 <tr>
-                  <THFirst>{DealTitles.FileCID}</THFirst>
-                  <TH>{DealTitles.State}</TH>
-                  <TH>{DealTitles.DealID}</TH>
-                  <TH>{DealTitles.MinerID}</TH>
-                  <THFive>{DealTitles.Sector}</THFive>
+                  <THFirst>{DealTitles.PieceCID}</THFirst>
+                  <THSecond>{DealTitles.State}</THSecond>
+                  <THThird>{DealTitles.DealID}</THThird>
+                  <THFourth>{DealTitles.MinerID}</THFourth>
+                  <THFive>{DealTitles.PayloadCID}</THFive>
                 </tr>
               </THead>
               <tbody>

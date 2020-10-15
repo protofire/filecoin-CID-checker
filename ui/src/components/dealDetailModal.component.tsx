@@ -76,11 +76,20 @@ export const DealDetailModal = (props: Props) => {
       </ModalTitle>
 
       <div className="row">
-        <SpanTitle>{DealTitles.FileCID}</SpanTitle>
+        <SpanTitle>{DealTitles.PieceCID}</SpanTitle>
         <Dots />
-        <SpanValue title={deal.FileCID}>{truncateStringInTheMiddle(deal.FileCID, 6, 4)}</SpanValue>
-        <CopyTextWrapper text={deal.FileCID} title="Click to copy Piece CID" />
+        <SpanValue title={deal.PieceCID}>
+          {truncateStringInTheMiddle(deal.PieceCID, 6, 4)}
+        </SpanValue>
+        <CopyTextWrapper text={deal.PieceCID} title="Click to copy Piece CID" />
       </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.PayloadCID}</SpanTitle>
+        <Dots />
+        <SpanValue title={deal.Label}>{truncateStringInTheMiddle(deal.Label, 6, 4)}</SpanValue>
+        <CopyTextWrapper text={deal.Label} title="Click to copy PayloadCID CID" />
+      </div>
+
       <div className="row">
         <SpanTitle>{DealTitles.DealID}</SpanTitle>
         <Dots />
@@ -92,11 +101,6 @@ export const DealDetailModal = (props: Props) => {
         <Dots />
         <SpanValue>{deal.MinerID}</SpanValue>
         <CopyTextWrapper text={deal.MinerID} title="Click to copy Miner ID" />
-      </div>
-      <div className="row">
-        <SpanTitle>{DealTitles.Sector}</SpanTitle>
-        <Dots />
-        <SpanValue>{deal.Sector}</SpanValue>
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.Client}</SpanTitle>
@@ -115,18 +119,6 @@ export const DealDetailModal = (props: Props) => {
         <SpanValue>{deal.VerifiedDeal ? 'True' : 'False'}</SpanValue>
       </div>
       <div className="row">
-        <SpanTitle>{DealTitles.SealedCID}</SpanTitle>
-        <Dots />
-        <SpanValue title={deal.SealedCID}>
-          {deal.SealedCID !== DealValueNotAvailable
-            ? truncateStringInTheMiddle(deal.SealedCID, 6, 4)
-            : deal.SealedCID}
-        </SpanValue>
-        {deal.SealedCID !== DealValueNotAvailable && (
-          <CopyText text={deal.SealedCID} title="Click to copy Sealed CID" />
-        )}
-      </div>
-      <div className="row">
         <SpanTitle>{DealTitles.StartEpoch}</SpanTitle>
         <Dots />
         <SpanValue>{deal.StartEpoch}</SpanValue>
@@ -135,11 +127,6 @@ export const DealDetailModal = (props: Props) => {
         <SpanTitle>{DealTitles.EndEpoch}</SpanTitle>
         <Dots />
         <SpanValue>{deal.EndEpoch}</SpanValue>
-      </div>
-      <div className="row">
-        <SpanTitle>{DealTitles.Expiration}</SpanTitle>
-        <Dots />
-        <SpanValue>{deal.Expiration}</SpanValue>
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.StoragePricePerEpoch}</SpanTitle>

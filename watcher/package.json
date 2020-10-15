@@ -1,0 +1,54 @@
+{
+  "name": "cid-checker-watcher",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "main": "build/index.js",
+  "scripts": {
+    "build": "rimraf ./build && tsc",
+    "lint": "eslint . --ext .ts",
+    "prettier-format": "prettier --config .prettierrc.json '{src,test}/**/*.ts' --write",
+    "start": "npm run build && DEBUG=cid-checker-watcher:*,-cid-checker-watcher:debug* node -r dotenv/config build/index.js dotenv_config_path=.env",
+    "start:dev": "DEBUG=cid-checker-watcher:* nodemon --watch src -e ts,js --exec 'ts-node -r dotenv/config ./src/index.ts dotenv_config_path=.env'",
+    "test": "NODE_ENV=test jest --coverage --detectOpenHandles --forceExit",
+    "test:watch": "NODE_ENV=test jest --watchAll -i --detectOpenHandles"
+  },
+  "dependencies": {
+    "debug": "^4.1.1",
+    "dotenv": "^8.2.0",
+    "got": "^11.5.2",
+    "mongodb": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/jest": "^25.2.3",
+    "@types/mongodb": "^3.5.26",
+    "@types/node": "^14.0.5",
+    "@typescript-eslint/eslint-plugin": "^3.0.2",
+    "@typescript-eslint/parser": "^3.0.2",
+    "eslint": "^7.1.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "jest": "^26.0.1",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "supertest": "^4.0.2",
+    "ts-jest": "^26.1.0",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/build/"
+    ],
+    "setupFiles": [
+      "<rootDir>/test/dotenv.ts"
+    ]
+  }
+}

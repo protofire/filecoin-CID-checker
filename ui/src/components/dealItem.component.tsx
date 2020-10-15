@@ -48,17 +48,6 @@ const MinerSearch = styled.span`
   }
 `
 const TDFirst = styled(TD)`
-  width: 62%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
-    width: 62%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
-    width: 40%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
-    padding-left: 3px;
-    width: 30%;
-  }
   @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
     padding-left: 3px;
     & > div {
@@ -74,22 +63,7 @@ const TDFirst = styled(TD)`
 `
 
 const TDSecond = styled(TD)`
-  width: 10%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
-    width: 10%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
-    width: 15%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
-    width: 20%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
-    & > div > span {
-      display: none;
-    }
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
+  @media (max-width: ${props => props.theme.themeBreakPoints.lg}) {
     & > div > span {
       display: none;
     }
@@ -97,14 +71,7 @@ const TDSecond = styled(TD)`
 `
 
 const TDThird = styled(TD)`
-  width: 10%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
-    width: 10%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
-    width: 15%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+  @media (max-width: ${props => props.theme.themeBreakPoints.lg}) {
     width: 20%;
   }
   @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
@@ -112,23 +79,11 @@ const TDThird = styled(TD)`
       display: none;
     }
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
-    & > div {
-      display: none;
-    }
-  }
 `
 
 const TDFour = styled(TD)`
-  width: 10%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
-    width: 10%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
-    width: 15%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
-    width: 18%;
+  @media (max-width: ${props => props.theme.themeBreakPoints.lg}) {
+    width: 20%;
   }
   @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
     & > div {
@@ -143,16 +98,7 @@ const TDFour = styled(TD)`
 `
 
 const TDFive = styled(TD)`
-  width: 8%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
-    width: 8%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
-    width: 12%;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
-    width: 18%;
-  }
+  width: 35%;
   @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
     & > div {
       display: none;
@@ -163,30 +109,25 @@ const TDFive = styled(TD)`
       display: none;
     }
   }
+  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+    padding-left: 0px;
+    width: 25%;
+  }
 `
 
 const FileCidColumn = styled.span`
   padding-left: 35px;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    width: 450px;
-  }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    width: 200px;
-  }
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
   @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
     display: block;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    width: 100px;
+    max-width: 100%;
   }
 `
 const Span = styled.span`
@@ -207,10 +148,10 @@ export const DealItem = (props: Props) => {
   }
 
   return (
-    <TR onClick={onClick} title="You can double click to open a deal">
+    <TR onClick={onClick} title="Click to see the deal's details">
       <TDFirst>
-        <CopyTextWrapper text={deal.FileCID} title="Click to copy Piece CID" />
-        <FileCidColumn title={deal.FileCID}>{deal.FileCID}</FileCidColumn>
+        <CopyTextWrapper text={deal.PieceCID} title="Click to copy Piece CID" />
+        <FileCidColumn title={deal.PieceCID}>{deal.PieceCID}</FileCidColumn>
       </TDFirst>
       <TDSecond>
         <div className="is-left is-center">
@@ -231,7 +172,10 @@ export const DealItem = (props: Props) => {
           {deal.MinerID}
         </MinerSearch>
       </TDFour>
-      <TDFive className="text-center">{deal.Sector}</TDFive>
+      <TDFive>
+        <CopyTextWrapper text={deal.Label} title="Click to copy Payload CID" />
+        <FileCidColumn title={deal.Label}>{deal.Label}</FileCidColumn>
+      </TDFive>
     </TR>
   )
 }

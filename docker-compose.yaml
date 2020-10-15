@@ -5,17 +5,35 @@ services:
   mongo:
     image: mongo
     restart: always
+    ports:
+      - 27017:27017
 
   cid-checker-frontend:
     image: cid-checker-frontend
     restart: always
 
-  cid-checker-backend:
-    image: cid-checker
+  cid-checker-api:
+    image: cid-checker-api
     restart: always
     environment:
-      - CID_LOTUS_RPCURL=ws://3.9.46.104:1234/rpc/v0
       - CID_DB_CONNECTIONSTRING=mongodb://mongo:27017
+      - CID_DB_NAME='cid_checker_watcher'
+      - PORT=3000
+    depends_on:
+      - mongo
+
+  cid-checker-watcher:
+    image: cid-checker-watcher
+    restart: always
+    environment:
+      - CID_DB_CONNECTIONSTRING=mongodb://mongo:27017
+      - CID_DB_NAME='cid_checker_watcher'
+      # TODO: localhost can't be used here
+      - CID_LOTUS_RPCURL=http://localhost:1234/rpc/v0
+      - CID_LOTUS_JWT_TOKEN=''
+      - SLEEP_TIPSET_CHECK_MS=25000
+    depends_on:
+      - mongo
 
   caddy:
     image: caddy
@@ -26,7 +44,6 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
-
 
 volumes:
   caddy_data:
