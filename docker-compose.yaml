@@ -31,8 +31,7 @@ services:
       # TODO: localhost can't be used here
       - CID_LOTUS_RPCURL=http://localhost:1234/rpc/v0
       - CID_LOTUS_JWT_TOKEN=''
-      - SLEEP_TIPSET_CHECK_MS=5000
-      - SLEEP_RUNPROCESSORSDELAY_MS=100
+      - SLEEP_TIPSET_CHECK_MS=25000
     depends_on:
       - mongo
 
