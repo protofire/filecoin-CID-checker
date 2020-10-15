@@ -32,7 +32,7 @@ const StatusUnknowCSS = css`
   width: 8px;
   height: 8px;
   border-radius: 32px;
-  background-color: #f0291a;
+  background-color: #8a8a8a;
 `
 
 const getStatusTypeStyles = (status: DealStatus = DealStatus.Unknown): any => {
