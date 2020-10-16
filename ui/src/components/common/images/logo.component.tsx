@@ -24,7 +24,7 @@ export const Logo = () => {
   }
 
   return (
-    <LogoWrapper onClick={onClick}>
+    <LogoWrapper onClick={onClick} title="built by Protofire">
       <Svg
         fill="none"
         width="154.4"
