@@ -2,7 +2,7 @@ import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 
 import { ModalWrapper } from './modalWrapper.component'
-import { DealTitles, DealValue, DealValueNotAvailable } from '../utils/types'
+import { DealTitles, DealValue } from '../utils/types'
 import { DealStatusIcon } from './dealStatusIcon.component'
 import { truncateStringInTheMiddle } from '../utils/deals'
 import { Button } from './button.component'
