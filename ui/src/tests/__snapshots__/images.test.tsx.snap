@@ -3,10 +3,10 @@
 exports[`<Close /> spec renders the component 1`] = `
 <div>
   <div
-    class="sc-AxirZ fjatEt"
+    class="sc-gtssRu Sazma"
   >
     <svg
-      class="sc-AxjAm StDqN"
+      class="sc-bdnylx"
       fill="none"
       height="24"
       viewBox="0 0 24 24"
@@ -34,10 +34,10 @@ exports[`<Close /> spec renders the component 1`] = `
 exports[`<Lens /> spec renders the component 1`] = `
 <div>
   <div
-    class="sc-AxhCb fPlYWt"
+    class="sc-hKFyIo Qbplc"
   >
     <svg
-      class="sc-AxiKw bOTXee"
+      class="sc-dlnjPT"
       fill="none"
       height="24"
       viewBox="0 0 24 24"
@@ -86,10 +86,11 @@ exports[`<Lens /> spec renders the component 1`] = `
 exports[`<Logo /> spec renders the component 1`] = `
 <div>
   <div
-    class="sc-AxgMl izXAyx"
+    class="sc-jSFkmK erHmTj"
+    title="built by Protofire"
   >
     <svg
-      class="sc-AxhUy kMyssT"
+      class="sc-eCApGN"
       fill="none"
       height="40.1"
       viewBox="0 0 154.371 40.117"
