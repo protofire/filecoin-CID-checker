@@ -7,13 +7,15 @@ export const truncateStringInTheMiddle = (
   strPositionEnd: number,
 ) => {
   const minTruncatedLength = strPositionStart + strPositionEnd
-  if (minTruncatedLength < str.length) {
-    return `${str.substr(0, strPositionStart)}...${str.substr(
-      str.length - strPositionEnd,
-      str.length,
-    )}`
-  }
-  return str
+  try {
+    if (minTruncatedLength < str.length) {
+      return `${str.substr(0, strPositionStart)}...${str.substr(
+        str.length - strPositionEnd,
+        str.length,
+      )}`
+    }
+    return str
+  } catch (e) {}
 }
 
 export const fetchDeals = async (search: string, page: number): Promise<DealValue[]> => {
