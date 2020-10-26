@@ -15,7 +15,9 @@ export const truncateStringInTheMiddle = (
       )}`
     }
     return str
-  } catch (e) {}
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 export const fetchDeals = async (search: string, page: number): Promise<DealValue[]> => {
