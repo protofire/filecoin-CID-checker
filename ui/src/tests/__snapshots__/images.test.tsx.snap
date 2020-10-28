@@ -86,7 +86,7 @@ exports[`<Lens /> spec renders the component 1`] = `
 exports[`<Logo /> spec renders the component 1`] = `
 <div>
   <div
-    class="sc-jSFkmK erHmTj"
+    class="sc-jSFkmK gYOKbz"
     title="built by Protofire"
   >
     <svg
