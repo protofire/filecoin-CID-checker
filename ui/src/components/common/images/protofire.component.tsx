@@ -22,8 +22,8 @@ export const Protofire = () => {
           y2=".053"
           gradientUnits="objectBoundingBox"
         >
-          <stop offset=".003" stop-color="#f54703" />
-          <stop offset="1" stop-color="#fac902" />
+          <stop offset=".003" stopColor="#f54703" />
+          <stop offset="1" stopColor="#fac902" />
         </linearGradient>
       </defs>
       <g id="prefix__prefix__logotype" transform="translate(-48 -16)">
