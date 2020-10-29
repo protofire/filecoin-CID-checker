@@ -8,7 +8,7 @@ export const GlobalStyle = createGlobalStyle<{ theme: ThemeType }>`
   html body {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    
+
     background-image: linear-gradient(to right, ${props =>
       props.theme.colors.mainBodyBackgroundLeft}, ${props =>
   props.theme.colors.mainBodyBackgroundRight});
@@ -26,5 +26,4 @@ export const GlobalStyle = createGlobalStyle<{ theme: ThemeType }>`
     height: 100vh;
     width: 100%;
   }
-  
 `

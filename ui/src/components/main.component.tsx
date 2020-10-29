@@ -8,12 +8,10 @@ import { Header } from './common/layout/header.component'
 import { MainWrapper } from './common/layout/mainWrapper.component'
 import { SearchProvider } from '../state/search.context'
 import { Deals } from './deals.component'
-import { GitHubCorners } from './gitHubCorners.component'
 
 export const Main = () => {
   return (
     <HelmetProvider>
-      <GitHubCorners />
       <Router>
         <MainWrapper>
           <Helmet>

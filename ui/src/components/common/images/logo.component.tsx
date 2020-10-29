@@ -7,10 +7,10 @@ import { useSearchContext } from '../../../state/search.context'
 const Svg = styled.svg``
 
 const LogoWrapper = styled.div`
-  width: 154.4px;
+  cursor: pointer;
   height: 40.1px;
   object-fit: contain;
-  cursor: pointer;
+  width: 154.4px;
 `
 
 export const Logo = () => {

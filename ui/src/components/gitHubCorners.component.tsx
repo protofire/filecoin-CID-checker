@@ -21,7 +21,9 @@ export const GitHubCorners = () => {
             top: 0,
             border: 0,
             right: 0,
+            zIndex: 1,
           }}
+          className="fill"
         >
           <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
           <path
@@ -38,7 +40,7 @@ export const GitHubCorners = () => {
         </svg>
       </a>
       <style>
-        {`.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}`}
+        {`.github-corner { opacity: 1!important; } .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out; }@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}} .github-corner:hover svg.fill { fill: rgb(171,201,255,0.3)!important; transition: all 0.15s linear; }`}
       </style>
     </>
   )
