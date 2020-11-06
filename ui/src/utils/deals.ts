@@ -1,5 +1,5 @@
 import { FILECOIN_CID_CHECKER_API, PAGE_SIZE } from '../config/constants'
-import { DealStatus, DealValue, DealValueNotAvailable } from './types'
+import { DealDetails, DealStatus, DealValue, DealValueNotAvailable } from './types'
 
 export const truncateStringInTheMiddle = (
   str: string,
@@ -68,4 +68,12 @@ export const fetchDeals = async (search: string, page: number): Promise<DealValu
   })
 
   return formattedDeals
+}
+
+export const fetchDealDetails = async (dealId: string): Promise<DealDetails> => {
+  const url = `${FILECOIN_CID_CHECKER_API}deals/details/${dealId}`
+  const response = await fetch(url)
+  const data = await response.json()
+
+  return data
 }
