@@ -14,15 +14,16 @@ export async function getDeals(
   next: NextFunction,
 ): Promise<void> {
   const logger = getLogger('router:deals/getDeals')
-  try {
-    let selector = req.params.selector
+  let selector = req.params.selector;
 
+  try {
     const idFromSelector = await getStateLookupId(selector);
-    console.log(idFromSelector);
     if (idFromSelector) {
       selector = idFromSelector;
     }
+  } catch {}
 
+  try {
     const perPage = isNormalInteger(req.query.per_page as string)
       ? parseInt(req.query.per_page as string)
       : 10
