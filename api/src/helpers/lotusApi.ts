@@ -20,6 +20,13 @@ const requestStateAccountKey = (id: string) => {
   params: [id, null],
 }}
 
+const requestStateLookupId = (address: string) => {
+  return {
+  ...baseBody,
+  method: 'Filecoin.StateLookupID',
+  params: [address, null],
+}}
+
 // @TODO: log response size, timeout, retry, etc here
 const gotPost = (json: any): Promise<any> => {
   const options: any = {
@@ -41,5 +48,10 @@ export const getChainHead = async (): Promise<any> => {
 
 export const getStateAccountKey = async (id: string): Promise<any> => {
   const response: any = await gotPost(requestStateAccountKey(id))
+  return response.body.result
+}
+
+export const getStateLookupId = async (address: string): Promise<any> => {
+  const response: any = await gotPost(requestStateLookupId(address))
   return response.body.result
 }

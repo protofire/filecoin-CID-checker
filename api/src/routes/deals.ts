@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express'
 import { getDbo } from '../helpers/db'
 import { getLogger } from '../helpers/logger'
-import { getChainHead, getStateAccountKey } from '../helpers/lotusApi'
+import { getChainHead, getStateAccountKey, getStateLookupId } from '../helpers/lotusApi'
 
 function isNormalInteger(str: string) {
   const n = Math.floor(Number(str))
@@ -15,7 +15,13 @@ export async function getDeals(
 ): Promise<void> {
   const logger = getLogger('router:deals/getDeals')
   try {
-    const selector = req.params.selector
+    let selector = req.params.selector
+
+    const idFromSelector = await getStateLookupId(selector);
+    console.log(idFromSelector);
+    if (idFromSelector) {
+      selector = idFromSelector;
+    }
 
     const perPage = isNormalInteger(req.query.per_page as string)
       ? parseInt(req.query.per_page as string)
@@ -36,6 +42,7 @@ export async function getDeals(
             { 'Proposal.PieceCID': { '/': selector } },
             { 'Proposal.Label': selector },
             { 'Proposal.Provider': selector },
+            { 'Proposal.Client': selector }
           ],
         }
       }
