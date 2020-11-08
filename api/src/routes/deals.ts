@@ -32,6 +32,14 @@ export async function getDeals(
       : 1
     const skip = perPage * (page - 1)
 
+    const sortByColumn = req.query.sort_by_column ? req.query.sort_by_column as string : '';
+    const sortDirection = isNormalInteger(req.query.sort_direction as string) ? parseInt(req.query.sort_direction as string) : -1
+
+    const sortCriteria: any = { _id: -1 };
+    if (sortByColumn === 'status') {
+      sortCriteria['State.SectorStartEpoch'] = sortDirection;
+    }
+
     let query = {}
     if (selector) {
       if (isNormalInteger(selector)) {
@@ -55,7 +63,7 @@ export async function getDeals(
       .find(query)
       .limit(perPage)
       .skip(skip)
-      .sort({ _id: -1 })
+      .sort(sortCriteria)
       .toArray()
     const deals = queryResults.map((deal: any) => ({
       DealID: deal['_id'],
