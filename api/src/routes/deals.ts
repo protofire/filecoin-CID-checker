@@ -34,10 +34,13 @@ export async function getDeals(
 
     const sortByColumn = req.query.sort_by_column ? req.query.sort_by_column as string : '';
     const sortDirection = isNormalInteger(req.query.sort_direction as string) ? parseInt(req.query.sort_direction as string) : -1
+    let sortCriteria: any = { _id: -1 };
 
-    const sortCriteria: any = { _id: -1 };
     if (sortByColumn === 'status') {
-      sortCriteria['State.SectorStartEpoch'] = sortDirection;
+      sortCriteria = {
+        'State.SectorStartEpoch': sortDirection,
+        _id: -1,
+      };
     }
 
     let query = {}
