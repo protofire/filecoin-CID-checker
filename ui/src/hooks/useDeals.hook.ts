@@ -8,6 +8,7 @@ import { PAGE_SIZE } from '../config/constants'
 export const useDeals = (
   search: string,
   page: number,
+  query: string,
 ): { deals: RemoteData<any[]>; moreDeals: boolean } => {
   const [deals, setDeals] = useState<RemoteData<DealValue[]>>(RemoteData.loading())
   const [moreDeals, setMoreDeals] = useState(true)
@@ -21,7 +22,7 @@ export const useDeals = (
           RemoteData.hasData(deals) ? RemoteData.reloading(deals.data) : RemoteData.loading(),
         )
 
-        const deals = await fetchDeals(search, page)
+        const deals = await fetchDeals(search, page, query)
 
         if (!didCancel) {
           setDeals(currentDeals =>
@@ -44,7 +45,7 @@ export const useDeals = (
     return () => {
       didCancel = true
     }
-  }, [search, page])
+  }, [search, page, query])
 
   return {
     deals,

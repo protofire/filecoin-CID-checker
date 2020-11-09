@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Loader from 'react-loader-spinner'
 import styled from 'styled-components'
 import { Waypoint } from 'react-waypoint'
@@ -12,6 +12,7 @@ import { DealsList } from './dealsList.component'
 import { DealTitles } from '../utils/types'
 import { Button } from './button.component'
 import { useSearchContext } from '../state/search.context'
+import {DownArrowFilledIcon} from "./common/icons";
 
 const BlockWrapper = styled.div`
   padding: 120px;
@@ -59,14 +60,34 @@ const THFive = styled(TH)`
   }
 `
 
+const THButton = styled.button`
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  align-items: center;
+  font: inherit;
+  color: inherit;
+  outline: none;
+  background-color: rgba(0, 0, 0, 0);
+`
+
 const ShowMoreButton = styled(Button)`
   margin: 20px auto 20px auto;
 `
 
 export const Deals = () => {
-  const { search, page, setCurrentPage, setCurrentSearch } = useSearchContext()
-
+  const { search, page, query, setCurrentPage, setCurrentSearch, setCurrentQuery } = useSearchContext()
   const { search: searchFromParams, deal: dealIdFromParams } = useParams()
+  const [order, setOrder] = useState<'asc' | 'desc' | undefined>();
+
+  function setQuery(sort?: string, order?: number) {
+    if (sort === 'status' && order) {
+      setCurrentQuery(`&sort_by_column=status&sort_direction=${order}`)
+    } else {
+      setCurrentQuery('')
+    }
+  }
 
   useEffect(() => {
     if (searchFromParams) {
@@ -80,10 +101,28 @@ export const Deals = () => {
     }
   }, [setCurrentSearch, dealIdFromParams])
 
-  const { deals, moreDeals } = useDeals(search, page)
+  const { deals, moreDeals } = useDeals(search, page, query)
 
   const showMore = () => {
     setCurrentPage(page + 1)
+  }
+
+  function onStateClick() {
+    setCurrentPage(1)
+
+    if (!order || order === 'asc') {
+      setOrder('desc');
+      setQuery('status', -1)
+    } else if (order === 'desc') {
+      setOrder('asc');
+      setQuery('status', 1)
+    }
+  }
+
+  function onDealIdClick() {
+    setOrder(undefined)
+    setCurrentPage(1)
+    setQuery()
   }
 
   const showMoreButton =
@@ -108,14 +147,28 @@ export const Deals = () => {
               <THead>
                 <tr>
                   <THFirst>{DealTitles.PieceCID}</THFirst>
-                  <THSecond>{DealTitles.State}</THSecond>
-                  <THThird>{DealTitles.DealID}</THThird>
+                  <THSecond>
+                    <THButton onClick={onStateClick}>
+                      {DealTitles.State}
+                      <DownArrowFilledIcon
+                        style={{
+                          transform: query && order === 'asc' ? 'rotate(180deg)' : 'none',
+                          opacity: query ? 1 : 0.2
+                        }} />
+                    </THButton>
+                  </THSecond>
+                  <THThird>
+                    <THButton onClick={onDealIdClick}>
+                      {DealTitles.DealID}
+                      <DownArrowFilledIcon style={{ opacity: query ? 0.2 : 1 }} />
+                    </THButton>
+                  </THThird>
                   <THFourth>{DealTitles.MinerID}</THFourth>
                   <THFive>{DealTitles.PayloadCID}</THFive>
                 </tr>
               </THead>
               <tbody>
-                <DealsList deals={deals} openModal={!!dealIdFromParams} />
+              <DealsList deals={deals} openModal={!!dealIdFromParams} />
               </tbody>
             </Table>
             {showMoreButton}
