@@ -1,4 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express'
+import { isBoolean } from 'util'
 import { getDbo } from '../helpers/db'
 import { getLogger } from '../helpers/logger'
 import { getChainHead, getStateAccountKey, getStateLookupId } from '../helpers/lotusApi'
@@ -21,7 +22,7 @@ export async function getDeals(
     if (idFromSelector) {
       selector = idFromSelector;
     }
-  } catch {}
+  } catch { }
 
   try {
     const perPage = isNormalInteger(req.query.per_page as string)
@@ -43,7 +44,7 @@ export async function getDeals(
       };
     }
 
-    let query = {}
+    let query: any = {}
     if (selector) {
       if (isNormalInteger(selector)) {
         const dealID = parseInt(selector)
@@ -58,6 +59,14 @@ export async function getDeals(
           ],
         }
       }
+    }
+
+    if (!!req.query.activeDeal){
+      query ["State.SectorStartEpoch"] = {$gt: -1}
+    }
+
+    if (!!req.query.verifiedDeal) {
+      query ["Proposal.VerifiedDeal"] = true
     }
 
     const dbo = await getDbo()
@@ -131,8 +140,25 @@ export async function getDealInfo(
   }
 }
 
+export async function getStats(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  const logger = getLogger('router:deals/getStats')
+  try {
+    const dbo = await getDbo()
+    const stats = await dbo.collection('stats').findOne({_id: 1});
+    res.send(stats)
+  } catch (err) {
+    logger(err)
+    next(err)
+  }
+}
+
 export const dealsRouter = Router()
 dealsRouter.get('/', getDeals)
+dealsRouter.get('/stats', getStats)
 dealsRouter.get('/details/:dealId', getDealInfo)
 dealsRouter.get('/:selector', getDeals)
 

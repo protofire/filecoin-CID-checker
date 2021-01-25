@@ -12,7 +12,9 @@ import { DealsList } from './dealsList.component'
 import { DealTitles } from '../utils/types'
 import { Button } from './button.component'
 import { useSearchContext } from '../state/search.context'
-import {DownArrowFilledIcon} from "./common/icons";
+import { DownArrowFilledIcon } from "./common/icons";
+import { useStats } from '../hooks/useStats.hook'
+import prettyBytes from 'pretty-bytes';
 
 const BlockWrapper = styled.div`
   padding: 120px;
@@ -27,6 +29,16 @@ const TH = styled.th`
   font-family: Poppins;
   font-size: 12px;
   font-weight: 600;
+  line-height: 18px;
+  text-align: left;
+  color: #cfe0ff;
+  text-transform: uppercase;
+`
+
+const StatValue = styled.th`
+  font-family: Poppins;
+  font-size: 16px;
+  font-weight: 800;
   line-height: 18px;
   text-align: left;
   color: #cfe0ff;
@@ -77,9 +89,12 @@ const ShowMoreButton = styled(Button)`
 `
 
 export const Deals = () => {
-  const { search, page, query, setCurrentPage, setCurrentSearch, setCurrentQuery } = useSearchContext()
+  const { search, page, query, activeFilter, verifiedFilter, setCurrentPage, setCurrentSearch, setCurrentQuery } = useSearchContext()
   const { search: searchFromParams, deal: dealIdFromParams } = useParams()
   const [order, setOrder] = useState<'asc' | 'desc' | undefined>();
+
+  console.log(activeFilter);
+  console.log(verifiedFilter);
 
   function setQuery(sort?: string, order?: number) {
     if (sort === 'status' && order) {
@@ -101,8 +116,10 @@ export const Deals = () => {
     }
   }, [setCurrentSearch, dealIdFromParams])
 
-  const { deals, moreDeals } = useDeals(search, page, query)
+  const { deals, moreDeals } = useDeals(search, page, query, activeFilter, verifiedFilter)
+  const { stats } = useStats();
 
+  console.log('deals stats', stats)
   const showMore = () => {
     setCurrentPage(page + 1)
   }
@@ -146,6 +163,27 @@ export const Deals = () => {
             <Table>
               <THead>
                 <tr>
+                  <TH>TOTAL UNIQUE CIDS</TH>
+                  <TH>TOTAL UNIQUE PROVIDERS</TH>
+                  <TH>TOTAL UNIQUE CLIENTS</TH>
+                  <TH>TOTAL STORAGE DEALS</TH>
+                  <TH>TOTAL DATA STORED</TH>
+                </tr>
+              </THead>
+              <tbody>
+                <tr>
+                  <StatValue>{stats.numberOfUniqueCIDs}</StatValue>
+                  <StatValue>{stats.numberOfUniqueProviders}</StatValue>
+                  <StatValue>{stats.numberOfUniqueClients}</StatValue>
+                  <StatValue>{stats.totalDeals}</StatValue>
+                  <StatValue>{prettyBytes(stats.totalDealSize)}</StatValue>
+                </tr>
+              </tbody>
+            </Table>
+            <br />
+            <Table>
+              <THead>
+                <tr>
                   <THFirst>{DealTitles.PieceCID}</THFirst>
                   <THSecond>
                     <THButton onClick={onStateClick}>
@@ -168,7 +206,7 @@ export const Deals = () => {
                 </tr>
               </THead>
               <tbody>
-              <DealsList deals={deals} openModal={!!dealIdFromParams} />
+                <DealsList deals={deals} openModal={!!dealIdFromParams} />
               </tbody>
             </Table>
             {showMoreButton}
