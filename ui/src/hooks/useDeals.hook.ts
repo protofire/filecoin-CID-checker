@@ -9,20 +9,28 @@ export const useDeals = (
   search: string,
   page: number,
   query: string,
+  activeFilter: boolean,
+  verifiedFilter: boolean
 ): { deals: RemoteData<any[]>; moreDeals: boolean } => {
   const [deals, setDeals] = useState<RemoteData<DealValue[]>>(RemoteData.loading())
   const [moreDeals, setMoreDeals] = useState(true)
+  const [reqHash, setReqHash] = useState('')
+  const crtReqHash = JSON.stringify([search, query, activeFilter, verifiedFilter]);
 
   useEffect(() => {
     let didCancel = false
 
     const run = async () => {
       try {
-        setDeals(deals =>
-          RemoteData.hasData(deals) ? RemoteData.reloading(deals.data) : RemoteData.loading(),
-        )
+        if (reqHash !== crtReqHash) {
+          setDeals(RemoteData.loading());
+        } else {
+          setDeals(deals =>
+            RemoteData.hasData(deals) ? RemoteData.reloading(deals.data) : RemoteData.loading(),
+          )
+        }
 
-        const deals = await fetchDeals(search, page, query)
+        const deals = await fetchDeals(search, page, query, activeFilter, verifiedFilter)
 
         if (!didCancel) {
           setDeals(currentDeals =>
@@ -32,6 +40,7 @@ export const useDeals = (
           )
 
           setMoreDeals(deals.length === PAGE_SIZE)
+          setReqHash(crtReqHash);
         }
       } catch (e) {
         if (!didCancel) {
@@ -45,7 +54,7 @@ export const useDeals = (
     return () => {
       didCancel = true
     }
-  }, [search, page, query])
+  }, [search, page, query, activeFilter, verifiedFilter])
 
   return {
     deals,
