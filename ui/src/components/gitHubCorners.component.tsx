@@ -6,7 +6,7 @@ export const GitHubCorners = () => {
   return (
     <>
       <a
-        href="https://github.com/protofire/filecoin-CID-checker"
+        href="https://github.com/Digital-MOB-Filecoin/filecoin-CID-checker"
         className="github-corner"
         aria-label="View source on GitHub"
       >
