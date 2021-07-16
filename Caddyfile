@@ -1,7 +1,9 @@
 :80 {
-  route /api/* {
-    uri strip_prefix api
+  handle_path /api/* {
     reverse_proxy http://cid-checker-api:3000
   }
   reverse_proxy http://cid-checker-frontend:5000
+  # log {
+  #  format single_field common_log
+  # }
 }

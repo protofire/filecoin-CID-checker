@@ -12,9 +12,9 @@ import { DealsList } from './dealsList.component'
 import { DealTitles } from '../utils/types'
 import { Button } from './button.component'
 import { useSearchContext } from '../state/search.context'
-import { DownArrowFilledIcon } from "./common/icons";
+import { DownArrowFilledIcon } from './common/icons'
 import { useStats } from '../hooks/useStats.hook'
-import prettyBytes from 'pretty-bytes';
+import prettyBytes from 'pretty-bytes'
 
 const BlockWrapper = styled.div`
   padding: 120px;
@@ -89,12 +89,21 @@ const ShowMoreButton = styled(Button)`
 `
 
 export const Deals = () => {
-  const { search, page, query, activeFilter, verifiedFilter, setCurrentPage, setCurrentSearch, setCurrentQuery } = useSearchContext()
+  const {
+    search,
+    page,
+    query,
+    activeFilter,
+    verifiedFilter,
+    setCurrentPage,
+    setCurrentSearch,
+    setCurrentQuery,
+  } = useSearchContext()
   const { search: searchFromParams, deal: dealIdFromParams } = useParams()
-  const [order, setOrder] = useState<'asc' | 'desc' | undefined>();
+  const [order, setOrder] = useState<'asc' | 'desc' | undefined>()
 
-  console.log(activeFilter);
-  console.log(verifiedFilter);
+  console.log(activeFilter)
+  console.log(verifiedFilter)
 
   function setQuery(sort?: string, order?: number) {
     if (sort === 'status' && order) {
@@ -117,7 +126,7 @@ export const Deals = () => {
   }, [setCurrentSearch, dealIdFromParams])
 
   const { deals, moreDeals } = useDeals(search, page, query, activeFilter, verifiedFilter)
-  const { stats } = useStats();
+  const { stats } = useStats()
 
   console.log('deals stats', stats)
   const showMore = () => {
@@ -128,10 +137,10 @@ export const Deals = () => {
     setCurrentPage(1)
 
     if (!order || order === 'asc') {
-      setOrder('desc');
+      setOrder('desc')
       setQuery('status', -1)
     } else if (order === 'desc') {
-      setOrder('asc');
+      setOrder('asc')
       setQuery('status', 1)
     }
   }
@@ -191,8 +200,9 @@ export const Deals = () => {
                       <DownArrowFilledIcon
                         style={{
                           transform: query && order === 'asc' ? 'rotate(180deg)' : 'none',
-                          opacity: query ? 1 : 0.2
-                        }} />
+                          opacity: query ? 1 : 0.2,
+                        }}
+                      />
                     </THButton>
                   </THSecond>
                   <THThird>

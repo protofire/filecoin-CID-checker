@@ -42,5 +42,5 @@ export enum DealTitles {
 }
 
 export interface DealDetails {
-  clientAddress?: string,
+  clientAddress?: string
 }

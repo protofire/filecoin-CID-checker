@@ -10,7 +10,6 @@ import { SearchProvider } from '../state/search.context'
 import { Deals } from './deals.component'
 
 export const Main = () => {
-
   return (
     <HelmetProvider>
       <Router>

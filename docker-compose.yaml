@@ -38,7 +38,7 @@ services:
       - mongo
 
   caddy:
-    image: caddy
+    image: caddy:2.4.3-alpine
     restart: always
     ports:
       - 80:80
