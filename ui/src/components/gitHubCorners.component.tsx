@@ -2,14 +2,10 @@ import React from 'react'
 
 // Based on https://github.com/tholman/github-corners
 // by Tim Holman, @tholman
-export const GitHubCorners = () => {
+export const GitHubCorners = ({ url }: { url: string }) => {
   return (
     <>
-      <a
-        href="https://github.com/Digital-MOB-Filecoin/filecoin-CID-checker"
-        className="github-corner"
-        aria-label="View source on GitHub"
-      >
+      <a href={url} className="github-corner" aria-label="View source on GitHub">
         <svg
           width="80"
           height="80"

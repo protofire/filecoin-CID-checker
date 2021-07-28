@@ -5,3 +5,5 @@ export const DOCUMENT_DESCRIPTION: string =
   'A website and API service that can list all CIDs along with their current status in the latest state tree'
 export const PAGE_SIZE = Number(process.env.REACT_APP_PAGE_SIZE || 20)
 export const PAGE_INDEX_START = Number(process.env.REACT_APP_PAGE_INDEX_START || 1)
+export const REPOSITORY_URL: string =
+  process.env.REPOSITORY_URL || 'https://github.com/protofire/filecoin-CID-checker'

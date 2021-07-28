@@ -75,7 +75,9 @@ export const DealDetailModal = (props: Props) => {
         try {
           const details = await fetchDealDetails(`${deal.DealID}`)
           setDealDetails(details)
-        } catch {}
+        } catch (err) {
+          console.error(err)
+        }
       }
     }
     setDealDetails(undefined)
