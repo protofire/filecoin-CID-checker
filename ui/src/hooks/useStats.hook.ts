@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import { fetchDealStats } from '../utils/deals'
-import { RemoteData } from '../utils/remoteData'
 
 export const useStats = (): { stats: any } => {
   const [stats, setStats] = useState(null)
@@ -14,7 +13,9 @@ export const useStats = (): { stats: any } => {
           const newstats = await fetchDealStats()
           setStats(newstats)
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error(e)
+      }
     }
 
     run()
