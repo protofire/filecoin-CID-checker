@@ -18,6 +18,8 @@ services:
     environment:
       - CID_DB_CONNECTIONSTRING=mongodb://mongo:27017
       - CID_DB_NAME='cid_checker_watcher'
+      - CID_LOTUS_RPCURL=http://localhost:1234/rpc/v0
+      - CID_LOTUS_JWT_TOKEN=''
       - PORT=3000
     depends_on:
       - mongo
@@ -36,7 +38,7 @@ services:
       - mongo
 
   caddy:
-    image: caddy
+    image: caddy:2.4.3-alpine
     restart: always
     ports:
       - 80:80

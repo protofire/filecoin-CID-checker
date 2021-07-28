@@ -1,10 +1,10 @@
-import React, { HTMLAttributes } from 'react'
+import React, { HTMLAttributes, useEffect, useState, useMemo } from 'react'
 import styled from 'styled-components'
 
 import { ModalWrapper } from './modalWrapper.component'
-import { DealTitles, DealValue } from '../utils/types'
+import { DealDetails, DealTitles, DealValue } from '../utils/types'
 import { DealStatusIcon } from './dealStatusIcon.component'
-import { truncateStringInTheMiddle } from '../utils/deals'
+import { fetchDealDetails, truncateStringInTheMiddle } from '../utils/deals'
 import { Button } from './button.component'
 import { CopyText } from './copyText.component'
 import { ShareDeal } from './shareDeal.component'
@@ -64,6 +64,23 @@ const CopyTextWrapper = styled(CopyText)`
 
 export const DealDetailModal = (props: Props) => {
   const { onClose, isOpen, deal } = props
+  const [dealDetails, setDealDetails] = useState<DealDetails | undefined>()
+  const clientAddress = useMemo(() => {
+    return dealDetails && dealDetails.clientAddress ? dealDetails.clientAddress : 'loading'
+  }, [dealDetails])
+
+  useEffect(() => {
+    async function run() {
+      if (deal && deal.DealID) {
+        try {
+          const details = await fetchDealDetails(`${deal.DealID}`)
+          setDealDetails(details)
+        } catch {}
+      }
+    }
+    setDealDetails(undefined)
+    run()
+  }, [deal])
 
   if (!deal) {
     return null
@@ -107,6 +124,14 @@ export const DealDetailModal = (props: Props) => {
         <Dots />
         <SpanValue>{deal.Client}</SpanValue>
         <CopyText text={deal.Client} title="Click to copy Client" />
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.ClientAddress}</SpanTitle>
+        <Dots />
+        <SpanValue title={clientAddress}>
+          {truncateStringInTheMiddle(clientAddress, 6, 4)}
+        </SpanValue>
+        <CopyTextWrapper text={clientAddress} title="Click to copy Client" />
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.PieceSize}</SpanTitle>

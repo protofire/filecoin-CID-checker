@@ -29,6 +29,7 @@ export enum DealTitles {
   MinerID = 'Miner ID',
   PayloadCID = 'Payload CID',
   Client = 'Client',
+  ClientAddress = 'Client Address',
   PieceSize = 'Piece Size',
   VerifiedDeal = 'Verified Deal',
   StartEpoch = 'Start Deal',
@@ -38,4 +39,8 @@ export enum DealTitles {
   ProviderCollateral = 'Miner Collateral',
   ClientCollateral = 'Client Collateral',
   State = 'Status',
+}
+
+export interface DealDetails {
+  clientAddress?: string
 }
