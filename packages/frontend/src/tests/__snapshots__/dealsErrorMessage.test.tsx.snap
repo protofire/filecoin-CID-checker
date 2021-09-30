@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<DealsErrorMessage /> spec renders the component 1`] = `
+<div>
+  <div
+    class="sc-bdnylx dAbJmV"
+  >
+    There is an error fetching the Deals
+  </div>
+</div>
+`;

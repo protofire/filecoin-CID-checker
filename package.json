@@ -1,0 +1,12 @@
+{
+  "name": "filecoin-CID-checker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:protofire/filecoin-CID-checker.git",
+  "author": "aliaksandr <plcgi1@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
