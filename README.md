@@ -96,15 +96,15 @@ List of available environment variables for app configuration.
 
 ##### API component
 
-See packages/backend/.env-example 
+See [packages/backend/.env-example](packages/backend/.env-example) 
 
 ##### Watcher component
 
-See packages/watcher/.env-example
+See [packages/watcher/.env-example](packages/watcher/.env-example)
 
 ##### Frontend component 
 
-See packages/frontend/.env-example   |
+See [packages/frontend/.env-example](packages/frontend/.env-example)
 
 ## Docker images
 
