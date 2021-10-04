@@ -46,7 +46,7 @@ For the end user it doesn't require any developer skills to quickly get informat
 If you are a total beginner to this, start here!
 
 **Use remote CID checker service:**
-1. Navigate to the website: [www.filecoin.tools](https://deploy-preview-20--filecoincidchecker.netlify.app/)
+1. Navigate to the website: [https://filecoin.tools](https://filecoin.tools)
 2. See the list of all piece CIDs and related information:
 - Pieced CID
 - Status
@@ -76,16 +76,18 @@ To connect the CID checker to a Lotus node specify the Lotus node's address as a
 Instructions on how to run Lotus node - https://docs.filecoin.io/get-started/lotus/installation/
 
 
-Build all docker images of the different components (the `Makefile` files has the comands to build the images individually):
+Build all docker images of the different components (the `package.json` files has the comands to build the images individually):
 
 ```
-make docker_build_all
+yarn run build
 ```
 
 Run app with docker-compose:
 
 ```
 docker-compose -f docker-compose.yaml up
+# or
+yarn start
 ```
 
 ### ENV variables
@@ -94,24 +96,15 @@ List of available environment variables for app configuration.
 
 ##### API component
 
-| Name                    | Description               | Default value              |
-| ----------------------- | ------------------------- | -------------------------- |
-| PORT                    | API port                  | 3000                       |
-| CID_DB_CONNECTIONSTRING | MongoDB connection string | mongodb://localhost:27017/ |
-| CID_DB_NAME             | MongoDB database name     | cid_checker_watcher        |
- 
+See packages/backend/.env-example 
 
 ##### Watcher component
 
-| Name                    | Description                    | Default value                 |
-| ----------------------- | ------------------------------ | ----------------------------- |
-| CID_DB_CONNECTIONSTRING | MongoDB connection string      | mongodb://localhost:27017/    |
-| CID_DB_NAME             | MongoDB database name          | cid_checker_watcher           |
-| CID_LOTUS_RPCURL        | HTTP address of Lotus node     | http://3.9.46.104:1234/rpc/v0 |
-| CID_LOTUS_JWT_TOKEN     | JWT token required in requests | ''                            |
-| SLEEP_TIPSET_CHECK_MS   | Time between processing loops  | 25000 (milliseconds)          |
+See packages/watcher/.env-example
 
- 
+##### Frontend component 
+
+See packages/frontend/.env-example   |
 
 ## Docker images
 
@@ -131,7 +124,7 @@ API that queries and searches through the DB to serve the UI
 
 #### cid-checker-frontend
 
-Web UI created via [create-react-app](https://reactjs.org/docs/create-a-new-react-app.html)
+Web UI created via [create-react-app](https://reactjs.org/docs/create-a-new-react-app.html) and typescript
 
 #### caddy
 
@@ -165,28 +158,80 @@ filecoin.tools {
 
 The main components of the CID checker are:
 
-### Watcher
+### Watcher (packages/watcher, typescript)
 
-Periodically checks the network for new chain height. Every time a new height is detected, the watcher runs the _processors_ (originally, more than one). Currently the only processor that runs ins the `DealsProcessor` that calls Lotus StateMarketDeals() method and saves all deals into the "deals" collection.
+Periodically checks the network for new chain height. 
+Every time a new height is detected, the watcher runs the _processors_ (originally, more than one). Currently the only processor that runs ins the `DealsProcessor` that calls Lotus StateMarketDeals() method and saves all deals into the "deals" collection.
 
-The watcher component is coded using typescript and details about how to run it indivitually can be found in `/watcher/package.json`
+### API (packages/backend, nodejs)
 
-### API
+Used in frontend for remote REST calls
+Has openapi interactive UI to make calls ( route /docs )
 
-Two API endpoints available:
+### Frontend (packages/frontend typescript)
 
-* `/deals`
-  
-  get deals information about all deals from the database.
+create-react-app based application that queries the API
 
-* `/deals/:selector`
-  
-  get deals by selector: Piece CID, Miner ID, Deal ID and Payload CID.
+## Run app components
 
-Both endpoints support pagination.
+### With docker-compose
 
-The api component is coded using typescript and details about how to run it indivitually can be found in `/api/package.json`
+#### Dependencies
 
-### Frontend
+1. docker-compose [https://docs.docker.com/compose/](https://docs.docker.com/compose/)
+2. yarn - [https://yarnpkg.com/](https://yarnpkg.com/)
+ 
+#### Process
 
-create-react-app based application that queries the API. More details about how to run it and the environmental variables can be found in `/ui`.
+1. Got to package root dir
+2. Fill .env file - as an example - .env-example
+3. Build containers(once, after each changes in code)
+
+```
+yarn build # all
+
+# or as separated
+yarn build:api
+yarn build:ui
+yarn build:watcher
+
+```
+
+4. Run
+
+```
+    yarn install
+    yarn start # will run all app components, app will be available on url http://localhost
+    # or separated
+    yarn run start:mongo
+    yarn run start:api
+    yarn run start:ui
+    yarn run start:watcher
+        
+    yarn stop # stop all containers
+    # or separated
+    yarn run start:mongo
+    yarn run stop:api:dc
+    yarn run stop:ui:dc
+    yarn run stop:watcher:dc
+```
+
+### As separated services
+
+#### Dependencies
+
+1. yarn - [https://yarnpkg.com/](https://yarnpkg.com/)
+
+#### Process
+
+1. install dependencies
+```
+yarn install
+```
+2. run services in different terminals
+
+```
+yarn run start:ui
+yarn run start:api
+yarn run start:watcher
+```

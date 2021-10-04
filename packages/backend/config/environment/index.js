@@ -1,35 +1,30 @@
 const path = require('path')
 
-const env = process.env.NODE_ENV || 'dev'
-
 const dotenv = require('dotenv')
 
 dotenv.config({ path: path.resolve(`./.env`) })
 
-// TODO resolve me
-//import * as logger from '../../../shared/src/helpers/logger'
-
-//const { createLogger } = logger
+const env = process.env
 
 const dbOptions = {
-  uri: process.env.CID_DB_CONNECTIONSTRING,
-  name: process.env.CID_DB_NAME,
+  uri: env.CID_DB_CONNECTIONSTRING,
+  name: env.CID_DB_NAME,
 }
 
 // All configurations will extend these options
 // ============================================
 const all = {
-  env,
+  env: env.NODE_ENV,
   // Server port
-  port: process.env.PORT || 4343,
+  port: env.PORT || 3000,
   // Server IP
-  ip: process.env.IP || '0.0.0.0',
+  ip: env.IP || '0.0.0.0',
 
   db: dbOptions,
 
   lotus: {
-    url: process.env.CID_LOTUS_RPCURL,
-    token: process.env.CID_LOTUS_JWT_TOKEN,
+    url: env.CID_LOTUS_RPCURL,
+    token: env.CID_LOTUS_JWT_TOKEN,
   },
   logging: {
     timestamp: () => `,"timestamp":"${new Date(Date.now()).toISOString()}"`,
@@ -49,10 +44,5 @@ const mod = require(`./${process.env.NODE_ENV}`) || {}
 /* eslint-enable */
 
 const result = { ...all, ...mod }
-
-// logger related code
-//const createLoggerOpts = { ...result.logging, env: result.env }
-
-//result.logger = createLogger(createLoggerOpts)
 
 module.exports = result

@@ -179,6 +179,7 @@ export const Deals = () => {
                   <TH>TOTAL UNIQUE CLIENTS</TH>
                   <TH>TOTAL STORAGE DEALS</TH>
                   <TH>TOTAL DATA STORED</TH>
+                  <TH>LATEST HEIGHT</TH>
                 </tr>
               </THead>
               <tbody>
@@ -194,6 +195,7 @@ export const Deals = () => {
                         : null
                     }
                   </StatValue>
+                  <StatValue>{stats?.latestHeight}</StatValue>
                 </tr>
               </tbody>
             </Table>

@@ -9,7 +9,7 @@ let dbo: Db
 export function getDbo(): Promise<Db> {
   if (dbo) return Promise.resolve(dbo)
 
-  logger('Initializing DB connection...')
+  logger('Initializing DB connection...', { DB_CONNECTIONSTRING, DB_NAME })
   return new Promise((resolve, reject) => {
     MongoClient.connect(
       DB_CONNECTIONSTRING,
@@ -19,12 +19,15 @@ export function getDbo(): Promise<Db> {
       },
       function (err, db) {
         if (err) {
-          logger('Something went wrong:')
+          logger('watcher DB connector error:')
           logger(err)
-          reject(err)
+          return reject(err)
         }
         dbo = db.db(DB_NAME)
-        resolve(dbo)
+
+        logger('DB connected')
+
+        return resolve(dbo)
       },
     )
   })

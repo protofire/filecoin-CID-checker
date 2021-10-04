@@ -8,6 +8,7 @@ const schema = {
   numberOfUniqueCIDs: { type: Number },
   totalDealSize: { type: Number },
   totalDeals: { type: Number },
+  latestHeight: { type: Number },
 }
 const StatsSchema = new Schema(schema, { _id: false });
 

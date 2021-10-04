@@ -8,5 +8,31 @@
   "private": true,
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "start": "docker-compose up -d",
+    "stop": "docker-compose stop",
+
+    "start:dev": "docker-compose up",
+    "stop": "docker-compose stop",
+
+    "start:mongo:dc": "docker-compose start mongo",
+    "stop:mongo:dc": "docker-compose stop mongo",
+
+    "start:api": "yarn workspace cid-checker-fastify-api start",
+    "stop:api:dc": "docker-compose stop cid-checker-api",
+
+    "start:watcher": "yarn workspace cid-checker-watcher start",
+    "start:watcher:dc": "docker-compose start cid-checker-watcher",
+    "stop:watcher:dc": "docker-compose stop cid-checker-watcher",
+
+    "start:ui": "yarn workspace cid-checker-ui start",
+    "start:ui:dc": "docker-compose start cid-checker-frontend",
+    "stop:ui:dc": "docker-compose stop cid-checker-frontend",
+
+    "build": "docker-compose build --force-rm",
+    "build:ui": "docker-compose build --force-rm cid-checker-frontend",
+    "build:api": "docker-compose build --force-rm cid-checker-api",
+    "build:watcher": "docker-compose build --force-rm cid-checker-watcher"
+  }
 }

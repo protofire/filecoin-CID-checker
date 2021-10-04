@@ -7,21 +7,17 @@ const createModels = (path) => {
 }
 
 const connect = async (app, dbConfig, models) => {
-  app.log.info('Connecting mongo')
+  const uri = `${dbConfig.uri}/${dbConfig.name}`
+
+  app.log.info('Connecting mongo', { uri })
 
   mongoose.connection.on("connected", () => {
-    app.log.info({ actor: "MongoDB" }, "connected");
+    app.log.info({ actor: "MongoDB", uri, name: dbConfig.name }, "connected");
   });
-
-  // mongoose.connection.on("open", () => {
-  //   app.log.info({ actor: "MongoDB" }, "opened");
-  // });
 
   mongoose.connection.on("disconnected", () => {
     app.log.error({ actor: "MongoDB" }, "disconnected");
   });
-
-  const uri = `${dbConfig.uri}${dbConfig.name}`
 
   await mongoose.connect(
     uri,

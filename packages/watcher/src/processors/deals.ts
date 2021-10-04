@@ -98,6 +98,7 @@ export const DealsProcessor = async (height: number): Promise<boolean> => {
         },
       ], { allowDiskUse: true }).toArray();
     stats['numberOfUniqueCIDs'] = queryResults[0].count;
+    stats.latestHeight = height
 
     queryResults = await dbo
       .collection('deals')

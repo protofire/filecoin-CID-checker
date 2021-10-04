@@ -10,5 +10,5 @@ Node-based app that feeds the cid-checker database with information from the con
 
 ## More information
 
-- Check the file `.env.example` for env variables config.
+- Check the file `.env-example` for env variables config.
 - Check the file `package.json` for the available npm scripts.

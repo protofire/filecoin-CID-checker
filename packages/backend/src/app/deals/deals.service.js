@@ -60,6 +60,7 @@ class DealsService {
 
   async getStats (where, models) {
     const result = await models.Stats.findOne(where)
+
     return result
   }
 
@@ -87,6 +88,7 @@ class DealsService {
 
     return response
   }
+
 }
 
 module.exports = DealsService

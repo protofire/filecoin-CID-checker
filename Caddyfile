@@ -1,5 +1,6 @@
 :80 {
   handle_path /api/* {
+    uri strip_prefix api
     reverse_proxy http://cid-checker-api:3000
   }
   reverse_proxy http://cid-checker-frontend:5000

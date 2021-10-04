@@ -43,7 +43,7 @@ export type RemoteData<D> = NotAsked | Loading | Reloading<D> | Success<D> | Fai
 export const RemoteData = {
   notAsked: (): NotAsked => ({ _type: Types.notAsked }),
   loading: (): Loading => ({ _type: Types.loading }),
-  failure: (error: Error): Failure => ({ _type: Types.failure, error }),
+  failure: (error: any): Failure => ({ _type: Types.failure, error }),
   success: <D>(data: D): Success<D> => ({ _type: Types.success, data }),
   reloading: <D>(data: D): Reloading<D> => ({ _type: Types.reloading, data }),
   is: {

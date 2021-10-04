@@ -30,7 +30,6 @@ export const useDeals = (
             RemoteData.hasData(deals) ? RemoteData.reloading(deals.data) : RemoteData.loading(),
           )
         }
-
         const deals = await fetchDeals(encodedSearch, page, query, activeFilter, verifiedFilter)
 
         if (!didCancel) {

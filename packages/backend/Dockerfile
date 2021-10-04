@@ -4,8 +4,10 @@ WORKDIR /app/
 
 COPY ./ .
 
-RUN yarn install
+EXPOSE 3000
 
-WORKDIR /app/packages/watcher
+WORKDIR /app/packages/backend
+
+RUN yarn install
 
 ENTRYPOINT [ "yarn", "start" ]

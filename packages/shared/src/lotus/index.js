@@ -32,14 +32,8 @@ class LotusApi {
     }
   }
 
-  getUrl(path, options = {}) {
-    const result = new URL(`${this.url}/${path}`)
-
-    Object.keys(options).forEach((option) => {
-      result.searchParams.append(option, options[option])
-    })
-
-    return result.toString()
+  getUrl() {
+    return this.url
   }
 
   async request(opts = { method: 'get', params: {} }, options = {}) {
@@ -47,7 +41,6 @@ class LotusApi {
 
     const authHeaders = this.authHeaders()
     let result
-
     switch (opts.method) {
       case 'get':
       case 'delete':
@@ -78,6 +71,7 @@ class LotusApi {
         break
     }
     const text = await result.text()
+
     const json = JSON.parse(text || '{}')
 
     // if (
@@ -110,10 +104,7 @@ class LotusApi {
   }
 
   async getStateAccountKey (id) {
-    const requestStateAccountKey = {
-
-    }
-    return this.request({
+    const payload = {
       method: 'post',
       path: '',
       params: {
@@ -121,7 +112,9 @@ class LotusApi {
         method: 'Filecoin.StateAccountKey',
         params: [id, null],
       }
-    })
+    }
+
+    return this.request(payload)
   }
 
   async getStateLookupId(address) {
@@ -145,6 +138,17 @@ class LotusApi {
         ...baseBody,
         method: 'Filecoin.StateReadState',
         params: [address, null],
+      }
+    })
+  }
+
+  async getLogList () {
+    return this.request({
+      method: 'post',
+      path: '',
+      params: {
+        ...baseBody,
+        method: 'Filecoin.LogList',
       }
     })
   }

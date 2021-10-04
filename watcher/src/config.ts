@@ -12,9 +12,9 @@ envVarNames.forEach((n) => {
   }
 })
 
-export const DB_CONNECTIONSTRING = process.env.CID_DB_CONNECTIONSTRING as string
+export const DB_CONNECTIONSTRING = process.env.CID_DB_CONNECTIONSTRING as string || 'mongodb://mongo:27017'
 export const DB_NAME = process.env.CID_DB_NAME as string
-export const LOTUS_RPCURL = process.env.CID_LOTUS_RPCURL as string
+export const LOTUS_RPCURL = process.env.CID_LOTUS_RPCURL as string || 'http://node.glif.io/space06/lotus/rpc/v0'
 export const LOTUS_JWT_TOKEN = process.env.CID_LOTUS_JWT_TOKEN as string
 export const SLEEP_TIPSET_CHECK_MS = Number.parseInt(
   process.env.SLEEP_TIPSET_CHECK_MS as string,
