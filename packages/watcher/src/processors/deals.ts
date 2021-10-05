@@ -1,12 +1,13 @@
-import { getLogger } from '../helpers/logger'
+import { prettyLogger } from '../helpers/logger'
 import { getTipSetKeyByHeight, getMarketDeals } from '../helpers/lotusApi'
 import { getDbo } from '../helpers/db'
 
+const NS = 'processors/runProcessorUptoChainHeadHeight'
+
 export const DealsProcessor = async (height: number): Promise<boolean> => {
-  const logger = getLogger('processors/runProcessorUptoChainHeadHeight')
   let success = true
   try {
-    logger(`Running DealsProcessor at height: ${height}...`)
+    prettyLogger.info(`${NS} Running DealsProcessor at height: ${height}...`)
 
     const dbo = await getDbo()
     const writeOps: any[] = []
@@ -14,7 +15,8 @@ export const DealsProcessor = async (height: number): Promise<boolean> => {
     const tipSetKey = await getTipSetKeyByHeight(height)
     const result = await getMarketDeals(tipSetKey)
 
-    logger(`Deals from lotus API: ${Object.keys(result).length}`)
+    prettyLogger.info(`${NS} Deals from lotus API: ${Object.keys(result).length}`)
+
     Object.keys(result).forEach(function (key) {
       const deal = result[key]
       deal['DealID'] = parseInt(key)
@@ -136,7 +138,8 @@ export const DealsProcessor = async (height: number): Promise<boolean> => {
       ], { allowDiskUse: true }).toArray();
     stats['totalDeals'] = queryResults[0].count;
 
-    logger(stats);
+    prettyLogger.info(`${NS} Stats`, stats)
+
     await dbo.collection('stats').bulkWrite([{
       replaceOne: {
         filter: { _id: 1 },
@@ -145,9 +148,8 @@ export const DealsProcessor = async (height: number): Promise<boolean> => {
       }
     }]);
 
-  } catch (err) {
-    logger(`Something failed in DealsProcessor:`)
-    logger(err)
+  } catch (err: any) {
+    prettyLogger.error(err, `${NS} Error`)
     success = false
   }
   return success
