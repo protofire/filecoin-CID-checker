@@ -6,7 +6,7 @@ module.exports = {
     {
       httpMethod: 'get',
       controllerMethod: 'get',
-      path: '/version',
+      path: '/api/version',
       preHandler: [],
     },
   ],
