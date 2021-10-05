@@ -138,7 +138,7 @@ export const DealsProcessor = async (height: number): Promise<boolean> => {
       ], { allowDiskUse: true }).toArray();
     stats['totalDeals'] = queryResults[0].count;
 
-    prettyLogger.info(`${NS} Stats`, stats)
+    prettyLogger.info(stats, `${NS} Stats`)
 
     await dbo.collection('stats').bulkWrite([{
       replaceOne: {
