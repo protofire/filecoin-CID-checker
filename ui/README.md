@@ -1,3 +1,5 @@
+## Deprecated. Moved to [../packages/frontend](../packages/frontend)
+
 [![Netlify Status](https://api.netlify.com/api/v1/badges/cc33b1e5-1bf1-4759-bf3f-e7ced95bc65c/deploy-status)](https://app.netlify.com/sites/peaceful-yalow-7b1e01/deploys)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

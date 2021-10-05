@@ -1,5 +1,7 @@
 # cid-checker-api
 
+## Deprecated. Moved and refactored to [../packages/backend](../packages/backend)
+
 Express-based app that serves the cid-checker database content to the UI.
 
 ## Launch the application
