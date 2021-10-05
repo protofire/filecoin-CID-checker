@@ -1,4 +1,4 @@
-export const FILECOIN_CID_CHECKER_API: string = process.env.REACT_APP_FILECOIN_CID_CHECKER_API || ''
+export const FILECOIN_CID_CHECKER_API: string = process.env.REACT_APP_FILECOIN_CID_CHECKER_API || '/api'
 export const DOCUMENT_TITLE: string = process.env.REACT_APP_TITLE || 'FileCoin CID Checker'
 export const DOCUMENT_DESCRIPTION: string =
   process.env.REACT_APP_DESCRIPTION ||
