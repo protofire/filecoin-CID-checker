@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+
+dotenv.config()
+
 const envVarNames = [
   'SLEEP_TIPSET_CHECK_MS',
   'CID_DB_CONNECTIONSTRING',
