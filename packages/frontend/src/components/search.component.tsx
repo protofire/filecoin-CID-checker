@@ -10,20 +10,20 @@ import { useSearchContext } from '../state/search.context'
 const SearchWrapper = styled.div`
   position: relative;
   display: inline-block;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.xxl}) {
     width: 650px;
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.xl}) {
     width: 500px;
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.md}) {
     width: 300px;
     margin-left: 50px;
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.sm}) {
     width: 250px;
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.xs}) {
     width: 250px;
   }
 `
@@ -36,34 +36,34 @@ export const Input = styled.input`
   border-bottom-style: hidden !important;
   line-height: 1.2;
   outline: none;
-  height: ${props => props.theme.textfield.height} !important;
-  width: ${props => props.theme.textfield.width} !important;
-  border-radius: ${props => props.theme.textfield.borderRadius} !important;
-  font-family: ${props => props.theme.textfield.fontFamily};
-  font-size: ${props => props.theme.textfield.fontSize};
-  font-weight: ${props => props.theme.textfield.fontWeight};
-  padding: ${props =>
+  height: ${(props) => props.theme.textfield.height} !important;
+  width: ${(props) => props.theme.textfield.width} !important;
+  border-radius: ${(props) => props.theme.textfield.borderRadius} !important;
+  font-family: ${(props) => props.theme.textfield.fontFamily};
+  font-size: ${(props) => props.theme.textfield.fontSize};
+  font-weight: ${(props) => props.theme.textfield.fontWeight};
+  padding: ${(props) =>
     props.theme.textfield.paddingVertical +
     ' ' +
     props.theme.textfield.paddingHorizontal} !important;
-  text-align: ${props => props.theme.textfield.textAlign};
-  background-color: ${props => props.theme.textfield.backgroundColor};
+  text-align: ${(props) => props.theme.textfield.textAlign};
+  background-color: ${(props) => props.theme.textfield.backgroundColor};
 
   // Filled
-  color: ${props => props.theme.textfield.color};
+  color: ${(props) => props.theme.textfield.color};
 
   &::placeholder {
-    color: ${props => props.theme.textfield.placeholderColor};
+    color: ${(props) => props.theme.textfield.placeholderColor};
   }
 
   &:hover {
-    background-color: ${props => props.theme.textfield.hoverBackgroundColor};
-    color: ${props => props.theme.textfield.hoverColor};
+    background-color: ${(props) => props.theme.textfield.hoverBackgroundColor};
+    color: ${(props) => props.theme.textfield.hoverColor};
   }
 
   &:active,
   &:focus-within {
-    color: ${props => props.theme.textfield.focusColor};
+    color: ${(props) => props.theme.textfield.focusColor};
     border: solid 1px rgba(66, 193, 202, 0.5);
     background-color: rgba(207, 224, 255, 0.1);
     border-top-style: solid !important;
@@ -71,19 +71,19 @@ export const Input = styled.input`
     border-left-style: solid !important;
     border-bottom-style: solid !important;
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xxl}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.xxl}) {
     width: 650px !important;
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xl}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.xl}) {
     width: 500px !important;
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.md}) {
     width: 300px !important;
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.sm}) {
     width: 250px !important;
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.xs}) {
     width: 250px !important;
   }
 `
@@ -193,7 +193,7 @@ export const Search = () => {
         className="search"
         value={searchValueLocal}
         onChange={onChange}
-        onKeyPress={event => {
+        onKeyPress={(event) => {
           if (event.key === 'Enter') onSearch()
         }}
         name="value"

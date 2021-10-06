@@ -16,7 +16,9 @@ export const truncateStringInTheMiddle = (
     }
     return str
   } catch (e) {
-    console.error(e)
+    /* eslint-disable no-console*/
+    console.error('truncateStringInTheMiddle', e)
+    /* eslint-enable no-console*/
   }
 }
 

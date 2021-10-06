@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const MainWrapper: React.FC = props => {
+export const MainWrapper: React.FC = (props) => {
   const { children, ...restProps } = props
 
   return (

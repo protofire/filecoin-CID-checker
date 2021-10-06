@@ -5,7 +5,7 @@ const BodyWrapper = styled.div`
   margin-top: 48px;
 `
 
-export const Body: React.FC = props => {
+export const Body: React.FC = (props) => {
   const { children, ...restProps } = props
 
   return <BodyWrapper {...restProps}>{children}</BodyWrapper>

@@ -13,7 +13,9 @@ export const useStats = (): { stats: any } => {
           setStats(newstats)
         }
       } catch (e) {
-        console.error(e)
+        /* eslint-disable no-console*/
+        console.error('useStats', e)
+        /* eslint-enable no-console*/
       }
     }
 

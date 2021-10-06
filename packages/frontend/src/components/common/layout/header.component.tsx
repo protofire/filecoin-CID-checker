@@ -23,7 +23,7 @@ const CheckboxFilterWrapper = styled.div`
   height: 56px;
   text-decoration: none;
 
-  @media (min-width: ${props => props.theme.themeBreakPoints.md}) {
+  @media (min-width: ${(props) => props.theme.themeBreakPoints.md}) {
     align-items: center;
     margin: 48px 48px auto auto;
     max-width: none;

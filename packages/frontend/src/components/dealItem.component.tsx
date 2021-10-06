@@ -48,13 +48,13 @@ const MinerSearch = styled.span`
   }
 `
 const TDFirst = styled(TD)`
-  @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.sm}) {
     padding-left: 3px;
     & > div {
       display: none;
     }
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.xs}) {
     padding-left: 3px;
     & > div {
       display: none;
@@ -63,7 +63,7 @@ const TDFirst = styled(TD)`
 `
 
 const TDSecond = styled(TD)`
-  @media (max-width: ${props => props.theme.themeBreakPoints.lg}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.lg}) {
     & > div > span {
       display: none;
     }
@@ -71,10 +71,10 @@ const TDSecond = styled(TD)`
 `
 
 const TDThird = styled(TD)`
-  @media (max-width: ${props => props.theme.themeBreakPoints.lg}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.lg}) {
     width: 20%;
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.sm}) {
     & > div {
       display: none;
     }
@@ -82,15 +82,15 @@ const TDThird = styled(TD)`
 `
 
 const TDFour = styled(TD)`
-  @media (max-width: ${props => props.theme.themeBreakPoints.lg}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.lg}) {
     width: 20%;
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.sm}) {
     & > div {
       display: none;
     }
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.xs}) {
     & > div {
       display: none;
     }
@@ -99,17 +99,17 @@ const TDFour = styled(TD)`
 
 const TDFive = styled(TD)`
   width: 35%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.sm}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.sm}) {
     & > div {
       display: none;
     }
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.xs}) {
     & > div {
       display: none;
     }
   }
-  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.md}) {
     padding-left: 0px;
     width: 25%;
   }
@@ -122,7 +122,7 @@ const FileCidColumn = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 100%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.md}) {
     display: block;
     overflow: hidden;
     white-space: nowrap;

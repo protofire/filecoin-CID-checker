@@ -17,8 +17,8 @@ import { useStats } from '../hooks/useStats.hook'
 import prettyBytes from 'pretty-bytes'
 
 interface ParamTypes {
-    deal: string,
-    search: string
+  deal: string
+  search: string
 }
 
 const BlockWrapper = styled.div`
@@ -56,12 +56,12 @@ const THead = styled.thead`
 
 const THFirst = styled(TH)`
   width: 35%;
-  @media (max-width: ${props => props.theme.themeBreakPoints.xs}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.xs}) {
     width: 20%;
   }
 `
 const THSecond = styled(TH)`
-  @media (max-width: ${props => props.theme.themeBreakPoints.lg}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.lg}) {
     width: 30px;
     visibility: hidden;
   }
@@ -71,7 +71,7 @@ const THFourth = styled(TH)``
 const THFive = styled(TH)`
   width: 35%;
   text-align: right;
-  @media (max-width: ${props => props.theme.themeBreakPoints.md}) {
+  @media (max-width: ${(props) => props.theme.themeBreakPoints.md}) {
     padding-left: 0px;
     width: 20%;
   }
@@ -189,11 +189,7 @@ export const Deals = () => {
                   <StatValue>{stats?.numberOfUniqueClients}</StatValue>
                   <StatValue>{stats?.totalDeals}</StatValue>
                   <StatValue>
-                    {
-                      stats && stats.totalDealSize
-                        ? prettyBytes(stats.totalDealSize)
-                        : null
-                    }
+                    {stats && stats.totalDealSize ? prettyBytes(stats.totalDealSize) : null}
                   </StatValue>
                   <StatValue>{stats?.latestHeight}</StatValue>
                 </tr>

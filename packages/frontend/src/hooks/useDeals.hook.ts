@@ -26,14 +26,14 @@ export const useDeals = (
         if (reqHash !== crtReqHash) {
           setDeals(RemoteData.loading())
         } else {
-          setDeals(deals =>
+          setDeals((deals) =>
             RemoteData.hasData(deals) ? RemoteData.reloading(deals.data) : RemoteData.loading(),
           )
         }
         const deals = await fetchDeals(encodedSearch, page, query, activeFilter, verifiedFilter)
 
         if (!didCancel) {
-          setDeals(currentDeals =>
+          setDeals((currentDeals) =>
             RemoteData.hasData(currentDeals) && page !== 1
               ? RemoteData.success(currentDeals.data.concat(deals))
               : RemoteData.success(deals),

@@ -7,7 +7,7 @@ interface Props extends React.ComponentProps<typeof Modal> {
   theme?: any
 }
 
-export const ModalContainer: React.FC<Props> = props => {
+export const ModalContainer: React.FC<Props> = (props) => {
   const { onRequestClose, theme, children, ...restProps } = props
   const { modalStyle } = theme
 

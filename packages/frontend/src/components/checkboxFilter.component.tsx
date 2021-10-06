@@ -45,12 +45,8 @@ const UncheckedBox = () => (
 )
 
 export const CheckboxFilter = () => {
-  const {
-    activeFilter,
-    verifiedFilter,
-    setCurrentActiveFilter,
-    setCurrentVerifiedFilter,
-  } = useSearchContext()
+  const { activeFilter, verifiedFilter, setCurrentActiveFilter, setCurrentVerifiedFilter } =
+    useSearchContext()
 
   return (
     <>

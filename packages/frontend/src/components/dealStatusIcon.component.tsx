@@ -56,7 +56,7 @@ const getStatusTypeStyles = (status: DealStatus = DealStatus.Unknown): any => {
 }
 
 const DealStatusCSS = css<DealStatusProps>`
-  ${props => getStatusTypeStyles(props.status)}
+  ${(props) => getStatusTypeStyles(props.status)}
 `
 
 const Wrapper = styled.div<DealStatusProps>`
