@@ -54,7 +54,7 @@ export const useDeals = (
     return () => {
       didCancel = true
     }
-  }, [search, page, query, activeFilter, verifiedFilter])
+  }, [search, page, query, activeFilter, verifiedFilter, crtReqHash, encodedSearch, reqHash])
 
   return {
     deals,

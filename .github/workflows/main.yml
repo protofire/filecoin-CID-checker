@@ -67,11 +67,11 @@ jobs:
 #
 #    - name: rsync over ssh
 #      run: |
-#        rsync -azvvv --delete --copy-links --exclude=.ssh/ --exclude=docker-compose.yaml --exclude=postgres/ --exclude=.git --exclude=node_modules ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP_1 }}:www/
+#        rsync -azvvv --delete --copy-links --exclude=.ssh/ --exclude=docker-compose.yaml --exclude=.git --exclude=node_modules ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:www/
 #
 #    - name: Run remote commands
 #      run: |
-#        ssh -n -f  ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP_1 }} "cd www/packages/backend && pm2 restart .ecosystem.config.js --env=production && cd ../watcher && pm2 restart .ecosystem.config.js --env=production && pm2 save"
+#        ssh -n -f  ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} "cd www/packages/backend && pm2 restart .ecosystem.config.js --env=production && cd ../watcher && pm2 restart .ecosystem.config.js --env=production && pm2 save"
 
 #  build:
 #    name: Build
