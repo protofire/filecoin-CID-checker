@@ -5,12 +5,14 @@ import { getDbo } from '../helpers/db'
 
 const NS = 'processors/runProcessorUptoChainHeadHeight'
 
+/* eslint-disable */
+
 export const runProcessorsWithChainHeadHeight = async (): Promise<void> => {
   let chainHead
   try {
     chainHead = await getChainHead()
   } catch (err: any) {
-      prettyLogger.error(err, `${NS} error`)
+    prettyLogger.error(err, `${NS} error`)
     throw new Error('Could not get chain head')
   }
 
@@ -27,3 +29,4 @@ export const runProcessorsWithChainHeadHeight = async (): Promise<void> => {
     throw err
   }
 }
+/* eslint-enable */

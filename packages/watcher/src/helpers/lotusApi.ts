@@ -12,11 +12,13 @@ const requestChainHead = {
   method: 'Filecoin.ChainHead',
   params: [],
 }
+/* eslint-disable */
 const requestStateMarketDeals = (tipSetKey: any) => ({
   ...baseBody,
   method: 'Filecoin.StateMarketDeals',
   params: [tipSetKey],
 })
+
 const requestStateMinerSectors = (
   minerId: string,
   bitfield: null | [number] = null,
@@ -27,6 +29,7 @@ const requestStateMinerSectors = (
   method: 'Filecoin.StateMinerSectors',
   params: [minerId, bitfield, include, tipSetKey],
 })
+
 const requestStateMinerActiveSectors = (
   minerId: string,
   tipSetKey: undefined | any = null,
@@ -41,11 +44,13 @@ const requestChainGetTipSetByHeight = (height: number) => ({
   method: 'Filecoin.ChainGetTipSetByHeight',
   params: [height, null],
 })
+
 const requestStateMinerFaults = (address: string, tipSetKey: any) => ({
   ...baseBody,
   method: 'Filecoin.StateMinerFaults',
   params: [address, tipSetKey],
 })
+
 const requestStateMinerRecoveries = (address: string, tipSetKey: any) => ({
   ...baseBody,
   method: 'Filecoin.StateMinerRecoveries',
@@ -150,3 +155,4 @@ export const getMarketDeals = async (tipSetKey: any): Promise<any> => {
   const response: any = await gotPost(requestStateMarketDeals(tipSetKey))
   return response.body.result
 }
+/* eslint-enable */
