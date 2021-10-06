@@ -3,8 +3,8 @@ name: Build, test and deploy
 on:
   push:
     branches: [ master ]
-#  pull_request:
-#    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   Build:
@@ -22,10 +22,56 @@ jobs:
     - name: Install deps
       run: |
         yarn install
-#    - name: Lint backend
-#      run: |
-#        cd packages/backend && yarn run lint:check
+    - name: Lint backend
+      run: |
+        cd packages/backend && yarn run lint:check
+    - name: Lint frontend
+      run: |
+        cd packages/frontend && yarn run lint
+    - name: Lint watcher
+      run: |
+        cd packages/watcher && yarn run lint
+    - name: Prepare backend env
+      run: |
+        touch packages/backend/.env
+        echo "NODE_ENV=production" > packages/backend/.env
+        echo "CID_DB_CONNECTIONSTRING=${{secrets.CID_DB_CONNECTIONSTRING}}" >> packages/backend/.env
+        echo "CID_DB_NAME=${{secrets.CID_DB_NAME}}" >> packages/backend/.env
+        echo "CID_LOTUS_RPCURL=http://node.glif.io/space06/lotus/rpc/v0" >> packages/backend/.env
+        echo "CID_LOTUS_JWT_TOKEN=${{secrets.CID_LOTUS_JWT_TOKEN}}" >> packages/backend/.env
 
+    - name: Prepare watcher env
+      run: |
+        touch packages/backend/.env
+        echo "NODE_ENV=production" > packages/watcher/.env
+        echo "CID_DB_CONNECTIONSTRING=${{secrets.CID_DB_CONNECTIONSTRING}}" >> packages/watcher/.env
+        echo "CID_DB_NAME=${{secrets.CID_DB_NAME}}" >> packages/watcher/.env
+        echo "CID_LOTUS_RPCURL=http://node.glif.io/space06/lotus/rpc/v0" >> packages/watcher/.env
+        echo "CID_LOTUS_JWT_TOKEN=${{secrets.CID_LOTUS_JWT_TOKEN}}" >> packages/watcher/.env
+        echo "SLEEP_TIPSET_CHECK_MS=25000" >> packages/watcher/.env
+
+    - name: Build watcher
+      run: |
+        cd packages/watcher && yarn build && cp .env build/ && ls -la build
+
+    - name: Build frontend
+      run: |
+        cd packages/frontend && yarn build && ls -la build
+##   TODO check if github can connect to server
+#    - name: Install SSH key
+#      uses: shimataro/ssh-key-action@v2
+#      with:
+#        key: ${{ secrets.SERVER_SSH_KEY }}
+#        known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+#        if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
+#
+#    - name: rsync over ssh
+#      run: |
+#        rsync -azvvv --delete --copy-links --exclude=.ssh/ --exclude=docker-compose.yaml --exclude=postgres/ --exclude=.git --exclude=node_modules ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP_1 }}:www/
+#
+#    - name: Run remote commands
+#      run: |
+#        ssh -n -f  ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP_1 }} "cd www/packages/backend && pm2 restart .ecosystem.config.js --env=production && cd ../watcher && pm2 restart .ecosystem.config.js --env=production && pm2 save"
 
 #  build:
 #    name: Build
