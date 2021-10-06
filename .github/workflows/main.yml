@@ -3,8 +3,8 @@ name: Build, test and deploy
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+#  pull_request:
+#    branches: [ master ]
 
 jobs:
   Build:
@@ -19,7 +19,11 @@ jobs:
         node-version: '12.22'
 
     - uses: c-hive/gha-yarn-cache@v1
-#
+    - name: Install deps
+      run: |
+        yarn install
+
+
 #  build:
 #    name: Build
 #    runs-on: ubuntu-latest

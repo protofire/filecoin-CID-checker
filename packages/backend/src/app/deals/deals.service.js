@@ -58,7 +58,7 @@ class DealsService {
     return response
   }
 
-  async getStats (where, models) {
+  async getStats(where, models) {
     const result = await models.Stats.findOne(where)
 
     return result
@@ -68,27 +68,26 @@ class DealsService {
     const { lotusProvider } = deps
 
     let where = {
-      _id: query.id
-    };
+      _id: query.id,
+    }
 
     const queryResults = await models.Deals.find(where)
 
     if (queryResults.length !== 1) {
       throw new Error('Error retrieving deal')
     }
-    const deal = queryResults[0];
+    const deal = queryResults[0]
 
-    const clientId = deal.Proposal.Client;
+    const clientId = deal.Proposal.Client
 
-    const clientAddress = await lotusProvider.getStateAccountKey(clientId);
+    const clientAddress = await lotusProvider.getStateAccountKey(clientId)
     // clientAddress: { result: { ... } }
     const response = {
       clientAddress: clientAddress.result ? clientAddress.result : '',
-    };
+    }
 
     return response
   }
-
 }
 
 module.exports = DealsService

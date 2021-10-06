@@ -1,6 +1,6 @@
 const LotusApiClient = require('../src/app/lotus/lotus.service')
 
-const run = async() => {
+const run = async () => {
   const client = new LotusApiClient()
 
   try {

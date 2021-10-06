@@ -28,7 +28,7 @@ class DealsController {
     }
   }
 
-  async getStats (req, reply) {
+  async getStats(req, reply) {
     const dealProvider = req.services.deals
 
     try {
@@ -40,7 +40,7 @@ class DealsController {
     }
   }
 
-  async getDeal (req, reply) {
+  async getDeal(req, reply) {
     const dealProvider = req.services.deals
     const lotusProvider = req.services.lotus
 
