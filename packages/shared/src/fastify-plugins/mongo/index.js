@@ -7,7 +7,7 @@ const createModels = (path) => {
 }
 
 const connect = async (app, dbConfig, models) => {
-  const uri = `${dbConfig.uri}/${dbConfig.name}`
+  const uri = `${dbConfig.uri}`
 
   app.log.info('Connecting mongo', { uri })
 
@@ -19,12 +19,18 @@ const connect = async (app, dbConfig, models) => {
     app.log.error({ actor: "MongoDB" }, "disconnected");
   });
 
+  if (dbConfig.options.tls) {
+    if (!dbConfig.options.tlsCAFile) {
+      throw new Error('tls=true required tlsCAFile path to cert file')
+    }
+  }
   await mongoose.connect(
     uri,
     {
       useNewUrlParser: true,
       keepAlive: 1,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      ...dbConfig.options
     }
   );
   app.addHook('onRequest', (req, res, next) => {

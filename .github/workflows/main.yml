@@ -52,11 +52,11 @@ jobs:
 
     - name: Build watcher
       run: |
-        cd packages/watcher && yarn build && cp .env build/ && ls -la build
+        cd packages/watcher && yarn build && cp .env build/
 
     - name: Build frontend
       run: |
-        cd packages/frontend && yarn build && ls -la build
+        cd packages/frontend && yarn build
 ##   TODO check if github can connect to server
 #    - name: Install SSH key
 #      uses: shimataro/ssh-key-action@v2
