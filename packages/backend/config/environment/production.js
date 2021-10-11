@@ -8,9 +8,9 @@ const dbOptions = {
     dbName: env.CID_DB_NAME,
     auth: {
       user: env.CID_DATABASE_USER,
-      password: env.CID_DATABASE_PASSWORD
-    }
-  }
+      password: env.CID_DATABASE_PASSWORD,
+    },
+  },
 }
 
 const result = {
