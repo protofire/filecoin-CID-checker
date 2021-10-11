@@ -19,33 +19,35 @@ envVarNames.forEach((n) => {
 // export const DB_CONNECTIONSTRING = process.env.CID_DB_CONNECTIONSTRING as string
 // export const DB_NAME = process.env.CID_DB_NAME as string
 
-let dbConnection = {
-    uri: process.env.CID_DB_CONNECTIONSTRING,
-    options: {
-        dbName: process.env.CID_DB_NAME,
-        useUnifiedTopology: true
-    }
+/* eslint-disable */
+const dbConnection = {
+  uri: process.env.CID_DB_CONNECTIONSTRING,
+  options: {
+    dbName: process.env.CID_DB_NAME,
+    useUnifiedTopology: true,
+  },
 } as any
+/* eslint-enable */
 
 if (process.env.NODE_ENV === 'production') {
-    dbConnection.options = {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-        retryWrites: false,
-        auth: {
-          username: process.env.CID_DATABASE_USER,
-          password: process.env.CID_DATABASE_PASSWORD
-      }
-    }
+  dbConnection.options = {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    retryWrites: false,
+    auth: {
+      username: process.env.CID_DATABASE_USER,
+      password: process.env.CID_DATABASE_PASSWORD,
+    },
+  }
 }
 // aws specific params
-if ((/filecoin/).test(dbConnection.uri)) {
-    dbConnection.options.replicaSet = 'rs0'
-    dbConnection.options.tls = true
-    if (!process.env.CID_DB_CA_FILE) {
-        throw Error(`options.tlsCAFile required from variable CID_DB_CA_FILE`)
-    }
-    dbConnection.options.tlsCAFile = process.env.CID_DB_CA_FILE
+if (/filecoin/.test(dbConnection.uri)) {
+  dbConnection.options.replicaSet = 'rs0'
+  dbConnection.options.tls = true
+  if (!process.env.CID_DB_CA_FILE) {
+    throw Error(`options.tlsCAFile required from variable CID_DB_CA_FILE`)
+  }
+  dbConnection.options.tlsCAFile = process.env.CID_DB_CA_FILE
 }
 
 export const DB_CONNECTION = dbConnection

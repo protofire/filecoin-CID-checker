@@ -18,7 +18,7 @@ export function getDbo(): Promise<Db> {
     MongoClient.connect(
       DB_CONNECTION.uri,
       {
-          ...DB_CONNECTION.options
+        ...DB_CONNECTION.options,
       },
       function (err, db) {
         if (err) {
