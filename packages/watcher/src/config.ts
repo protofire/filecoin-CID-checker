@@ -16,8 +16,33 @@ envVarNames.forEach((n) => {
   }
 })
 
-export const DB_CONNECTIONSTRING = process.env.CID_DB_CONNECTIONSTRING as string
-export const DB_NAME = process.env.CID_DB_NAME as string
+// export const DB_CONNECTIONSTRING = process.env.CID_DB_CONNECTIONSTRING as string
+// export const DB_NAME = process.env.CID_DB_NAME as string
+
+let dbConnection = {
+    uri: process.env.DB_CONNECTIONSTRING,
+    options: {
+        dbName: process.env.CID_DB_NAME
+    }
+} as any
+
+if (process.env.NODE_ENV === 'production') {
+    dbConnection.options = {
+        replicaSet: 'rs0',
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+        tls: true,
+        retryWrites: false,
+        tlsCAFile: process.env.CID_DB_CA_FILE,
+        auth: {
+          username: process.env.CID_DATABASE_USER,
+          password: process.env.CID_DATABASE_PASSWORD
+      }
+    }
+}
+
+export const DB_CONNECTION = dbConnection
+
 export const LOTUS_RPCURL = process.env.CID_LOTUS_RPCURL as string
 export const LOTUS_JWT_TOKEN = process.env.CID_LOTUS_JWT_TOKEN as string
 export const SLEEP_TIPSET_CHECK_MS = Number.parseInt(
