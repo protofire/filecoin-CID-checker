@@ -8,7 +8,7 @@ let dbo: Db
 
 export function getDbo(): Promise<Db> {
   if (dbo) return Promise.resolve(dbo)
-  console.info('DB_CONNECTION', DB_CONNECTION)
+
   prettyLogger.info(
     { uri: DB_CONNECTION.uri, name: DB_CONNECTION.dbName },
     `${NS} Initializing DB connection...`,
