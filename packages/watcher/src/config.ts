@@ -20,25 +20,32 @@ envVarNames.forEach((n) => {
 // export const DB_NAME = process.env.CID_DB_NAME as string
 
 let dbConnection = {
-    uri: process.env.DB_CONNECTIONSTRING,
+    uri: process.env.CID_DB_CONNECTIONSTRING,
     options: {
-        dbName: process.env.CID_DB_NAME
+        dbName: process.env.CID_DB_NAME,
+        useUnifiedTopology: true
     }
 } as any
 
 if (process.env.NODE_ENV === 'production') {
     dbConnection.options = {
-        replicaSet: 'rs0',
         useUnifiedTopology: true,
         useNewUrlParser: true,
-        tls: true,
         retryWrites: false,
-        tlsCAFile: process.env.CID_DB_CA_FILE,
         auth: {
           username: process.env.CID_DATABASE_USER,
           password: process.env.CID_DATABASE_PASSWORD
       }
     }
+}
+// aws specific params
+if ((/filecoin/).test(dbConnection.uri)) {
+    dbConnection.options.replicaSet = 'rs0'
+    dbConnection.options.tls = true
+    if (!process.env.CID_DB_CA_FILE) {
+        throw Error(`options.tlsCAFile required from variable CID_DB_CA_FILE`)
+    }
+    dbConnection.options.tlsCAFile = process.env.CID_DB_CA_FILE
 }
 
 export const DB_CONNECTION = dbConnection
