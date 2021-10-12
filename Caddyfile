@@ -1,9 +1,11 @@
 :80 {
   handle_path /api/* {
     reverse_proxy http://cid-checker-api:3000
+    handle_errors {
+      rewrite * /{http.error.status_code}.html
+      root * /app
+      file_server
+    }
   }
   reverse_proxy http://cid-checker-frontend:5000
-  # log {
-  #  format single_field common_log
-  # }
 }
