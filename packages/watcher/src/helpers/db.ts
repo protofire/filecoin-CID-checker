@@ -10,7 +10,7 @@ export function getDbo(): Promise<Db> {
   if (dbo) return Promise.resolve(dbo)
 
   prettyLogger.info(
-    { uri: DB_CONNECTION.uri, name: DB_CONNECTION.dbName },
+    { uri: DB_CONNECTION.uri, name: DB_CONNECTION.options.dbName },
     `${NS} Initializing DB connection...`,
   )
 
