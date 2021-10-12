@@ -33,6 +33,7 @@ if (process.env.NODE_ENV === 'production') {
   dbConnection.options = {
     useUnifiedTopology: true,
     useNewUrlParser: true,
+    dbName: process.env.CID_DB_NAME,
     retryWrites: false,
     auth: {
       username: process.env.CID_DATABASE_USER,
