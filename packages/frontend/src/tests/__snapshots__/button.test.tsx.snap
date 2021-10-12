@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Button /> spec renders the component 1`] = `
+<div>
+  <button
+    class="sc-bdnylx jwFGUb"
+  />
+</div>
+`;

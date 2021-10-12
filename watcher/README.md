@@ -1,5 +1,7 @@
 # cid-checker-watcher
 
+## Deprecated. Moved to [../packages/watcher](../packages/watcher)
+
 Node-based app that feeds the cid-checker database with information from the configured lotus node.
 
 ## Launch the application

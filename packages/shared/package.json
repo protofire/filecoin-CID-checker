@@ -1,0 +1,61 @@
+{
+  "name": "filecoin-checker-shared",
+  "version": "1.0.0",
+  "description": "Shared libraries",
+  "author": "",
+  "license": "ISC",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "directories": {
+    "lib": "src",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "NODE_ENV=test lab -a @hapi/code -L",
+    "lint:check": "eslint .",
+    "lint:js:fix": "eslint . --fix",
+    "prettier": "prettier './**/*.js'",
+    "prettier:check": "yarn prettier --check",
+    "prettier:fix": "yarn prettier --write",
+    "lint:fix": "yarn lint:js:fix && yarn prettier:fix"
+  },
+  "dependencies": {
+    "@hapi/boom": "9.x.x",
+    "@hapi/glue": "8.x.x",
+    "@hapi/hapi": "20.x.x",
+    "@hapi/joi": "^17.1.1",
+    "@specla/autoloader": "^1.0.0",
+    "@types/pino": "^6.3.11",
+    "assert": "^2.0.0",
+    "fastify-plugin": "^3.0.0",
+    "joi": "17.x.x",
+    "node-fetch": "^2.6.1",
+    "pino": "^6.13.1"
+  },
+  "devDependencies": {
+    "@hapi/code": "8.x.x",
+    "@hapi/eslint-config-hapi": "13.x.x",
+    "@hapi/eslint-plugin-hapi": "4.x.x",
+    "@hapi/lab": "23.x.x",
+    "babel-eslint": "10.x.x",
+    "eslint-config-prettier": "^6.13.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.1",
+    "prettier": "^2.1.2",
+    "sinon": "^9.2.1"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged --allow-empty"
+    }
+  }
+}
