@@ -13,8 +13,8 @@ const dbOptions = {
     auth: {
       user: env.CID_DATABASE_USER,
       password: env.CID_DATABASE_PASSWORD,
-    }
-  }
+    },
+  },
 }
 
 // All configurations will extend these options
