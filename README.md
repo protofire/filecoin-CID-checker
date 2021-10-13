@@ -79,7 +79,7 @@ Instructions on how to run Lotus node - https://docs.filecoin.io/get-started/lot
 Build all docker images of the different components (the `package.json` files has the comands to build the images individually):
 
 ```
-yarn run build
+yarn run dc:build
 ```
 
 Run app with docker-compose:
@@ -87,7 +87,7 @@ Run app with docker-compose:
 ```
 docker-compose -f docker-compose.yaml up
 # or
-yarn start
+yarn start:dev
 ```
 
 ### ENV variables
@@ -112,7 +112,7 @@ Deployed application contains a number of docker images.
 
 #### mongo
 
-MongoDB database
+MongoDB database (docker-compose-local.yaml)
 
 #### cid-checker-watcher
 
@@ -128,17 +128,7 @@ Web UI created via [create-react-app](https://reactjs.org/docs/create-a-new-reac
 
 #### caddy
 
-Caddy webserver https://caddyserver.com/ to serve the UI's. Caddy configured with Caddyfile:
-
-```
-:80 {
-  route /api/* {
-    uri strip_prefix api
-    reverse_proxy http://cid-checker-backend:8080
-  }
-  reverse_proxy http://cid-checker-frontend:5000
-}
-```
+Caddy webserver https://caddyserver.com/ to serve the UI's. Caddy configured with [Caddyfile](Caddyfile):
 
 If you have a domain name, than replace :80 with domain name and Caddy will take care of SSL Certificates (through Let's Encrypt).
 
@@ -161,7 +151,8 @@ The main components of the CID checker are:
 ### Watcher (packages/watcher, typescript)
 
 Periodically checks the network for new chain height. 
-Every time a new height is detected, the watcher runs the _processors_ (originally, more than one). Currently the only processor that runs ins the `DealsProcessor` that calls Lotus StateMarketDeals() method and saves all deals into the "deals" collection.
+Every time a new height is detected, the watcher runs the _processors_ (originally, more than one). 
+Currently the only processor that runs ins the `DealsProcessor` that calls Lotus StateMarketDeals() method and saves all deals into the "deals" collection.
 
 ### API (packages/backend, nodejs)
 
@@ -184,16 +175,16 @@ create-react-app based application that queries the API
 #### Process
 
 1. Got to package root dir
-2. Fill .env file - as an example - .env-example
+2. Fill .env file - as an example - .env-example in packages/backend, packages/frontend, packages/wqtcher 
 3. Build containers(once, after each changes in code)
 
 ```
-yarn build # all
+yarn dc:build # all
 
 # or as separated
-yarn build:api
-yarn build:ui
-yarn build:watcher
+yarn run dc:build:api
+yarn run dc:build:ui
+yarn run dc:build:watcher
 
 ```
 
@@ -203,20 +194,20 @@ yarn build:watcher
     yarn install
     yarn start # will run all app components, app will be available on url http://localhost
     # or separated
-    yarn run start:mongo
-    yarn run start:api
-    yarn run start:ui
-    yarn run start:watcher
+    yarn run start:mongo:dc
+    yarn run start:api:dc
+    yarn run start:ui:dc
+    yarn run start:watcher:dc
         
     yarn stop # stop all containers
     # or separated
-    yarn run start:mongo
+    yarn run stop:mongo:dc
+    yarn run stop:caddy:dc
     yarn run stop:api:dc
     yarn run stop:ui:dc
     yarn run stop:watcher:dc
+    
 ```
-
-### As separated services
 
 #### Dependencies
 

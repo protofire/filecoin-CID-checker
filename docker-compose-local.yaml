@@ -1,6 +1,13 @@
 version: "3.8"
 
 services:
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+
   cid-checker-frontend:
     image: cid-checker-frontend
     restart: always
@@ -17,6 +24,8 @@ services:
     restart: always
     ports:
       - 3000:3000
+    depends_on:
+      - mongo
     volumes:
       - ./:/app
 
@@ -26,6 +35,8 @@ services:
     build:
       context: .
       dockerfile: ./packages/watcher/Dockerfile
+    depends_on:
+      - mongo
     volumes:
       - ./:/app
 
@@ -33,12 +44,12 @@ services:
     image: caddy:2.4.3-alpine
     restart: always
     ports:
-    - 80:80
-    - 443:443
+      - 80:80
+      - 443:443
     volumes:
-    - ./Caddyfile:/etc/caddy/Caddyfile
-    - ./502.html:/srv/502.html
-    - caddy_data:/data
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./502.html:/srv/502.html
+      - caddy_data:/data
 
 volumes:
   caddy_data:

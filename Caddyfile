@@ -1,12 +1,12 @@
 :80 {
+  handle_errors {
+    rewrite * /{http.error.status_code}.html
+    root * /srv
+    file_server
+  }
   handle_path /api/* {
     uri strip_prefix api
     reverse_proxy http://cid-checker-api:3000
-    handle_errors {
-      rewrite * /{http.error.status_code}.html
-      root * /app
-      file_server
-    }
   }
   reverse_proxy http://cid-checker-frontend:5000
 }

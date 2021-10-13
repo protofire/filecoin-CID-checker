@@ -8,7 +8,13 @@ const env = process.env
 
 const dbOptions = {
   uri: env.CID_DB_CONNECTIONSTRING,
-  name: env.CID_DB_NAME,
+  options: {
+    dbName: env.CID_DB_NAME,
+    auth: {
+      user: env.CID_DATABASE_USER,
+      password: env.CID_DATABASE_PASSWORD,
+    }
+  }
 }
 
 // All configurations will extend these options

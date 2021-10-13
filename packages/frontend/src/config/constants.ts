@@ -1,3 +1,7 @@
+/*eslint-disable*/
+console.info('process.env.REACT_APP_FILECOIN_CID_CHECKER_API', process.env.REACT_APP_FILECOIN_CID_CHECKER_API)
+/*eslint-enable*/
+
 export const FILECOIN_CID_CHECKER_API: string =
   process.env.REACT_APP_FILECOIN_CID_CHECKER_API || '/api'
 

@@ -35,6 +35,7 @@ class DealsService {
     if (query.verifiedDeal) {
       where['Proposal.VerifiedDeal'] = true
     }
+
     const result = await models.Deals.find(where)
       .limit(pagination.limit)
       .sort(sortCriteria)
