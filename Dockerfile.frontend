@@ -4,11 +4,11 @@ WORKDIR /app/
 
 COPY ./ /app/
 
-RUN touch /app/packages/frontend/.env
-
 RUN yarn install
 
 WORKDIR /app/packages/frontend
+
+RUN touch .env
 
 RUN yarn run build && env
 

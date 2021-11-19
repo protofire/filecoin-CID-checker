@@ -6,7 +6,7 @@ COPY ./ /app/
 
 WORKDIR /app/packages/watcher
 
-RUN touch /app/packages/frontend/.env
+RUN touch .env
 
 RUN yarn install
 
