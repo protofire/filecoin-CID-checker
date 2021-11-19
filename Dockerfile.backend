@@ -1,0 +1,13 @@
+FROM node:12
+
+WORKDIR /app/
+
+COPY ./ /app/
+
+RUN touch /app/packages/backend/.env
+
+RUN yarn install
+
+EXPOSE 3000
+
+ENTRYPOINT [ "yarn", "run", "start:api"]

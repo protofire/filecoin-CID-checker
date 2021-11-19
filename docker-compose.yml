@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+
+  cid-checker-frontend:
+    hostname: cid-checker-frontend
+    container_name: cid-checker-frontend
+    image: cid-checker-frontend:1.0.0
+    restart: always
+    env_file:
+      - .env.frontend
+    ports:
+      - "8080:8080"
+
+  cid-checker-backend:
+    hostname: cid-checker-backend
+    container_name: cid-checker-backend
+    image: cid-checker-backend:1.0.0
+    restart: always
+    env_file:
+      - .env.backend
+    ports:
+      - 3000:3000
+
+  cid-checker-watcher:
+    hostname: cid-checker-watcher
+    container_name: cid-checker-watcher
+    image: cid-checker-watcher:1.0.0
+    restart: always
+    env_file:
+      - .env.watcher
+
+  mongo:
+    hostname: mongo
+    container_name: mongo
+    image: mongo
+    restart: always
+    env_file:
+      - .env.mongo
+    ports:
+      - 27017:27017

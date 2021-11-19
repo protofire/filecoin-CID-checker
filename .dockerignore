@@ -1,2 +1,12 @@
 bin
 ui
+.env*
+docker-compose*
+Dockerfile*
+README*
+Caddyfile
+UI Design/*
+scripts/*
+.github/*
+.gitignore
+Makefile

@@ -1,0 +1,21 @@
+FROM node:12 as builder
+
+WORKDIR /app/
+
+COPY ./ /app/
+
+RUN touch /app/packages/frontend/.env
+
+RUN yarn install
+
+WORKDIR /app/packages/frontend
+
+RUN yarn run build && env
+
+FROM nginx:1.21.4-alpine
+
+COPY 502.html /usr/share/nginx/not_in_maintenance.html
+
+COPY --from=builder /app/packages/frontend/build /usr/share/nginx/html
+
+COPY self.crt self.key nginx.conf mime.types /etc/nginx/
