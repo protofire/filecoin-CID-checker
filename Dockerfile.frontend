@@ -18,4 +18,4 @@ COPY 502.html /usr/share/nginx/not_in_maintenance.html
 
 COPY --from=builder /app/packages/frontend/build /usr/share/nginx/html
 
-COPY self.crt self.key nginx.conf mime.types /etc/nginx/
+COPY nginx.conf mime.types /etc/nginx/
