@@ -14,8 +14,8 @@ RUN yarn run build && env
 
 FROM nginx:1.21.4-alpine
 
-COPY 502.html /usr/share/nginx/not_in_maintenance.html
-
 COPY --from=builder /app/packages/frontend/build /usr/share/nginx/html
+
+COPY 502.html /usr/share/nginx/html/not_in_maintenance.html
 
 COPY nginx.conf mime.types /etc/nginx/
