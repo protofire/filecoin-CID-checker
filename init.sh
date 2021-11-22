@@ -14,12 +14,6 @@ cd /home/ubuntu/CID-Checker-filecoin-tools/filecoin-CID-checker
 
 git pull
 
-echo "---------------------------"
-echo "--- Stop docker-compose ---"
-echo "---------------------------"
-
-docker-compose down
-
 echo "-------------------------------------------------------"
 echo "--- Build Docker images: frontend, backend, watcher ---"
 echo "-------------------------------------------------------"
@@ -34,7 +28,7 @@ echo "-----------------------------"
 echo "--- Docker Compose me up! ---"
 echo "-----------------------------"
 
-docker-compose up -d
+docker-compose down && docker-compose up -d
 
 echo "----------------------"
 echo "--- Cleanup Docker ---"
