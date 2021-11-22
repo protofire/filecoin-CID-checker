@@ -7,8 +7,6 @@ services:
     container_name: cid-checker-frontend
     image: cid-checker-frontend:1.0.0
     restart: always
-    env_file:
-      - .env.frontend
     ports:
       - "8080:8080"
 
@@ -17,15 +15,15 @@ services:
     container_name: cid-checker-backend
     image: cid-checker-backend:1.0.0
     restart: always
-    env_file:
-      - .env.backend
     ports:
       - 3000:3000
+    volumes:
+      - "./packages/watcher/.env:/app/packages/watcher/.env"
 
   cid-checker-watcher:
     hostname: cid-checker-watcher
     container_name: cid-checker-watcher
     image: cid-checker-watcher:1.0.0
     restart: always
-    env_file:
-      - .env.watcher
+    volumes:
+      - "./packages/watcher/.env:/app/packages/watcher/.env"

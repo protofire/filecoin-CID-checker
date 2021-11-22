@@ -4,8 +4,6 @@ WORKDIR /app/
 
 COPY ./ /app/
 
-RUN touch /app/packages/backend/.env
-
 RUN yarn install
 
 EXPOSE 3000

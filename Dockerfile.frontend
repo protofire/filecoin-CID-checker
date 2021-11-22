@@ -6,9 +6,10 @@ COPY ./ /app/
 
 RUN yarn install
 
-WORKDIR /app/packages/frontend
+ARG REACT_APP_FILECOIN_CID_CHECKER_API
+ENV REACT_APP_FILECOIN_CID_CHECKER_API /api
 
-RUN touch .env
+WORKDIR /app/packages/frontend
 
 RUN yarn run build && env
 

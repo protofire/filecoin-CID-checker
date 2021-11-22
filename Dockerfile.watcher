@@ -6,8 +6,6 @@ COPY ./ /app/
 
 WORKDIR /app/packages/watcher
 
-RUN touch .env
-
 RUN yarn install
 
 ENTRYPOINT [ "yarn", "start" ]
