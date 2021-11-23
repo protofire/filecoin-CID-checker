@@ -10,7 +10,7 @@ services:
     ports:
       - 8080:8080
     networks:
-      - cid-checker
+      - filecoin
 
   cid-checker-backend:
     hostname: cid-checker-backend
@@ -20,7 +20,7 @@ services:
     ports:
       - 3000:3000
     networks:
-      - cid-checker
+      - filecoin
     volumes:
       - "./packages/backend/.env:/app/packages/backend/.env"
 
@@ -30,12 +30,12 @@ services:
     image: cid-checker-watcher:1.0.0
     restart: always
     networks:
-      - cid-checker
+      - filecoin
     volumes:
       - "./packages/watcher/.env:/app/packages/watcher/.env"
 
   networks:
-    cid-checker:
+    filecoin:
       driver: bridge
       ipam:
         driver: default
