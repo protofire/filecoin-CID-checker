@@ -9,8 +9,6 @@ services:
     restart: always
     ports:
       - 8080:8080
-    networks:
-      - cid-checker
 
   cid-checker-backend:
     hostname: cid-checker-backend
@@ -19,8 +17,6 @@ services:
     restart: always
     ports:
       - 3000:3000
-    networks:
-      - cid-checker
     volumes:
       - "./packages/backend/.env:/app/packages/backend/.env"
 
@@ -29,8 +25,6 @@ services:
     container_name: cid-checker-watcher
     image: cid-checker-watcher:1.0.0
     restart: always
-    networks:
-      - cid-checker
     volumes:
       - "./packages/watcher/.env:/app/packages/watcher/.env"
 
