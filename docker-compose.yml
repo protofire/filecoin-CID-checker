@@ -8,7 +8,9 @@ services:
     image: cid-checker-frontend:1.0.0
     restart: always
     ports:
-      - "8080:8080"
+      - 8080:8080
+    networks:
+      - cid-checker
 
   cid-checker-backend:
     hostname: cid-checker-backend
@@ -17,6 +19,8 @@ services:
     restart: always
     ports:
       - 3000:3000
+    networks:
+      - cid-checker
     volumes:
       - "./packages/watcher/.env:/app/packages/watcher/.env"
 
@@ -25,5 +29,16 @@ services:
     container_name: cid-checker-watcher
     image: cid-checker-watcher:1.0.0
     restart: always
+    networks:
+      - cid-checker
     volumes:
       - "./packages/watcher/.env:/app/packages/watcher/.env"
+
+  networks:
+    cid-checker:
+      driver: bridge
+      ipam:
+        driver: default
+        config:
+          - subnet: 10.0.15.0/24
+            gateway: 10.0.15.1
