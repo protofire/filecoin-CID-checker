@@ -2,7 +2,7 @@ FROM node:12-alpine
 
 WORKDIR /app/
 
-COPY /home/ubuntu/.ssl ./.ssl
+COPY ./.ssl ./.ssl
 COPY ./package.json ./package.json
 COPY ./packages/backend/config ./packages/backend/config
 COPY ./packages/backend/src ./packages/backend/src

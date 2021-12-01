@@ -2,7 +2,7 @@ FROM node:12-alpine
 
 WORKDIR /app/
 
-COPY /home/ubuntu/.ssl ./.ssl
+COPY ./.ssl ./.ssl
 COPY ./package.json ./package.json
 COPY ./packages/watcher/package.json ./packages/watcher/package.json
 COPY ./packages/watcher/src ./packages/watcher/src
