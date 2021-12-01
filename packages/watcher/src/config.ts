@@ -42,7 +42,7 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 // aws specific params
-if (/filecoin/.test(dbConnection.uri)) {
+if (/cid-checker/.test(dbConnection.uri)) {
   dbConnection.options.replicaSet = 'rs0'
   dbConnection.options.tls = true
   if (!process.env.CID_DB_CA_FILE) {
@@ -52,7 +52,7 @@ if (/filecoin/.test(dbConnection.uri)) {
 }
 
 export const DB_CONNECTION = dbConnection
-
+console.info('DB',dbConnection)
 export const LOTUS_RPCURL = process.env.CID_LOTUS_RPCURL as string
 export const LOTUS_JWT_TOKEN = process.env.CID_LOTUS_JWT_TOKEN as string
 export const SLEEP_TIPSET_CHECK_MS = Number.parseInt(

@@ -1,22 +1,25 @@
-FROM node:12 as builder
+FROM node:12 as build-stage
 
-WORKDIR /app/
+WORKDIR /app/packages/frontend
 
-COPY ./ /app/
+COPY ./packages/frontend/package.json .
+COPY ./packages/frontend/public ./public
+COPY ./packages/frontend/src ./src
+COPY ./packages/frontend/.eslintignore .
+COPY ./packages/frontend/.eslintrc.json .
+COPY ./packages/frontend/.prettierrc .
+COPY ./packages/frontend/tsconfig.json .
 
 RUN yarn install
 
 ARG REACT_APP_FILECOIN_CID_CHECKER_API
 ENV REACT_APP_FILECOIN_CID_CHECKER_API /api
+ENV REACT_APP_PAGE_SIZE 20
+ENV REACT_APP_PAGE_INDEX_START 1
+ENV SKIP_PREFLIGHT_CHECK true
 
-WORKDIR /app/packages/frontend
+RUN ls -la && yarn run build
+RUN env
+RUN yarn global add serve
 
-RUN yarn run build && env
-
-FROM nginx:1.21.4-alpine
-
-COPY --from=builder /app/packages/frontend/build /usr/share/nginx/html
-
-COPY 502.html /usr/share/nginx/html/not_in_maintenance.html
-
-COPY nginx.conf mime.types /etc/nginx/
+ENTRYPOINT ["serve", "-s", "build"]
