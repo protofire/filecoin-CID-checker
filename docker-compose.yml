@@ -27,8 +27,3 @@ services:
     restart: always
     volumes:
       - "./packages/watcher/.env:/app/packages/watcher/.env"
-
-networks:
-    default:
-        external:
-            name: cid-checker
