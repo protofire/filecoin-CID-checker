@@ -15,8 +15,6 @@ services:
     container_name: cid-checker-backend
     image: cid-checker-backend:1.0.0
     restart: always
-    ports:
-      - 3000:3000
     volumes:
       - "./packages/backend/.env:/app/packages/backend/.env"
 
