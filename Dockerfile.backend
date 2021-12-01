@@ -13,6 +13,8 @@ COPY ./packages/shared/src ./packages/shared/src
 
 EXPOSE 3000
 
+RUN yarn install
+
 WORKDIR /app/packages/backend
 
 CMD [ "yarn", "start" ]
