@@ -18,8 +18,12 @@ ENV REACT_APP_PAGE_SIZE 20
 ENV REACT_APP_PAGE_INDEX_START 1
 ENV SKIP_PREFLIGHT_CHECK true
 
-RUN ls -la && yarn run build
-RUN env
-RUN yarn global add serve
+RUN yarn run build && env
 
-ENTRYPOINT ["serve", "-s", "build"]
+FROM nginx:1.21.4-alpine
+
+COPY --from=builder /app/packages/frontend/build /usr/share/nginx/html
+
+COPY 502.html /usr/share/nginx/html/not_in_maintenance.html
+
+COPY nginx.conf mime.types /etc/nginx/
