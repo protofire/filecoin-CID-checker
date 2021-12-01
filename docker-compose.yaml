@@ -1,0 +1,80 @@
+version: "3.8"
+
+services:
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+
+  cid-checker-frontend:
+    image: cid-checker-frontend
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile.frontend
+    env_file:
+      - .env
+    environment:
+      - REACT_APP_FILECOIN_CID_CHECKER_API=/api
+      - REACT_APP_TITLE=${PACKAGES_FRONTEND_REACT_APP_TITLE}
+      - REACT_APP_DESCRIPTION=${PACKAGES_FRONTEND_REACT_APP_DESCRIPTION}
+      - REACT_APP_PAGE_SIZE=${PACKAGES_FRONTEND_REACT_APP_PAGE_SIZE}
+      - REACT_APP_PAGE_INDEX_START=${PACKAGES_FRONTEND_REACT_APP_PAGE_INDEX_START}
+      - SKIP_PREFLIGHT_CHECK=${PACKAGES_FRONTEND_SKIP_PREFLIGHT_CHECK}
+  cid-checker-api:
+    image: cid-checker-api
+    build:
+      context: .
+      dockerfile: ./Dockerfile.backend
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=${PACKAGES_BACKEND_PORT}
+      - CID_LOTUS_RPCURL=${CID_LOTUS_RPCURL}
+      - CID_LOTUS_JWT_TOKEN=${CID_LOTUS_JWT_TOKEN}
+      - CID_DB_CONNECTIONSTRING=${CID_DB_CONNECTIONSTRING}
+      - CID_DB_NAME=${CID_DB_NAME}
+      - CID_DATABASE_USER=${CID_DATABASE_USER}
+      - CID_DATABASE_PASSWORD=${CID_DATABASE_PASSWORD}
+      - CID_DB_CA_FILE=${CID_DB_CA_FILE}
+    ports:
+      - ${PACKAGES_BACKEND_PORT}:${PACKAGES_BACKEND_PORT}
+    #depends_on:
+    #  - mongo
+
+  cid-checker-watcher:
+    image: cid-checker-watcher
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile.watcher
+    environment:
+      - SLEEP_TIPSET_CHECK_MS=${PACKAGES_WATCHER_SLEEP_TIPSET_CHECK_MS}
+      - CID_LOTUS_RPCURL=${CID_LOTUS_RPCURL}
+      - CID_LOTUS_JWT_TOKEN=${CID_LOTUS_JWT_TOKEN}
+      - CID_DB_CONNECTIONSTRING=${CID_DB_CONNECTIONSTRING}
+      - CID_DB_CA_FILE=${CID_DB_CA_FILE}
+      - CID_DATABASE_USER=${CID_DATABASE_USER}
+      - CID_DATABASE_PASSWORD=${CID_DATABASE_PASSWORD}
+      - CID_DB_NAME=${CID_DB_NAME}
+    env_file:
+      - .env
+    #depends_on:
+    #  - mongo
+
+  caddy:
+    image: caddy:2.4.3-alpine
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+
+volumes:
+  caddy_data:
