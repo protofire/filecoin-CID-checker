@@ -10,7 +10,7 @@ echo "--- Pull last updates from GitHub ---"
 echo "-------------------------------------"
 echo ""
 
-cd /home/ubuntu/cid-checker/filecoin-CID-checker
+cd /home/ubuntu/filecoin-CID-checker
 
 git pull
 

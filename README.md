@@ -110,38 +110,33 @@ See [packages/frontend/.env-example](packages/frontend/.env-example)
 
 Deployed application contains a number of docker images.
 
-#### mongo
-
-MongoDB database (docker-compose-local.yaml)
-
 #### cid-checker-watcher
 
 Runs the loops that retrieves Deals' data from the Lotus node and feeds the Mongo DB.
 
-#### cid-checker-api
+#### cid-checker-backend
 
 API that queries and searches through the DB to serve the UI
 
 #### cid-checker-frontend
 
-Web UI created via [create-react-app](https://reactjs.org/docs/create-a-new-react-app.html) and typescript
+Web UI created via [create-react-app](https://reactjs.org/docs/create-a-new-react-app.html) and typescript; image used build files via Nginx (see `nginx.conf`).
 
-#### caddy
+### How to run
 
-Caddy webserver https://caddyserver.com/ to serve the UI's. Caddy configured with [Caddyfile](Caddyfile):
+1. Prepare `.env` file and `.ssl/` folder with RDS certificate (`wget https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem`) in root directory
 
-If you have a domain name, than replace :80 with domain name and Caddy will take care of SSL Certificates (through Let's Encrypt).
+2. Build images:
 
-Example:
-
+```bash
+docker build -t cid-checker-frontend:$(cat ./packages/frontend/version.txt) -f Dockerfile.frontend . && \
+docker build -t cid-checker-backend:$(cat ./packages/frontend/version.txt) -f Dockerfile.backend . && \
+docker build -t cid-checker-watcher:$(cat ./packages/frontend/version.txt) -f Dockerfile.watcher .
 ```
-filecoin.tools {
-  route /api/* {
-    uri strip_prefix api
-    reverse_proxy http://cid-checker-backend:8080
-  }
-  reverse_proxy http://cid-checker-frontend:5000
-}
+3. Run docker compose:
+
+```bash
+docker-compose up -d
 ```
 
 ## App structure
