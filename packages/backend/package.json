@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "rimraf ./build && tsc",
-    "start": "NODE_ENV=dev node index.js",
+    "start": "node index.js",
     "lint:check": "eslint .",
     "lint:js:fix": "eslint . --fix",
     "lint:fix": "yarn lint:js:fix && yarn prettier:fix",
