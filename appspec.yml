@@ -4,7 +4,7 @@ files:
   - source: .
     destination: /home/ubuntu/filecoin-CID-checker/
 hooks:
-  ApplicationStart:
+  Install:
    - location: init.sh
      timeout: 300
      runas: root
