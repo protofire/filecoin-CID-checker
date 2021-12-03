@@ -7,4 +7,4 @@ hooks:
   ApplicationStart:
    - location: init.sh
      timeout: 300
-     runas: root
+     runas: ubuntu
