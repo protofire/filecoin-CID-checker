@@ -42,14 +42,14 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 // aws specific params
-if (/cid-checker/.test(dbConnection.uri)) {
-  dbConnection.options.replicaSet = 'rs0'
-  dbConnection.options.tls = true
-  if (!process.env.CID_DB_CA_FILE) {
-    throw Error(`options.tlsCAFile required from variable CID_DB_CA_FILE`)
-  }
-  dbConnection.options.tlsCAFile = process.env.CID_DB_CA_FILE
-}
+// if (/cid-checker/.test(dbConnection.uri)) {
+//   dbConnection.options.replicaSet = 'rs0'
+//   dbConnection.options.tls = true
+//   if (!process.env.CID_DB_CA_FILE) {
+//     throw Error(`options.tlsCAFile required from variable CID_DB_CA_FILE`)
+//   }
+//   dbConnection.options.tlsCAFile = process.env.CID_DB_CA_FILE
+// }
 
 export const DB_CONNECTION = dbConnection
 console.info('DB',dbConnection)

@@ -4,15 +4,7 @@ echo "----------------------------------------------------"
 echo "--- Init script for CID Checker (filecoin.tools) ---"
 echo "----------------------------------------------------"
 
-echo ""
-echo "-------------------------------------"
-echo "--- Pull last updates from GitHub ---"
-echo "-------------------------------------"
-echo ""
-
-cd /home/ubuntu/filecoin-CID-checker
-
-git pull
+cp /home/ubuntu/.env /home/ubuntu/filecoin-CID-checker/.env
 
 echo "-------------------------------------------------------"
 echo "--- Build Docker images: frontend, backend, watcher ---"

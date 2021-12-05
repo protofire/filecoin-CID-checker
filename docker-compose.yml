@@ -8,7 +8,7 @@ services:
     image: cid-checker-frontend:1.0.0
     restart: always
     ports:
-      - 8080:8080
+      - 80:80
 
   cid-checker-backend:
     hostname: cid-checker-backend
@@ -16,7 +16,7 @@ services:
     image: cid-checker-backend:1.0.0
     restart: always
     environment:
-      NODE_ENV: "${NODE_ENV}"
+      NODE_ENV: "dev"
       PORT: "${PORT}"
       CID_DB_CONNECTIONSTRING: "${CID_DB_CONNECTIONSTRING}"
       CID_DB_NAME: "${CID_DB_NAME}"
@@ -32,7 +32,7 @@ services:
     image: cid-checker-watcher:1.0.0
     restart: always
     environment:
-      NODE_ENV: "${NODE_ENV}"
+      NODE_ENV: "production"
       SLEEP_TIPSET_CHECK_MS: "${SLEEP_TIPSET_CHECK_MS}"
       DEBUG_FD: "${DEBUG_FD}"
       CID_DB_CONNECTIONSTRING: "${CID_DB_CONNECTIONSTRING}"
@@ -42,3 +42,12 @@ services:
       CID_DB_CA_FILE: "${CID_DB_CA_FILE}"
       CID_LOTUS_RPCURL: "${CID_DB_CA_FILE}"
       CID_LOTUS_JWT_TOKEN: "${CID_DB_CA_FILE}"
+
+  cid-checker-mongo:
+      hostname: cid-checker-mongo
+      container_name:  cid-checker-mongo
+      image: mongo
+      restart: always
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: "${CID_DATABASE_USER}"
+        MONGO_INITDB_ROOT_PASSWORD: "${CID_DATABASE_PASSWORD}"
