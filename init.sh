@@ -4,13 +4,11 @@ echo "----------------------------------------------------"
 echo "--- Init script for CID Checker (filecoin.tools) ---"
 echo "----------------------------------------------------"
 
-cp /home/ubuntu/.env /home/ubuntu/filecoin-CID-checker/.env
-
-cd /home/ubuntu/filecoin-CID-checker
-
 echo "-------------------------------------------------------"
 echo "--- Build Docker images: frontend, backend, watcher ---"
 echo "-------------------------------------------------------"
+
+cd /opt/filecoin-cid-checker
 
 docker build -t cid-checker-frontend:$(cat ./packages/frontend/version.txt) -f Dockerfile.frontend .
 docker build -t cid-checker-backend:$(cat ./packages/frontend/version.txt) -f Dockerfile.backend .

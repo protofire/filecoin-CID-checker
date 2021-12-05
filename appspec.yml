@@ -2,9 +2,9 @@ version: 0.0
 os: linux
 files:
   - source: .
-    destination: /home/ubuntu/filecoin-CID-checker/
+    destination: /opt/filecoin-cid-checker
 hooks:
   ApplicationStart:
    - location: init.sh
      timeout: 300
-     runas: ubuntu
+     runas: root
