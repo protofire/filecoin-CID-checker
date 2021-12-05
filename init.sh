@@ -6,6 +6,8 @@ echo "----------------------------------------------------"
 
 cp /home/ubuntu/.env /home/ubuntu/filecoin-CID-checker/.env
 
+cd /home/ubuntu/filecoin-CID-checker
+
 echo "-------------------------------------------------------"
 echo "--- Build Docker images: frontend, backend, watcher ---"
 echo "-------------------------------------------------------"
