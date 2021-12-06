@@ -44,8 +44,13 @@ services:
   cid-checker-mongo:
       hostname: cid-checker-mongo
       container_name: cid-checker-mongo
-      image: mongo
+      image: mongo:5.0.4
       restart: always
+      volumes: 
+        - mongo-data:/data/db
       environment:
         MONGO_INITDB_ROOT_USERNAME: "${CID_DATABASE_USER}"
         MONGO_INITDB_ROOT_PASSWORD: "${CID_DATABASE_PASSWORD}"
+  
+volumes:
+  mongo-data:
