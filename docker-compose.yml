@@ -54,3 +54,6 @@ services:
   
 volumes:
   mongo-data:
+    external: true
+    name: mongo-data
+
