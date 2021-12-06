@@ -40,7 +40,6 @@ For the end user it doesn't require any developer skills to quickly get informat
 
 **Project management board is** [here](https://github.com/protofire/filecoin-CID-checker#workspaces/filecoin-cid-checker-5ecbabcb812f8965b13d94cb/board?repos=266746476)
 
-
 ## User starting guide
 
 If you are a total beginner to this, start here!
@@ -137,6 +136,22 @@ docker build -t cid-checker-watcher:$(cat ./packages/frontend/version.txt) -f Do
 
 ```bash
 docker-compose up -d
+```
+
+### CI/CD
+
+For CI/CD we're using [`AWS CodeDeploy` stack](https://eu-west-2.console.aws.amazon.com/codesuite/codedeploy/applications/CID-Checker?region=eu-west-2). Workflow:
+
+```bash
+GitHub push (master) -> GitHub Actions -> AWS CodeDeploy -> EC2 instance -> init.sh script
+```
+
+In repository configured [appspec.yml](./appspec.yml) for AWS CodeDeploy and [init.sh](./init.sh)
+
+Check CodeDeploy logs:
+
+```bash
+less /opt/codedeploy-agent/deployment-root/*deployment-group-ID*/*deployment-ID*/logs/scripts.log
 ```
 
 ## App structure
