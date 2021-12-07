@@ -18,6 +18,9 @@ jobs:
       - name: Create CodeDeploy Deployment
         id: deploy
         run: |
+          mv ./.github/appspec.yml ./appspec.yml && \
+          mv ./.github/nginx.conf ./nginx.conf && \
+          mv ./.github/mime.types ./mime.types && \
           aws deploy create-deployment \
             --application-name CID-Checker \
             --deployment-group-name CID-Checker-Deployment-Group \
