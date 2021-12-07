@@ -17,6 +17,7 @@ jobs:
      # Step 2
       - name: Copy config files to root directory
         run: |
+          pwd && ls -la && \
           mv ./.config/appspec.yml ./appspec.yml && \
           mv ./.config/nginx.conf ./nginx.conf && \
           mv ./.config/mime.types ./mime.types
