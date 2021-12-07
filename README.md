@@ -123,7 +123,7 @@ Web UI created via [create-react-app](https://reactjs.org/docs/create-a-new-reac
 
 ### How to run
 
-1. Prepare `.env` file and `.ssl/` folder with RDS certificate (`wget https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem`) in root directory
+1. Prepare `.env` file in root directory
 
 2. Build images:
 
@@ -140,9 +140,13 @@ docker-compose up -d
 
 ### CI/CD
 
-For CI/CD we're using [`AWS CodeDeploy` stack](https://eu-west-2.console.aws.amazon.com/codesuite/codedeploy/applications/CID-Checker?region=eu-west-2). Workflow:
+For CI/CD we're using [`AWS CodeDeploy` stack](https://eu-west-2.console.aws.amazon.com/codesuite/codedeploy/applications/CID-Checker?region=eu-west-2). 
 
-```bash
+Before configuring CodeDeploy on server was created folder `/opt/filecoin-cid-checker` with prepared `.env` file.
+
+Workflow:
+
+```
 GitHub push (master) -> GitHub Actions -> AWS CodeDeploy -> EC2 instance -> init.sh script
 ```
 
