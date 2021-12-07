@@ -1,102 +1,27 @@
-name: Build, test and deploy
-
+name: CID Checker CI/CD Pipeline
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
-jobs:
-  Build:
+jobs:   
+  deployment:
     runs-on: ubuntu-latest
-
-      # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '12.22'
-
-    - uses: c-hive/gha-yarn-cache@v1
-    - name: Install deps
-      run: |
-        yarn install
-    - name: Lint backend
-      run: |
-        cd packages/backend && yarn run lint:check
-    - name: Lint frontend
-      run: |
-        cd packages/frontend && yarn run lint
-    - name: Lint watcher
-      run: |
-        cd packages/watcher && yarn run lint
-    - name: Prepare backend env
-      run: |
-        touch packages/backend/.env
-        echo "NODE_ENV=production" > packages/backend/.env
-        echo "CID_DB_CONNECTIONSTRING=${{secrets.CID_DB_CONNECTIONSTRING}}" >> packages/backend/.env
-        echo "CID_DB_NAME=${{secrets.CID_DB_NAME}}" >> packages/backend/.env
-        echo "CID_LOTUS_RPCURL=http://node.glif.io/space06/lotus/rpc/v0" >> packages/backend/.env
-        echo "CID_LOTUS_JWT_TOKEN=${{secrets.CID_LOTUS_JWT_TOKEN}}" >> packages/backend/.env
-
-    - name: Prepare watcher env
-      run: |
-        touch packages/backend/.env
-        echo "NODE_ENV=production" > packages/watcher/.env
-        echo "CID_DB_CONNECTIONSTRING=${{secrets.CID_DB_CONNECTIONSTRING}}" >> packages/watcher/.env
-        echo "CID_DB_NAME=${{secrets.CID_DB_NAME}}" >> packages/watcher/.env
-        echo "CID_LOTUS_RPCURL=http://node.glif.io/space06/lotus/rpc/v0" >> packages/watcher/.env
-        echo "CID_LOTUS_JWT_TOKEN=${{secrets.CID_LOTUS_JWT_TOKEN}}" >> packages/watcher/.env
-        echo "SLEEP_TIPSET_CHECK_MS=25000" >> packages/watcher/.env
-
-    - name: Build watcher
-      run: |
-        cd packages/watcher && yarn build && cp .env build/
-
-    - name: Build frontend
-      run: |
-        cd packages/frontend && yarn build
-##   TODO check if github can connect to server
-#    - name: Install SSH key
-#      uses: shimataro/ssh-key-action@v2
-#      with:
-#        key: ${{ secrets.SERVER_SSH_KEY }}
-#        known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
-#        if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
-#
-#    - name: rsync over ssh
-#      run: |
-#        rsync -azvvv --delete --copy-links --exclude=.ssh/ --exclude=docker-compose.yaml --exclude=.git --exclude=node_modules ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:www/
-#
-#    - name: Run remote commands
-#      run: |
-#        ssh -n -f  ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} "cd www/packages/backend && pm2 restart .ecosystem.config.js --env=production && cd ../watcher && pm2 restart .ecosystem.config.js --env=production && pm2 save"
-
-#  build:
-#    name: Build
-#    runs-on: ubuntu-latest
-#    steps:
-#
-#      - name: Set up Go 1.x
-#        uses: actions/setup-go@v2
-#        with:
-#          go-version: ^1.13
-#        id: go
-#
-#      - name: Check out code into the Go module directory
-#        uses: actions/checkout@v2
-#
-#      - name: Get dependencies
-#        run: |
-#          go get -v -t -d ./...
-#          sudo apt update && sudo apt install -y make gcc
-#
-#      - name: Build
-#        run: make build
-#
-#      - name: Test
-#        run: make test
-#
-#      - name: Report card
-#        uses: creekorful/goreportcard-action@v1.0
+      - uses: actions/checkout@v1
+     # Step 1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+     # Step 2
+      - name: Create CodeDeploy Deployment
+        id: deploy
+        run: |
+          aws deploy create-deployment \
+            --application-name CID-Checker \
+            --deployment-group-name CID-Checker-Deployment-Group \
+            --deployment-config-name CodeDeployDefault.OneAtATime \
+            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
+        working-directory: .

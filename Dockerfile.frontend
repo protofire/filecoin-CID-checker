@@ -1,0 +1,29 @@
+FROM node:12-alpine as builder
+
+WORKDIR /app/packages/frontend
+
+COPY ./packages/frontend/package.json .
+COPY ./packages/frontend/public ./public
+COPY ./packages/frontend/src ./src
+COPY ./packages/frontend/.eslintignore .
+COPY ./packages/frontend/.eslintrc.json .
+COPY ./packages/frontend/.prettierrc .
+COPY ./packages/frontend/tsconfig.json .
+
+RUN yarn install
+
+ARG REACT_APP_FILECOIN_CID_CHECKER_API
+ENV REACT_APP_FILECOIN_CID_CHECKER_API /api
+ENV REACT_APP_PAGE_SIZE 20
+ENV REACT_APP_PAGE_INDEX_START 1
+ENV SKIP_PREFLIGHT_CHECK true
+
+RUN yarn run build && env
+
+FROM nginx:1.21.4-alpine
+
+COPY --from=builder /app/packages/frontend/build /usr/share/nginx/html
+
+COPY 502.html /usr/share/nginx/html/not_in_maintenance.html
+
+COPY ./.config/nginx.conf ./.config/mime.types /etc/nginx/

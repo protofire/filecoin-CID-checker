@@ -40,7 +40,6 @@ For the end user it doesn't require any developer skills to quickly get informat
 
 **Project management board is** [here](https://github.com/protofire/filecoin-CID-checker#workspaces/filecoin-cid-checker-5ecbabcb812f8965b13d94cb/board?repos=266746476)
 
-
 ## User starting guide
 
 If you are a total beginner to this, start here!
@@ -110,38 +109,53 @@ See [packages/frontend/.env-example](packages/frontend/.env-example)
 
 Deployed application contains a number of docker images.
 
-#### mongo
-
-MongoDB database (docker-compose-local.yaml)
-
 #### cid-checker-watcher
 
 Runs the loops that retrieves Deals' data from the Lotus node and feeds the Mongo DB.
 
-#### cid-checker-api
+#### cid-checker-backend
 
 API that queries and searches through the DB to serve the UI
 
 #### cid-checker-frontend
 
-Web UI created via [create-react-app](https://reactjs.org/docs/create-a-new-react-app.html) and typescript
+Web UI created via [create-react-app](https://reactjs.org/docs/create-a-new-react-app.html) and typescript; image used build files via Nginx (see `./.config/nginx.conf`).
 
-#### caddy
+### How to run
 
-Caddy webserver https://caddyserver.com/ to serve the UI's. Caddy configured with [Caddyfile](Caddyfile):
+1. Prepare `.env` file in root directory
 
-If you have a domain name, than replace :80 with domain name and Caddy will take care of SSL Certificates (through Let's Encrypt).
+2. Build images:
 
-Example:
+```bash
+docker build -t cid-checker-frontend:$(cat ./packages/frontend/version.txt) -f Dockerfile.frontend . && \
+docker build -t cid-checker-backend:$(cat ./packages/frontend/version.txt) -f Dockerfile.backend . && \
+docker build -t cid-checker-watcher:$(cat ./packages/frontend/version.txt) -f Dockerfile.watcher .
+```
+3. Run docker compose:
+
+```bash
+docker-compose up -d
+```
+
+### CI/CD
+
+For CI/CD we're using [`AWS CodeDeploy` stack](https://eu-west-2.console.aws.amazon.com/codesuite/codedeploy/applications/CID-Checker?region=eu-west-2). 
+
+Before configuring CodeDeploy on server was created folder `/opt/filecoin-cid-checker` with prepared `.env` file.
+
+Workflow:
 
 ```
-filecoin.tools {
-  route /api/* {
-    uri strip_prefix api
-    reverse_proxy http://cid-checker-backend:8080
-  }
-  reverse_proxy http://cid-checker-frontend:5000
-}
+GitHub push (master) -> GitHub Actions -> AWS CodeDeploy -> EC2 instance -> init.sh script
+```
+
+In repository configured [`appspec.yml`](./appspec.yml) for AWS CodeDeploy and [`init.sh`](./.config/init.sh).
+
+Check CodeDeploy logs on entire instance:
+
+```bash
+less /opt/codedeploy-agent/deployment-root/*deployment-group-ID*/*deployment-ID*/logs/scripts.log
 ```
 
 ## App structure
