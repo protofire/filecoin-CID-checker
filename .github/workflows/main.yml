@@ -21,7 +21,7 @@ jobs:
           mv ./.config/appspec.yml ./appspec.yml && \
           mv ./.config/nginx.conf ./nginx.conf && \
           mv ./.config/mime.types ./mime.types
-        working-directory: ./
+        working-directory: .
       # Step 3
       - name: Create CodeDeploy Deployment
         id: deploy
