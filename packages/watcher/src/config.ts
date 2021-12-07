@@ -52,7 +52,6 @@ if (process.env.NODE_ENV === 'production') {
 // }
 
 export const DB_CONNECTION = dbConnection
-console.info('DB',dbConnection)
 export const LOTUS_RPCURL = process.env.CID_LOTUS_RPCURL as string
 export const LOTUS_JWT_TOKEN = process.env.CID_LOTUS_JWT_TOKEN as string
 export const SLEEP_TIPSET_CHECK_MS = Number.parseInt(
