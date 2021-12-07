@@ -20,7 +20,7 @@ jobs:
           mv ./.github/appspec.yml ./appspec.yml && \
           mv ./.github/nginx.conf ./nginx.conf && \
           mv ./.github/mime.types ./mime.types
-        working-directory: /opt/filecoin-CID-checker
+        working-directory: .
       # Step 3
       - name: Create CodeDeploy Deployment
         id: deploy
