@@ -15,17 +15,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
      # Step 2
+      - name: Copy config files to root directory
+        run: |
+          mv ./.github/appspec.yml ./appspec.yml && \
+          mv ./.github/nginx.conf ./nginx.conf && \
+          mv ./.github/mime.types ./mime.types
+      # Step 3
       - name: Create CodeDeploy Deployment
         id: deploy
         run: |
-          pwd && \
-          find / -name "appspec.yml" && \
-          find / -name "nginx.conf" && \
-          find / -name "mime.types" && \
-          # mv ./.github/nginx.conf ./nginx.conf && \
-          # mv ./.github/mime.types ./mime.types && \
-          # aws deploy create-deployment \
-          #   --application-name CID-Checker \
-          #   --deployment-group-name CID-Checker-Deployment-Group \
-          #   --deployment-config-name CodeDeployDefault.OneAtATime \
-          #   --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
+          mv ./.github/nginx.conf ./nginx.conf && \
+          mv ./.github/mime.types ./mime.types && \
+          aws deploy create-deployment \
+            --application-name CID-Checker \
+            --deployment-group-name CID-Checker-Deployment-Group \
+            --deployment-config-name CodeDeployDefault.OneAtATime \
+            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
