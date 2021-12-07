@@ -18,7 +18,6 @@ jobs:
      # Step 2
       - name: Copy config files to root directory
         run: |
-          pwd && ls -la && \
           mv ./.config/appspec.yml ./appspec.yml && \
           mv ./.config/nginx.conf ./nginx.conf && \
           mv ./.config/mime.types ./mime.types
@@ -27,8 +26,6 @@ jobs:
       - name: Create CodeDeploy Deployment
         id: deploy
         run: |
-          mv ./.github/nginx.conf ./nginx.conf && \
-          mv ./.github/mime.types ./mime.types && \
           aws deploy create-deployment \
             --application-name CID-Checker \
             --deployment-group-name CID-Checker-Deployment-Group \
