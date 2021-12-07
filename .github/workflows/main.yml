@@ -17,7 +17,6 @@ jobs:
      # Step 2
       - name: Copy config files to root directory
         run: |
-          find / -name "appspec.yml" && \
           mv ./.github/appspec.yml ./appspec.yml && \
           mv ./.github/nginx.conf ./nginx.conf && \
           mv ./.github/mime.types ./mime.types
