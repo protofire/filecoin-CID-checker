@@ -16,12 +16,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
      # Step 2
-      - name: Copy config files to root directory & create CodeDeploy Deployment
+      - name: Create CodeDeploy Deployment
         id: deploy
         run: |
-          mv ./.config/appspec.yml ./appspec.yml && \
-          mv ./.config/nginx.conf ./nginx.conf && \
-          mv ./.config/mime.types ./mime.types && \
           aws deploy create-deployment \
             --application-name CID-Checker \
             --deployment-group-name CID-Checker-Deployment-Group \
