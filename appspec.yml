@@ -5,5 +5,5 @@ files:
     destination: /opt/filecoin-cid-checker
 hooks:
   ApplicationStart:
-   - location: init.sh
+   - location: .config/init.sh
      runas: root

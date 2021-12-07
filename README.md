@@ -119,7 +119,7 @@ API that queries and searches through the DB to serve the UI
 
 #### cid-checker-frontend
 
-Web UI created via [create-react-app](https://reactjs.org/docs/create-a-new-react-app.html) and typescript; image used build files via Nginx (see `nginx.conf`).
+Web UI created via [create-react-app](https://reactjs.org/docs/create-a-new-react-app.html) and typescript; image used build files via Nginx (see `./.config/nginx.conf`).
 
 ### How to run
 
@@ -146,7 +146,7 @@ For CI/CD we're using [`AWS CodeDeploy` stack](https://eu-west-2.console.aws.ama
 GitHub push (master) -> GitHub Actions -> AWS CodeDeploy -> EC2 instance -> init.sh script
 ```
 
-In repository configured [`appspec.yml`](./appspec.yml) for AWS CodeDeploy and [`init.sh`](./init.sh).
+In repository configured [`appspec.yml`](./appspec.yml) for AWS CodeDeploy and [`init.sh`](./.config/init.sh).
 
 Check CodeDeploy logs on entire instance:
 
