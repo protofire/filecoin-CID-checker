@@ -16,11 +16,12 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
      # Step 2
       - name: Copy config files to root directory
+        uses: actions/checkout@v1
         run: |
           mv ./.github/appspec.yml ./appspec.yml && \
           mv ./.github/nginx.conf ./nginx.conf && \
           mv ./.github/mime.types ./mime.types
-        working-directory: .
+        working-directory: ./
       # Step 3
       - name: Create CodeDeploy Deployment
         id: deploy
