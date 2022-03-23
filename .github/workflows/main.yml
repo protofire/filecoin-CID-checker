@@ -1,7 +1,7 @@
 name: CID Checker CI/CD Pipeline
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:   
   deployment:
