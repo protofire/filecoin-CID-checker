@@ -3,6 +3,7 @@
 docker_build_frontend:
 	docker build -t cid-checker-frontend --build-arg REACT_APP_FILECOIN_CID_CHECKER_API=/api -f ./packages/frontend/Dockerfile .
 
+
 .PHONY: docker_build_watcher
 docker_build_watcher:
 	docker build -t cid-checker-watcher -f ./packages/watcher/Dockerfile .
