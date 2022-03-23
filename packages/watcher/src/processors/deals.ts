@@ -13,6 +13,11 @@ export const DealsProcessor = async (height: number): Promise<boolean> => {
     const writeOps: any[] = []
 
     const tipSetKey = await getTipSetKeyByHeight(height)
+    prettyLogger.info(
+       { tipSetKey },
+      `${NS} tipSetKey got`,
+    )
+
     const result = await getMarketDeals(tipSetKey)
 
     prettyLogger.info(
