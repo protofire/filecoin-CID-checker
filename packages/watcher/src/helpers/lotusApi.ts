@@ -103,24 +103,18 @@ export const getMarketDeals = async (tipSetKey: any) => {
             return reject({reason: 'Unable to download data', meta: {LOTUS_RPCURL, error}})
         };
         const jsonStream = JSONStream.parse('result')
-        const result: any = []
+        let result: any = {}
         jsonStream
             .on('error', err => errorHandler)
             .on('end', () => {
-                console.info('end')
+                console.info('end', result.length)
                 return resolve(result)
             })
         res.body
             .on('error', errorHandler)
             .pipe(jsonStream)
             .pipe(es.mapSync((data: any) => {
-                const key = Object.keys(data)[0]
-                const DealID = parseInt(key)
-                result.push({
-                    ...data[key],
-                    DealID
-                })
-                console.info('es.mapSync', key, data)
+                result = data
             }))
     })
 }
