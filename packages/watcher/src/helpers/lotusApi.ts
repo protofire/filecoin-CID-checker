@@ -27,7 +27,7 @@ const requestChainGetTipSetByHeight = (height: number) => ({
     params: [height, null],
 })
 
-const getOptions = (opts: any = { params: {} }) => {
+const getOptions = (opts: any = {params: {}}) => {
     const options: any = {
         method: 'post',
         body: JSON.stringify(opts.params),
@@ -41,7 +41,7 @@ const getOptions = (opts: any = { params: {} }) => {
     return options
 }
 
-const request = async (opts: any = { params: {} }) => {
+const request = async (opts: any = {params: {}}) => {
     const url = LOTUS_RPCURL
 
     const result = await fetch(url, getOptions(opts))
@@ -95,9 +95,9 @@ export const getMarketDeals = async (tipSetKey: any) => {
     logger('Fetching deals from Lotus node')
 
     const params = requestStateMarketDeals(tipSetKey)
-    const options = getOptions({ params })
+    const options = getOptions({params})
     const res = await fetch(LOTUS_RPCURL, options)
-
+    // huge filcoin response > 1gb - workaround for it
     return new Promise((resolve, reject) => {
         const errorHandler = (error: Error) => {
             return reject({reason: 'Unable to download data', meta: {LOTUS_RPCURL, error}})

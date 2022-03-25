@@ -1,8 +1,7 @@
-
 import {prettyLogger} from '../helpers/logger'
 import {getTipSetKeyByHeight, getMarketDeals} from '../helpers/lotusApi'
 import {getDbo} from '../helpers/db'
-import {DEALS_PAGE_SIZE } from '../config'
+import {DEALS_PAGE_SIZE} from '../config'
 
 const NS = 'processors/runProcessorUptoChainHeadHeight'
 /* eslint-disable */
@@ -16,7 +15,7 @@ export const DealsProcessor = async (height: number): Promise<boolean> => {
 
         const tipSetKey = await getTipSetKeyByHeight(height)
         prettyLogger.info(
-            { tipSetKey },
+            {tipSetKey},
             `${NS} tipSetKey got`,
         )
 
@@ -27,8 +26,8 @@ export const DealsProcessor = async (height: number): Promise<boolean> => {
             `${NS} Deals from lotus API: ${total}`,
         )
 
-        let pages = DEALS_PAGE_SIZE < total ? 1 : total/DEALS_PAGE_SIZE
-        const ddd = DEALS_PAGE_SIZE < total ? 0 : total%DEALS_PAGE_SIZE
+        let pages = DEALS_PAGE_SIZE < total ? 1 : total / DEALS_PAGE_SIZE
+        const ddd = DEALS_PAGE_SIZE < total ? 0 : total % DEALS_PAGE_SIZE
         console.info('pages1', pages)
         if (ddd >= 1) {
             pages++
