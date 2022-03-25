@@ -16,11 +16,18 @@
     "test:watch": "NODE_ENV=test jest --watchAll -i --detectOpenHandles"
   },
   "dependencies": {
+    "@types/event-stream": "^4.0.0",
+    "@types/jsonstream": "^0.8.30",
+    "@types/node-fetch": "^2.6.1",
+    "@types/stream-json": "^1.7.2",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
-    "got": "^11.5.2",
+    "event-stream": "^4.0.1",
+    "jsonstream": "^1.0.3",
     "mongodb": "^3.6.0",
-    "pino": "^6.13.3"
+    "node-fetch": "^2.6.1",
+    "pino": "^6.13.3",
+    "readline": "^1.3.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.5",

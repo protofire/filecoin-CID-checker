@@ -20,5 +20,5 @@ const NS = 'Run'
 
     await sleep(SLEEP_TIPSET_CHECK_MS)
   }
-    /* eslint-enable */
+  /* eslint-enable */
 })()

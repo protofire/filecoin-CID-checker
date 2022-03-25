@@ -1,158 +1,128 @@
-import got from 'got'
-import { LOTUS_RPCURL, LOTUS_JWT_TOKEN } from '../config'
-import { getLogger } from '../helpers/logger'
+import fetch from 'node-fetch'
+import {LOTUS_RPCURL, LOTUS_JWT_TOKEN} from '../config'
+import {getLogger} from '../helpers/logger'
+import JSONStream from 'jsonstream'
+import es from 'event-stream'
 
 const baseBody = {
-  jsonrpc: '2.0',
-  id: 1,
+    jsonrpc: '2.0',
+    id: 1,
 }
 
 const requestChainHead = {
-  ...baseBody,
-  method: 'Filecoin.ChainHead',
-  params: [],
+    ...baseBody,
+    method: 'Filecoin.ChainHead',
+    params: [],
 }
 /* eslint-disable */
 const requestStateMarketDeals = (tipSetKey: any) => ({
-  ...baseBody,
-  method: 'Filecoin.StateMarketDeals',
-  params: [tipSetKey],
-})
-
-const requestStateMinerSectors = (
-  minerId: string,
-  bitfield: null | [number] = null,
-  include: null | boolean = null,
-  tipSetKey: undefined | any = null,
-) => ({
-  ...baseBody,
-  method: 'Filecoin.StateMinerSectors',
-  params: [minerId, bitfield, include, tipSetKey],
-})
-
-const requestStateMinerActiveSectors = (
-  minerId: string,
-  tipSetKey: undefined | any = null,
-) => ({
-  ...baseBody,
-  method: 'Filecoin.StateMinerActiveSectors',
-  params: [minerId, tipSetKey],
+    ...baseBody,
+    method: 'Filecoin.StateMarketDeals',
+    params: [tipSetKey],
 })
 
 const requestChainGetTipSetByHeight = (height: number) => ({
-  ...baseBody,
-  method: 'Filecoin.ChainGetTipSetByHeight',
-  params: [height, null],
+    ...baseBody,
+    method: 'Filecoin.ChainGetTipSetByHeight',
+    params: [height, null],
 })
 
-const requestStateMinerFaults = (address: string, tipSetKey: any) => ({
-  ...baseBody,
-  method: 'Filecoin.StateMinerFaults',
-  params: [address, tipSetKey],
-})
-
-const requestStateMinerRecoveries = (address: string, tipSetKey: any) => ({
-  ...baseBody,
-  method: 'Filecoin.StateMinerRecoveries',
-  params: [address, tipSetKey],
-})
-
-// @TODO: log response size, timeout, retry, etc here
-const gotPost = (json: any): Promise<any> => {
-  const options: any = {
-    responseType: 'json',
-    json,
-  }
-  if (LOTUS_JWT_TOKEN !== '') {
-    options.headers = {
-      Authorization: `Bearer ${LOTUS_JWT_TOKEN}`,
+const getOptions = (opts: any = { params: {} }) => {
+    const options: any = {
+        method: 'post',
+        body: JSON.stringify(opts.params),
     }
-  }
-  return got.post(LOTUS_RPCURL, options)
+    options.headers = {
+        'content-type': 'application/json',
+    }
+    if (LOTUS_JWT_TOKEN !== '') {
+        options.headers.Authorization = `Bearer ${LOTUS_JWT_TOKEN}`
+    }
+    return options
+}
+
+const request = async (opts: any = { params: {} }) => {
+    const url = LOTUS_RPCURL
+
+    const result = await fetch(url, getOptions(opts))
+
+    const text = await result.text()
+    const json = JSON.parse(text || '{}')
+
+    return json
+}
+
+const fetchPost = (json: any): Promise<any> => {
+    const options: any = {
+        responseType: 'json',
+        json,
+    }
+
+    return request({
+        params: json
+    })
 }
 
 export const getChainHead = async (): Promise<any> => {
-  const response: any = await gotPost(requestChainHead)
-  return response.body.result
+    return fetchPost(requestChainHead)
 }
 
 const memoizedTipSetKey = {
-  Cids: null,
-  height: -1,
+    Cids: null,
+    height: -1,
 }
+
 export const getTipSetKeyByHeight = async (height: number): Promise<any> => {
-  const logger = getLogger('debug:helpers/lotusApi')
-  if (memoizedTipSetKey.Cids !== null && memoizedTipSetKey.height === height) {
-    logger(`Returning memoized TipSetKey by height: ${height}`)
-    return memoizedTipSetKey.Cids
-  }
-  logger(`Fetching TipSetKey by height: ${height}`)
-  const response: any = await gotPost(requestChainGetTipSetByHeight(height))
-  const tipSetKey: any = response.body.result.Cids
-  memoizedTipSetKey.height = height
-  memoizedTipSetKey.Cids = tipSetKey
-  logger(tipSetKey)
-  return tipSetKey
+    const logger = getLogger('debug:helpers/lotusApi')
+    if (memoizedTipSetKey.Cids !== null && memoizedTipSetKey.height === height) {
+        logger(`Returning memoized TipSetKey by height: ${height}`)
+        return memoizedTipSetKey.Cids
+    }
+    logger(`Fetching TipSetKey by height: ${height}`)
+    const response: any = await fetchPost(requestChainGetTipSetByHeight(height))
+
+    const tipSetKey: any = response.result.Cids
+
+    memoizedTipSetKey.height = height
+    memoizedTipSetKey.Cids = tipSetKey
+    logger(tipSetKey)
+
+    return tipSetKey
 }
 
-export const getStateMinerSectors = async (
-  minerId: string,
-  bitfield: null | [number] = null,
-  include: null | boolean = null,
-  tipSetKey: undefined | any = null,
-): Promise<any> => {
-  const response: any = await gotPost(
-    requestStateMinerSectors(minerId, bitfield, include, tipSetKey),
-  )
-  const sectors = response.body.result
-  return sectors
+export const getMarketDeals = async (tipSetKey: any) => {
+    const logger = getLogger('debug:helpers/lotusApi')
+    logger('Fetching deals from Lotus node')
+
+    const params = requestStateMarketDeals(tipSetKey)
+    const options = getOptions({ params })
+    const res = await fetch(LOTUS_RPCURL, options)
+
+    return new Promise((resolve, reject) => {
+        const errorHandler = (error: Error) => {
+            return reject({reason: 'Unable to download data', meta: {LOTUS_RPCURL, error}})
+        };
+        const jsonStream = JSONStream.parse('result')
+        const result: any = []
+        jsonStream
+            .on('error', err => errorHandler)
+            .on('end', () => {
+                console.info('end')
+                return resolve(result)
+            })
+        res.body
+            .on('error', errorHandler)
+            .pipe(jsonStream)
+            .pipe(es.mapSync((data: any) => {
+                const key = Object.keys(data)[0]
+                const DealID = parseInt(key)
+                result.push({
+                    ...data[key],
+                    DealID
+                })
+                console.info('es.mapSync', key, data)
+            }))
+    })
 }
 
-export const getStateMinerActiveSectors = async (
-  minerId: string,
-  tipSetKey: undefined | any = null,
-): Promise<any> => {
-  const response: any = await gotPost(
-    requestStateMinerActiveSectors(minerId, tipSetKey),
-  )
-  const sectors = response.body.result
-  return sectors
-}
-
-export const getMinerSectorFaultsByTipSetKey = async (
-  address: string,
-  tipSetKey: any,
-): Promise<any> => {
-  const stateMinerFaultsResponse: any = await gotPost(
-    requestStateMinerFaults(address, tipSetKey),
-  )
-  const bitfield = stateMinerFaultsResponse.result
-  const stateMinerSectorsResponse: any = await gotPost(
-    requestStateMinerSectors(address, bitfield, false, tipSetKey),
-  )
-  const sectors = stateMinerSectorsResponse.result
-  return sectors
-}
-
-export const getMinerSectorRecoveriesByTipSetKey = async (
-  address: string,
-  tipSetKey: any,
-): Promise<any> => {
-  const stateMinerRecoveriesResponse: any = await gotPost(
-    requestStateMinerRecoveries(address, tipSetKey),
-  )
-  const bitfield = stateMinerRecoveriesResponse.result
-  const stateMinerSectorsResponse: any = await gotPost(
-    requestStateMinerSectors(address, bitfield, false, tipSetKey),
-  )
-  const sectors = stateMinerSectorsResponse.result
-  return sectors
-}
-
-export const getMarketDeals = async (tipSetKey: any): Promise<any> => {
-  const logger = getLogger('debug:helpers/lotusApi')
-  logger('Fetching deals from Lotus node')
-  const response: any = await gotPost(requestStateMarketDeals(tipSetKey))
-  return response.body.result
-}
 /* eslint-enable */

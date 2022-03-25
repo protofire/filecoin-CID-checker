@@ -8,6 +8,7 @@ const envVarNames = [
   'CID_DB_NAME',
   'CID_LOTUS_RPCURL',
   'CID_LOTUS_JWT_TOKEN',
+    'DEALS_PAGE_SIZE',
 ]
 
 envVarNames.forEach((n) => {
@@ -54,6 +55,7 @@ if (process.env.NODE_ENV === 'production') {
 export const DB_CONNECTION = dbConnection
 export const LOTUS_RPCURL = process.env.CID_LOTUS_RPCURL as string
 export const LOTUS_JWT_TOKEN = process.env.CID_LOTUS_JWT_TOKEN as string
+export const DEALS_PAGE_SIZE = Number.parseInt(process.env.DEALS_PAGE_SIZE as string, 10)
 export const SLEEP_TIPSET_CHECK_MS = Number.parseInt(
   process.env.SLEEP_TIPSET_CHECK_MS as string,
   10,

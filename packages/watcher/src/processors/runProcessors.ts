@@ -9,20 +9,17 @@ const NS = 'processors/runProcessorUptoChainHeadHeight'
 
 export const runProcessorsWithChainHeadHeight = async (): Promise<void> => {
   let chainHead
+
   try {
     prettyLogger.info(`${NS} Getting chainHead`)
-    chainHead = await getChainHead()
-  } catch (err: any) {
-    prettyLogger.error(err, `${NS} error`)
-    throw new Error('Could not get chain head')
-  }
+    const  chainHead = await getChainHead()
 
-  const height = chainHead.Height
-  prettyLogger.info({ height }, `${NS} latest height`)
-  try {
+    let height = chainHead.result.Height
+    prettyLogger.info({ height }, `${NS} latest height`)
+
+    const dbo = await getDbo()
     const success = await DealsProcessor(height)
     const status = { height, success }
-    const dbo = await getDbo()
     const writeOps: any[] = [{ insertOne: status }]
     await dbo.collection('status').bulkWrite(writeOps)
     prettyLogger.info({ status }, `${NS} Added status`)
