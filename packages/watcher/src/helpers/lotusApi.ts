@@ -64,7 +64,8 @@ const fetchPost = (json: any): Promise<any> => {
 }
 
 export const getChainHead = async (): Promise<any> => {
-    return fetchPost(requestChainHead)
+    const body = requestChainHead
+    return fetchPost(body)
 }
 
 const memoizedTipSetKey = {
@@ -79,9 +80,10 @@ export const getTipSetKeyByHeight = async (height: number): Promise<any> => {
         return memoizedTipSetKey.Cids
     }
     logger(`Fetching TipSetKey by height: ${height}`)
-    const response: any = await fetchPost(requestChainGetTipSetByHeight(height))
+    const body = requestChainGetTipSetByHeight(height)
+    const response: any = await fetchPost(body)
 
-    const tipSetKey: any = response.result.Cids
+    const tipSetKey: any = [response.result.Cids[0]]
 
     memoizedTipSetKey.height = height
     memoizedTipSetKey.Cids = tipSetKey
@@ -95,7 +97,9 @@ export const getMarketDeals = async (tipSetKey: any) => {
     logger('Fetching deals from Lotus node')
 
     const params = requestStateMarketDeals(tipSetKey)
+
     const options = getOptions({params})
+
     const res = await fetch(LOTUS_RPCURL, options)
     // huge filcoin response > 1gb - workaround for it
     return new Promise((resolve, reject) => {
@@ -107,7 +111,7 @@ export const getMarketDeals = async (tipSetKey: any) => {
         jsonStream
             .on('error', err => errorHandler)
             .on('end', () => {
-                console.info('end', result.length)
+                logger('Deals got from filecoin')
                 return resolve(result)
             })
         res.body
@@ -118,5 +122,34 @@ export const getMarketDeals = async (tipSetKey: any) => {
             }))
     })
 }
+
+// export const getMarketDealsFromS3 = async (tipSetKey: any) => {
+//     const logger = getLogger('debug:helpers/lotusApi')
+//     logger('Fetching deals from S3')
+//
+//     const res = await fetch(MARKET_DEALS_JSON, { headers: { 'content-type': 'application/json'} })
+//     console.info('res', res)
+//     // huge filcoin response > 1gb - workaround for it
+//     return new Promise((resolve, reject) => {
+//         const errorHandler = (error: Error) => {
+//             return reject({reason: 'Unable to download data', meta: {LOTUS_RPCURL, error}})
+//         };
+//         const jsonStream = JSONStream.parse('$*')
+//         let result: any = {}
+//         jsonStream
+//             .on('error', err => errorHandler)
+//             .on('end', () => {
+//                 logger('Deals got from s3')
+//                 return resolve(result)
+//             })
+//         res.body
+//             .on('error', errorHandler)
+//             .pipe(jsonStream)
+//             .pipe(es.mapSync((data: any) => {
+//                 console.info('data', data)
+//                 result = data
+//             }))
+//     })
+// }
 
 /* eslint-enable */

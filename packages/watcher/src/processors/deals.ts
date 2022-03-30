@@ -20,35 +20,38 @@ export const DealsProcessor = async (height: number): Promise<boolean> => {
         )
 
         const records: any = await getMarketDeals(tipSetKey)
-        const total = Object.keys(records).length
-
-        prettyLogger.info(
-            `${NS} Deals from lotus API: ${total}`,
-        )
-        console.info('DEALS_PAGE_SIZE < total', (DEALS_PAGE_SIZE < total))
-        console.info('DEALS_PAGE_SIZE, total', DEALS_PAGE_SIZE,total)
+        const dealIds = Object.keys(records)
+        const total = dealIds.length
 
         let pages = DEALS_PAGE_SIZE > total ? 1 : total / DEALS_PAGE_SIZE
         const ddd = DEALS_PAGE_SIZE > total ? 0 : total % DEALS_PAGE_SIZE
-        console.info('pages1', pages)
         if (ddd >= 1) {
             pages++
         }
-        console.info('pages2', pages)
-        // TODO (plcgi1) add support for paging save records to DB
-        Object.keys(records).forEach(function (key: any) {
-            const DealID = parseInt(key, 10)
-            const deal = records[key]
-            deal.DealID = DealID
-            writeOps.push({
-                replaceOne: {
-                    filter: {_id: deal.DealID},
-                    replacement: deal,
-                    upsert: true,
-                },
-            })
-        })
-        await dbo.collection('deals').bulkWrite(writeOps)
+        pages = parseInt(`${pages}`, 10)
+
+        prettyLogger.info(
+            `${NS} Deals from lotus API: total:${total} pages:${pages}`,
+        )
+        for (let page = 1; page < pages; page++) {
+            const chunks = dealIds.slice(page, page + DEALS_PAGE_SIZE)
+            for (const dealId of chunks) {
+                const DealID = parseInt(dealId, 10)
+                const deal = records[dealId]
+                deal.DealID = DealID
+                writeOps.push({
+                    replaceOne: {
+                        filter: {_id: deal.DealID},
+                        replacement: deal,
+                        upsert: true,
+                    },
+                })
+            }
+            await dbo.collection('deals').bulkWrite(writeOps)
+            prettyLogger.info(
+                `${NS} Deal stored on page ${page}`,
+            )
+        }
 
         const stats: any = {}
 
