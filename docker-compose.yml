@@ -16,7 +16,7 @@ services:
     image: cid-checker-backend:1.0.0
     restart: always
     environment:
-      NODE_ENV: "dev"
+      NODE_ENV: "production"
       PORT: "${PORT}"
       CID_DB_CONNECTIONSTRING: "${CID_DB_CONNECTIONSTRING}"
       CID_DB_NAME: "${CID_DB_NAME}"
