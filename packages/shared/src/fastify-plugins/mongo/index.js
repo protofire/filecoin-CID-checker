@@ -8,7 +8,7 @@ const createModels = (path) => {
 
 const connect = async (app, dbConfig, models) => {
   const uri = `${dbConfig.uri}`
-
+  // blabla
   app.log.info('Connecting mongo', { uri })
 
   mongoose.connection.on("connected", () => {
