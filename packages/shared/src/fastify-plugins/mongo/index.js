@@ -19,11 +19,11 @@ const connect = async (app, dbConfig, models) => {
     app.log.error({ actor: "MongoDB" }, "disconnected");
   });
 
-  if (dbConfig.options && dbConfig.options.tls) {
-    if (!dbConfig.options.tlsCAFile) {
-      throw new Error('tls=true required tlsCAFile path to cert file')
-    }
-  }
+  // if (dbConfig.options && dbConfig.options.tls) {
+  //   if (!dbConfig.options.tlsCAFile) {
+  //     throw new Error('tls=true required tlsCAFile path to cert file')
+  //   }
+  // }
 
   await mongoose.connect(
     uri,
