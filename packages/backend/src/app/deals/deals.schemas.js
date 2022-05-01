@@ -32,6 +32,7 @@ const listWithSelector = {
 }
 module.exports = {
   list,
+  csv: list,
   listWithSelector,
   getDeal: {
     params: {

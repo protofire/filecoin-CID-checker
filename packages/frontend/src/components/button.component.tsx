@@ -3,12 +3,13 @@ import styled from 'styled-components'
 
 interface ButtonCommonProps {
   theme?: any
+  width?: string
 }
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, ButtonCommonProps {}
 
 const Wrapper = styled.button<ButtonProps>`
-  width: 312px;
+  width: ${({ width }) => (width ? width : '312px')};
   height: 56px;
   border-radius: 28px;
   background-color: #42c1ca;

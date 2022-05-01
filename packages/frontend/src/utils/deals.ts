@@ -103,3 +103,29 @@ export const fetchDealStats = async (): Promise<any> => {
 
   return data
 }
+
+export const getDealsCsvUrl = async (
+  search: string,
+  query: string,
+  activeFilter: boolean,
+  verifiedFilter: boolean,
+  pageSize = PAGE_SIZE,
+) => {
+  let url = `${FILECOIN_CID_CHECKER_API}/deals/csv?per_page=${pageSize}`
+
+  if (search) {
+    url = `${FILECOIN_CID_CHECKER_API}/deals/${search}/csv?per_page=${pageSize}`
+  }
+
+  if (activeFilter) {
+    url = url + '&activeDeal=1'
+  }
+
+  if (verifiedFilter) {
+    url = url + '&verifiedDeal=1'
+  }
+
+  url = url + query
+
+  return url
+}

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import Loader from 'react-loader-spinner'
 import styled from 'styled-components'
 import { Waypoint } from 'react-waypoint'
 import { useParams } from 'react-router-dom'
-
 import { useDeals } from '../hooks/useDeals.hook'
 import { RemoteData } from '../utils/remoteData'
 import { NoDealsAvailableMessage } from './noDealsAvailableMessage.component'
@@ -15,6 +14,8 @@ import { useSearchContext } from '../state/search.context'
 import { DownArrowFilledIcon } from './common/icons'
 import { useStats } from '../hooks/useStats.hook'
 import prettyBytes from 'pretty-bytes'
+import { getDealsCsvUrl } from '../utils/deals'
+import { PAGE_SIZE } from '../config/constants'
 
 interface ParamTypes {
   deal: string
@@ -153,6 +154,18 @@ export const Deals = () => {
     setQuery()
   }
 
+  const encodedSearch = encodeURIComponent(search)
+
+  const handleCsvDownload = useCallback(async () => {
+    window.location.href = await getDealsCsvUrl(
+      encodedSearch,
+      query,
+      activeFilter,
+      verifiedFilter,
+      page * PAGE_SIZE,
+    )
+  }, [encodedSearch, page, query, activeFilter, verifiedFilter])
+
   const showMoreButton =
     moreDeals && !RemoteData.is.loading(deals) ? (
       <div className="row is-center">
@@ -169,6 +182,9 @@ export const Deals = () => {
   return (
     <>
       <div className="container" style={{ marginBottom: '40px' }}>
+        <Button onClick={handleCsvDownload} width="auto">
+          Download as CSV
+        </Button>
         {RemoteData.hasData(deals) && deals.data.length > 0 && (
           <>
             <Table>

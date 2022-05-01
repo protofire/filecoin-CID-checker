@@ -1,4 +1,5 @@
 const pager = require('filecoin-checker-shared/src/helpers/pagination')
+const { createCsvFile } = require('../services/csv')
 
 class DealsController {
   async listWithSelector(req, reply) {
@@ -24,6 +25,33 @@ class DealsController {
 
       return result
     } catch (error) {
+      reply.code(500).send(error)
+    }
+  }
+
+  async csv(req, reply) {
+    const pageOptions = pager(req.query)
+
+    const dealProvider = req.services.deals
+
+    try {
+      const deals = await dealProvider.list(req.query, req.db.models, pageOptions)
+
+      const data = deals.Deals.map((deal) => {
+        return [
+          deal.DealInfo.Proposal.PieceCID['/'],
+          deal.DealID,
+          deal.DealInfo.Proposal.Provider,
+          deal.DealInfo.Proposal.Label,
+        ]
+      })
+
+      reply.type('text/csv')
+      reply.header('Content-Disposition', 'attachment; filename=deals.csv')
+
+      return await createCsvFile('deals', data, ['PieceCID', 'DealID', 'MinerId', 'Label'])
+    } catch (error) {
+      console.error(error)
       reply.code(500).send(error)
     }
   }
