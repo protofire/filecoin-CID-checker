@@ -8,6 +8,7 @@ const cors = require('fastify-cors')
 const fastifyLightDDD = require('fastify-light-ddd/src')
 const config = require('../config/environment')
 const descriptors = require('./app/descriptor')
+const { unlinkSync, existsSync } = require('fs')
 
 function build() {
   const app = fastify({ logger: config.logging })
@@ -55,6 +56,16 @@ function build() {
   })
 
   app.register(fastifyLightDDD, descriptors)
+
+  app.addHook('onResponse', () => {
+    try {
+      if (existsSync('deals.csv')) {
+        unlinkSync('deals.csv')
+      }
+    } catch (err) {
+      console.error({ hookError: err })
+    }
+  })
 
   config.logger = app.log
 

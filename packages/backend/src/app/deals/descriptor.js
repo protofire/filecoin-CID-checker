@@ -18,6 +18,12 @@ module.exports = {
     },
     {
       httpMethod: 'get',
+      controllerMethod: 'csv',
+      path: '/deals/csv',
+      preHandler: [],
+    },
+    {
+      httpMethod: 'get',
       controllerMethod: 'listWithSelector',
       path: '/api/deals/:selector/list',
       preHandler: [],
