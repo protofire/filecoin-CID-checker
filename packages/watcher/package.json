@@ -10,7 +10,7 @@
     "build": "rimraf ./build && tsc",
     "lint": "eslint . --ext .ts",
     "prettier-format": "prettier --config .prettierrc.json '{src,test}/**/*.ts' --write",
-    "start": "npm run build && DEBUG=cid-checker-watcher:*,-cid-checker-watcher:debug* node --max-old-space-size=4096 -r dotenv/config build/index.js dotenv_config_path=.env",
+    "start": "npm run build && DEBUG=cid-checker-watcher:*,-cid-checker-watcher:debug* node --max-old-space-size=8192 -r dotenv/config build/index.js dotenv_config_path=.env",
     "start:dev": "DEBUG=cid-checker-watcher:* nodemon --watch src -e ts,js --exec 'ts-node -r dotenv/config ./src/index.ts dotenv_config_path=.env'",
     "test": "NODE_ENV=test jest --coverage --detectOpenHandles --forceExit",
     "test:watch": "NODE_ENV=test jest --watchAll -i --detectOpenHandles"
