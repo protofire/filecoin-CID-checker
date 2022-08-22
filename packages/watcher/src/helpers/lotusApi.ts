@@ -35,9 +35,9 @@ const getOptions = (opts: any = {params: {}}) => {
     options.headers = {
         'content-type': 'application/json',
     }
-    if (LOTUS_JWT_TOKEN !== '') {
-        options.headers.Authorization = `Bearer ${LOTUS_JWT_TOKEN}`
-    }
+    // if (LOTUS_JWT_TOKEN !== '') {
+    //     options.headers.Authorization = `Bearer ${LOTUS_JWT_TOKEN}`
+    // }
     return options
 }
 
