@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import {LOTUS_RPCURL, LOTUS_JWT_TOKEN} from '../config'
+import {LOTUS_RPCURL} from '../config'
 import {getLogger} from '../helpers/logger'
 import JSONStream from 'jsonstream'
 import es from 'event-stream'
@@ -15,10 +15,10 @@ const requestChainHead = {
     params: [],
 }
 /* eslint-disable */
-const requestStateMarketDeals = (tipSetKey: any) => ({
+const requestStateMarketDeals = () => ({
     ...baseBody,
     method: 'Filecoin.StateMarketDeals',
-    params: [tipSetKey],
+    params: [[]],
 })
 
 const requestChainGetTipSetByHeight = (height: number) => ({
@@ -92,15 +92,14 @@ export const getTipSetKeyByHeight = async (height: number): Promise<any> => {
     return tipSetKey
 }
 
-export const getMarketDeals = async (tipSetKey: any) => {
+export const getMarketDeals = async () => {
     const logger = getLogger('debug:helpers/lotusApi')
     logger('Fetching deals from Lotus node')
 
-    const params = requestStateMarketDeals(tipSetKey)
-
+    const params = requestStateMarketDeals()
     const options = getOptions({params})
-
     const res = await fetch(LOTUS_RPCURL, options)
+
     // huge filcoin response > 1gb - workaround for it
     return new Promise((resolve, reject) => {
         const errorHandler = (error: Error) => {
@@ -111,7 +110,7 @@ export const getMarketDeals = async (tipSetKey: any) => {
         jsonStream
             .on('error', err => errorHandler)
             .on('end', () => {
-                logger('Deals got from filecoin')
+                // logger('Deals got from filecoin')
                 return resolve(result)
             })
         res.body
