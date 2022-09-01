@@ -41,7 +41,7 @@ class DealsService {
       .sort(sortCriteria)
       .skip(pagination.skip)
 
-    logger.debug({ where }, 'DealsService.list.where')
+    logger.info({ where }, 'DealsService.list.where')
 
     const deals = result.map((deal) => ({
       DealID: deal['_id'],
