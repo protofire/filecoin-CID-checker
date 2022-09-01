@@ -5,7 +5,6 @@ class LotusApiClient {
   constructor() {
     const opts = {
       url: config.lotus.url,
-      token: config.lotus.token,
     }
     return new LotusApi(opts) // ???
   }
