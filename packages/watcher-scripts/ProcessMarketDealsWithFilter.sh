@@ -14,7 +14,7 @@ step=1000
 output=StateMarketDeals.json
 
 rm -rf ./tmp
-mkdir -p tmp && mkdir -p "logs_$sdate/parallel"
+mkdir -p tmp && mkdir -p "logs_$sdate"
 
 height=$(curl -s -H "Content-Type:application/json"\
   --data '{ "jsonrpc":"2.0", "method":"Filecoin.ChainHead", "params":[], "id":1 }'\
@@ -36,10 +36,13 @@ curl -o $output -X POST\
   $fcnode
 
 writeBatch () {
-deals=$(jq -s '.' "$1")
 mongosh --quiet --host $dbhost --port $dbport --eval "
   db = db.getSiblingDB('$dbname');
-  var deals = (${deals}).map((el) => {
+  var file = fs.readFileSync('$1', 'utf8');
+  var records = file.split('\n');
+  records.pop();
+  var deals = records.map((v) => {
+    var el = JSON.parse(v);
     el.value.DealID = parseInt(el.key, 10);
     return {
       replaceOne: {
@@ -47,7 +50,7 @@ mongosh --quiet --host $dbhost --port $dbport --eval "
         replacement: el.value,
         upsert: true,
       }
-   }
+    }
   })
   db.deals.bulkWrite(deals);
 "
@@ -58,7 +61,7 @@ printf '[%s] Processing and filtering raw deals \n' "$(date +%m-%d-%Y:%H:%M:%S)"
 jq -c --argjson lh "$latestHeight" '.result | to_entries | .[] | select(.value.State.LastUpdatedEpoch == -1 or .value.State.LastUpdatedEpoch > $lh)' $output | split -a 5 -l $step - ./tmp/entries-batch_
 
 printf '[%s] Writing deals to DB \n' "$(date +%m-%d-%Y:%H:%M:%S)" >> "logs_$sdate/log.log"
-parallel --tmpdir "./logs_$sdate/parallel" --files writeBatch {} ::: ./tmp/* > /dev/null
+parallel --joblog "logs_$sdate/parallel.log" --bar writeBatch {} ::: ./tmp/* >/dev/null
 
 getNumberOfUniqueClients () {
 mongosh --quiet --host $dbhost --port $dbport --eval "
@@ -243,9 +246,9 @@ totalDealSize=$(getTotalDealSize)
 totalDeals=$(getTotalDeals)
 
 printf '[%s] Writing stats \n' "$(date +%m-%d-%Y:%H:%M:%S)" >> "logs_$sdate/log.log"
-writeStats "$numberOfUniqueClients" "$numberOfUniqueProviders" "$numberOfUniqueCIDs" "$totalDealSize" "$totalDeals" > "logs_$sdate/mongodb_stats.log"
+writeStats "$numberOfUniqueClients" "$numberOfUniqueProviders" "$numberOfUniqueCIDs" "$totalDealSize" "$totalDeals" >/dev/null
 
 printf '[%s] Writing status \n' "$(date +%m-%d-%Y:%H:%M:%S)" >> "logs_$sdate/log.log"
-writeStatus > "logs_$sdate/mongodb_status.log"
+writeStatus >/dev/null
 
 printf 'Total execution time: %s \n' "$(($(date +%s) - sdate))s" >> "logs_$sdate/log.log"
