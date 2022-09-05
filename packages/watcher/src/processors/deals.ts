@@ -1,5 +1,5 @@
 import {prettyLogger} from '../helpers/logger'
-import {getTipSetKeyByHeight, getMarketDeals} from '../helpers/lotusApi'
+import {getMarketDeals} from '../helpers/lotusApi'
 import {getDbo} from '../helpers/db'
 import {DEALS_PAGE_SIZE} from '../config'
 
@@ -13,13 +13,7 @@ export const DealsProcessor = async (height: number): Promise<boolean> => {
         const dbo = await getDbo()
         const writeOps: any[] = []
 
-        const tipSetKey = await getTipSetKeyByHeight(height)
-        prettyLogger.info(
-            {tipSetKey},
-            `${NS} tipSetKey got`,
-        )
-
-        const records: any = await getMarketDeals(tipSetKey)
+        const records: any = await getMarketDeals()
         const dealIds = Object.keys(records)
         const total = dealIds.length
 

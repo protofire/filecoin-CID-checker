@@ -1,5 +1,6 @@
 const pager = require('filecoin-checker-shared/src/helpers/pagination')
 const { createCsvFile } = require('../services/csv')
+const { logger } = require('../../../config/environment')
 
 class DealsController {
   async listWithSelector(req, reply) {
@@ -10,6 +11,7 @@ class DealsController {
     if (selector.error) {
       selector.result = req.params.selector
     }
+    logger.info({ selector }, "listWithSelector")
     req.query.selector = selector.result
 
     return this.list(req, reply)
