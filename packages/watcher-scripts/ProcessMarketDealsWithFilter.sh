@@ -5,11 +5,11 @@ sdate="$(date +%s)"
 
 export dbhost=localhost
 export dbport=27017
-export dbname=filecoindb_test
+export dbname=filecoindb
 
 fcnode=https://calibration.node.glif.io/archive/lotus/rpc/v0
 
-step=1000
+step=10000
 
 output=StateMarketDeals.json
 
@@ -52,7 +52,7 @@ mongosh --quiet --host $dbhost --port $dbport --eval "
       }
     }
   })
-  db.deals.bulkWrite(deals);
+  db.deals.bulkWrite(deals, { ordered: false });
 "
 }
 export -f writeBatch
