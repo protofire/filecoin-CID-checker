@@ -6,7 +6,7 @@ module.exports = {
   apps: [
     // First application
     {
-      name: 'cid-checker-fastify-api',
+      name: 'cid-checker-backend',
       script: 'index.js',
       instances: 'max',
       exec_mode: 'cluster',
