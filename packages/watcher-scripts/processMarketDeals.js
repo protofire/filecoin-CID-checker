@@ -2,14 +2,14 @@ const fs = require("fs");
 const { MongoClient } = require("mongodb");
 
 async function getLastHeight(statsCollection) {
-  const result = await statsCollection.find().limit(1).toArray();
+  const [result] = await statsCollection.find().limit(1).toArray();
   return (result?.latestHeight || 0);
 }
 
 async function updateStats(dealsCollection, statsCollection, height) {
   const stats = {latestHeight: height};
   let queryResults;
-  queryResults = await dealsCollection
+  [queryResults] = await dealsCollection
     .aggregate(
       [
         {$match: {'Proposal.EndEpoch': {$gte: height}, 'State.SectorStartEpoch': {$gt: -1}}},
@@ -18,9 +18,9 @@ async function updateStats(dealsCollection, statsCollection, height) {
       ],
       {allowDiskUse: true},
     ).toArray()
-  stats.numberOfUniqueClients = queryResults.length > 0 ? queryResults[0].count : 0;
+  stats.numberOfUniqueClients = (queryResults?.count || 0);
   
-  queryResults = await dealsCollection
+  [queryResults] = await dealsCollection
     .aggregate(
       [
         {$match: {'Proposal.EndEpoch': {$gte: height}, 'State.SectorStartEpoch': {$gt: -1}}},
@@ -29,9 +29,9 @@ async function updateStats(dealsCollection, statsCollection, height) {
       ],
       {allowDiskUse: true},
     ).toArray()
-  stats.numberOfUniqueProviders = queryResults.length > 0 ? queryResults[0].count : 0;
+  stats.numberOfUniqueProviders = (queryResults?.count || 0);
   
-  queryResults = await dealsCollection
+  [queryResults] = await dealsCollection
     .aggregate(
       [
         {$match: {'Proposal.EndEpoch': {$gte: height}, 'State.SectorStartEpoch': {$gt: -1}}},
@@ -40,9 +40,9 @@ async function updateStats(dealsCollection, statsCollection, height) {
       ],
       {allowDiskUse: true},
     ).toArray()
-  stats.numberOfUniqueCIDs = queryResults.length > 0 ? queryResults[0].count : 0;
+  stats.numberOfUniqueCIDs = (queryResults?.count || 0);
   
-  queryResults = await dealsCollection
+  [queryResults] = await dealsCollection
     .aggregate(
       [
         {$match: {'Proposal.EndEpoch': {$gte: height}, 'State.SectorStartEpoch': {$gt: -1}}},
@@ -50,9 +50,9 @@ async function updateStats(dealsCollection, statsCollection, height) {
       ],
       {allowDiskUse: true},
     ).toArray()
-  stats.totalDealSize = queryResults.length > 0 ? queryResults[0].count : 0;
+  stats.totalDealSize = (queryResults?.count || 0);
   
-  queryResults = await dealsCollection
+  [queryResults] = await dealsCollection
     .aggregate(
       [
         {$match: {'Proposal.EndEpoch': {$gte: height}, 'State.SectorStartEpoch': {$gt: -1}}},
@@ -60,7 +60,7 @@ async function updateStats(dealsCollection, statsCollection, height) {
       ],
       {allowDiskUse: true},
     ).toArray()
-  stats.totalDeals = queryResults.length > 0 ? queryResults[0].count : 0;
+  stats.totalDeals = (queryResults?.count || 0);
   
   return statsCollection.bulkWrite([
     {
