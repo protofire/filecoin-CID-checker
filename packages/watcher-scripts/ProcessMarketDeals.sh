@@ -23,7 +23,7 @@ currentHeight=$(curl -s -H "Content-Type:application/json"\
 printf '[%s] Current height: %s \n' "$(date +%m-%d-%Y:%H:%M:%S)" "$currentHeight" >> "logs/log_$sdate.log"
 
 printf '[%s] Fetching deals \n' "$(date +%m-%d-%Y:%H:%M:%S)" >> "logs/log_$sdate.log"
-curl -o filePath -X POST\
+curl -o $filePath -X POST\
   -H "Content-Type:application/json"\
   --data '{ "jsonrpc":"2.0", "method":"Filecoin.StateMarketDeals", "params":[[]], "id":1 }'\
   $fcnode

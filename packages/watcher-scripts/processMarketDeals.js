@@ -83,7 +83,7 @@ async function updateStatus(statusCollection, height) {
 
 async function processMarketDeals(options) {
   const { client, dbName, currentHeight, filePath } = options;
-
+  
   await client.connect();
   const db = client.db(dbName);
   const dealsCollection = db.collection('deals');
@@ -95,6 +95,7 @@ async function processMarketDeals(options) {
   
   let buffer = '';
   let isFirstLine = true;
+  let dealsUpdated = 0;
   
   let deals = [];
   let promises = [];
@@ -129,6 +130,7 @@ async function processMarketDeals(options) {
         ) {
           if (deals.length >= 1000) {
             promises.push(dealsCollection.bulkWrite(deals, { ordered: false }));
+            dealsUpdated += deals.length;
             deals = [];
           }
           value.DealID = parseInt(key, 10);
@@ -148,11 +150,12 @@ async function processMarketDeals(options) {
     readableStream.on('end', () => {
       if (deals.length > 0) {
         promises.push(dealsCollection.bulkWrite(deals, { ordered: false }));
+        dealsUpdated += deals.length;
       }
       Promise.all(promises).then(() => {
         updateStats(dealsCollection, statsCollection, currentHeight).then(() => {
           updateStatus(statusCollection, currentHeight).then(() => {
-            resolve(`Total deals updated: ${promises.length}`);
+            resolve(`Total deals updated: ${dealsUpdated}`);
           }).catch(reject)
         }).catch(reject)
       });
@@ -165,7 +168,7 @@ function main() {
   const [,,mongoUrl, dbName, currentHeight, filePath] = process.argv;
   const client = new MongoClient(mongoUrl, {useUnifiedTopology: true});
   
-  processMarketDeals({ client, dbName, currentHeight, filePath })
+  processMarketDeals({ client, dbName, currentHeight: parseInt(currentHeight, 10), filePath })
     .then(console.log)
     .catch(console.log)
     .finally(() => client.close());
