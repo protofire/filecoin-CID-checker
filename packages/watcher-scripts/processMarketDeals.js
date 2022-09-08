@@ -155,7 +155,7 @@ async function processMarketDeals(options) {
       Promise.all(promises).then(() => {
         updateStats(dealsCollection, statsCollection, currentHeight).then(() => {
           updateStatus(statusCollection, currentHeight).then(() => {
-            resolve(`Total deals updated: ${dealsUpdated}`);
+            resolve(dealsUpdated);
           }).catch(reject)
         }).catch(reject)
       });
