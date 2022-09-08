@@ -9,10 +9,11 @@ const createModels = (path) => {
 const connect = async (app, dbConfig, models) => {
   const uri = `${dbConfig.uri}`
   // blabla
-  app.log.info('Connecting mongo', { uri })
+  const securedUri = uri.replace(/(.+):(.+)@/,'$1:***@')
+  app.log.info('Connecting mongo', { uri: securedUri })
 
   mongoose.connection.on("connected", () => {
-    app.log.info({ actor: "MongoDB", uri, name: dbConfig.options.dbName }, "connected");
+    app.log.info({ actor: "MongoDB", uri: securedUri, name: dbConfig.options.dbName }, "connected");
   });
 
   mongoose.connection.on("disconnected", () => {
