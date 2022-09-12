@@ -25,22 +25,22 @@ services:
       CID_LOTUS_RPCURL: "${CID_LOTUS_RPCURL}"
       CID_LOTUS_JWT_TOKEN: "${CID_LOTUS_JWT_TOKEN}"
 
-  cid-checker-watcher:
-    hostname: cid-checker-watcher
-    container_name: cid-checker-watcher
-    image: cid-checker-watcher:1.0.0
-    restart: always
-    environment:
-      NODE_ENV: "production"
-      SLEEP_TIPSET_CHECK_MS: "${SLEEP_TIPSET_CHECK_MS}"
-      DEBUG_FD: "${DEBUG_FD}"
-      CID_DB_CONNECTIONSTRING: "${CID_DB_CONNECTIONSTRING}"
-      CID_DB_NAME: "${CID_DB_NAME}"
-      CID_DATABASE_USER: "${CID_DATABASE_USER}"
-      CID_DATABASE_PASSWORD: "${CID_DATABASE_PASSWORD}"
-      CID_LOTUS_RPCURL: "${CID_LOTUS_RPCURL}"
-      CID_LOTUS_JWT_TOKEN: "${CID_LOTUS_JWT_TOKEN}"
-      DEALS_PAGE_SIZE: "${DEALS_PAGE_SIZE}"
+#  cid-checker-watcher:
+#    hostname: cid-checker-watcher
+#    container_name: cid-checker-watcher
+#    image: cid-checker-watcher:1.0.0
+#    restart: always
+#    environment:
+#      NODE_ENV: "production"
+#      SLEEP_TIPSET_CHECK_MS: "${SLEEP_TIPSET_CHECK_MS}"
+#      DEBUG_FD: "${DEBUG_FD}"
+#      CID_DB_CONNECTIONSTRING: "${CID_DB_CONNECTIONSTRING}"
+#      CID_DB_NAME: "${CID_DB_NAME}"
+#      CID_DATABASE_USER: "${CID_DATABASE_USER}"
+#      CID_DATABASE_PASSWORD: "${CID_DATABASE_PASSWORD}"
+#      CID_LOTUS_RPCURL: "${CID_LOTUS_RPCURL}"
+#      CID_LOTUS_JWT_TOKEN: "${CID_LOTUS_JWT_TOKEN}"
+#      DEALS_PAGE_SIZE: "${DEALS_PAGE_SIZE}"
 
   cid-checker-mongo:
       hostname: cid-checker-mongo
@@ -49,6 +49,8 @@ services:
       restart: always
       volumes: 
         - mongo-data:/data/db
+      ports:
+        - 27017:27017
       environment:
         MONGO_INITDB_ROOT_USERNAME: "${CID_DATABASE_USER}"
         MONGO_INITDB_ROOT_PASSWORD: "${CID_DATABASE_PASSWORD}"
