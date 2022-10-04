@@ -3,7 +3,7 @@ const config = require('./config/environment')
 
 const start = async () => {
   const server = await app()
-  await server.listen({ port: config.port }, (err) => {
+  await server.listen({ host: config.ip, port: config.port }, (err) => {
     if (err) {
       console.error('error to start server', err)
       process.exit(1)
@@ -11,7 +11,7 @@ const start = async () => {
     if (server.cron) {
       server.cron.startAllJobs()
     }
-    server.log.info({ ip: config.ip, port: config.port, lotus: config.lotus.url }, 'Server started')
+    server.log.info({ host: config.ip, port: config.port, lotus: config.lotus.url }, 'Server started')
   })
 }
 start()
