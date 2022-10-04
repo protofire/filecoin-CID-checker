@@ -24,6 +24,7 @@ services:
       CID_DATABASE_PASSWORD: "${CID_DATABASE_PASSWORD}"
       CID_LOTUS_RPCURL: "${CID_LOTUS_RPCURL}"
       CID_LOTUS_JWT_TOKEN: "${CID_LOTUS_JWT_TOKEN}"
+      HEIGHT_ALARM_ALLOW_DIFF: "${HEIGHT_ALARM_ALLOW_DIFF}
 
 #  cid-checker-watcher:
 #    hostname: cid-checker-watcher

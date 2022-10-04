@@ -1,14 +1,16 @@
 const fastify = require('fastify')
-const swagger = require('fastify-swagger')
+const swagger = require('@fastify/swagger')
 const path = require('path')
 const packageJson = require('../package.json')
 const mongoStorage = require('../../shared/src/fastify-plugins/mongo')
-const cors = require('fastify-cors')
+const cors = require('@fastify/cors')
+const fastifyCron = require('fastify-cron')
 
-const fastifyLightDDD = require('fastify-light-ddd/src')
+const fastifyLightDDD = require('fastify-light-ddd')
 const config = require('../config/environment')
 const descriptors = require('./app/descriptor')
 const { unlinkSync, existsSync } = require('fs')
+const cronJobs = require('./app/cron-jobs')
 
 function build() {
   const app = fastify({ logger: config.logging })
@@ -56,6 +58,12 @@ function build() {
   })
 
   app.register(fastifyLightDDD, descriptors)
+
+  if (config.useCron) {
+    app.register(fastifyCron, {
+      jobs: cronJobs,
+    })
+  }
 
   app.addHook('onResponse', () => {
     try {
