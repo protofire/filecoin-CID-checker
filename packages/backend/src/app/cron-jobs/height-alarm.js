@@ -26,6 +26,7 @@ const onTick = async (app) => {
         'Diff too high'
       )
     }
+    app.log.info({ name }, 'APP cron finished')
   } catch (err) {
     app.log.error({ name, err }, 'crontask error')
   }
