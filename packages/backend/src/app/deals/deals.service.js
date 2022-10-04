@@ -1,5 +1,4 @@
 const { isNormalInteger } = require('filecoin-checker-shared/src/helpers/number')
-const { logger } = require('../../../config/environment')
 
 class DealsService {
   async list(query = {}, models, pagination) {
@@ -41,7 +40,7 @@ class DealsService {
       .sort(sortCriteria)
       .skip(pagination.skip)
 
-    logger.info({ where }, 'DealsService.list.where')
+    console.info({ where }, 'DealsService.list.where')
 
     const deals = result.map((deal) => ({
       DealID: deal['_id'],
