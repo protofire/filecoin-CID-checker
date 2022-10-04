@@ -9,7 +9,7 @@ const dealsApi = new Deals()
 const name = 'heightAlarm'
 
 const onTick = async (app) => {
-  app.log.debug({ name }, 'APP cron started')
+  app.log.info({ name }, 'APP cron started')
   try {
     const stats = await dealsApi.getStats({ _id: 1 }, app.db.models)
     const chainHead = await lotusApi.getChainHead()
