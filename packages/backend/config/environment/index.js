@@ -6,6 +6,21 @@ dotenv.config({ path: path.resolve(`./.env`) })
 
 const env = process.env
 
+const envVarNames = [
+  'NODE_ENV',
+  'PORT',
+  'CID_DB_CONNECTIONSTRING',
+  'CID_DB_NAME',
+  'CID_LOTUS_RPCURL',
+  'HEIGHT_ALARM_ALLOW_DIFF'
+]
+
+envVarNames.forEach((n) => {
+  if (process.env[n] === undefined) {
+    throw Error(`${n} not specified in env config`)
+  }
+})
+
 const dbOptions = {
   uri: env.CID_DB_CONNECTIONSTRING,
   options: {
@@ -40,6 +55,13 @@ const all = {
     // prettyPrint: {
     //   translateTime: 'yyyy-mm-dd HH:MM:ss',
     // },
+  },
+  useCron: true, // use background cron-jobs, see ./src/app/cronjobs
+  cronjobs: {
+    heightAlarm: {
+      cronString: '*/1 * * * *',
+      allowDiff: env.HEIGHT_ALARM_ALLOW_DIFF,
+    },
   },
 }
 

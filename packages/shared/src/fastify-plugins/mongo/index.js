@@ -6,50 +6,54 @@ const createModels = (path) => {
   return models
 }
 
-const connect = async (app, dbConfig, models) => {
-  const uri = `${dbConfig.uri}`
-  // blabla
-  const securedUri = uri.replace(/(.+):(.+)@/,'$1:***@')
-  app.log.info('Connecting mongo', { uri: securedUri })
-
-  mongoose.connection.on("connected", () => {
-    app.log.info({ actor: "MongoDB", uri: securedUri, name: dbConfig.options.dbName }, "connected");
-  });
-
-  mongoose.connection.on("disconnected", () => {
-    app.log.error({ actor: "MongoDB" }, "disconnected");
-  });
-
-  // if (dbConfig.options && dbConfig.options.tls) {
-  //   if (!dbConfig.options.tlsCAFile) {
-  //     throw new Error('tls=true required tlsCAFile path to cert file')
-  //   }
-  // }
-
-  await mongoose.connect(
-    uri,
-    {
-      useNewUrlParser: true,
-      keepAlive: 1,
-      useUnifiedTopology: true,
-      ...dbConfig.options
-    }
-  );
-  app.addHook('onRequest', (req, res, next) => {
-    req.db = { models }
-
-    next()
-  })
-
-  app.decorate('db', { models })
-}
-
 const init = async (app, config, done) => {
   const models = await createModels(config.modelsPath)
+  try {
+    // await connect(app, config.db, models, done)
+    const uri = `${config.db.uri}`
 
-  await connect(app, config.db, models)
+    const securedUri = uri.replace(/(.+):(.+)@/,'***:***@')
+    app.log.info('Connecting mongo', { uri: securedUri })
 
-  done()
+    mongoose.connection.on("connected", () => {
+      app.log.info({ actor: "MongoDB", uri: securedUri, name: config.db.options.dbName }, "connected");
+      done()
+    });
+
+    mongoose.connection.on("disconnected", () => {
+      app.log.error({ actor: "MongoDB" }, "disconnected");
+      done()
+    });
+    mongoose.connection.on("error", (err) => {
+      app.log.error({ actor: "MongoDB", error: err }, "mongo error");
+      done(err)
+    });
+    // if (dbConfig.options && dbConfig.options.tls) {
+    //   if (!dbConfig.options.tlsCAFile) {
+    //     throw new Error('tls=true required tlsCAFile path to cert file')
+    //   }
+    // }
+    await mongoose.connect(
+      uri,
+      {
+        useNewUrlParser: true,
+        keepAlive: 1,
+        useUnifiedTopology: true,
+        ...config.db.options
+      }
+    );
+
+    app.addHook('onRequest', (req, res, next) => {
+      req.db = { models }
+
+      next()
+    })
+
+    app.decorate('db', { models })
+    done()
+  } catch (err) {
+    done(err)
+  }
 }
 
 module.exports = fp(async (fastify, config, done) => {
