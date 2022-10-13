@@ -1,6 +1,6 @@
 {
   "name": "filecoin-checker-shared",
-  "version": "1.0.0",
+  "version": "0.1.8",
   "description": "Shared libraries",
   "author": "",
   "license": "ISC",

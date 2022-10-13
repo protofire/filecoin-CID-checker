@@ -1,0 +1,51 @@
+# Do not change version. This is the version of aws buildspec, not the version of your buildspec file.
+version: 0.2
+
+env:
+  shell: bash
+  variables:
+    PROJECT: 'filecoin'
+    SUB_ENV: 'glif'
+    SHORT_REGION: 'apn1'
+    ENVIRONMENT: 'dev'
+    DOCKERHUB_ORGANIZATION: 'protofire'
+    HELM_VERSION: 'v3.1.0'
+    DOCKERHUB_REPO_NAME: 'cid-checker'
+    APP_VERSION: '0.1.16'
+    NETWORK: 'calibration'
+  secrets-manager:
+    DOCKERHUB_USERNAME: "filecoin-mainnet-apn1-glif-dockerhub-glifio:username"
+    DOCKERHUB_PASS: "filecoin-mainnet-apn1-glif-dockerhub-glifio:password"
+    AWS_ACCESS_KEY_ID: "filecoin-dev-apn1-glif-codebuild-user:AWS_ACCESS_KEY_ID"
+    AWS_SECRET_ACCESS_KEY: "filecoin-dev-apn1-glif-codebuild-user:AWS_SECRET_ACCESS_KEY"
+
+phases:
+  install:
+    commands:
+      - echo Environment Variables
+      - printenv
+      - echo Logging to AWS eks
+      - aws eks --region $AWS_REGION update-kubeconfig --name $PROJECT-$ENVIRONMENT-$SHORT_REGION-$SUB_ENV-eks
+      - echo Installing Helm
+      - wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz
+      - tar -xzvf helm-${HELM_VERSION}-linux-amd64.tar.gz
+      - chmod +x ./linux-amd64/helm
+      - mv ./linux-amd64/helm /usr/bin/helm
+
+  pre_build:
+    commands:
+      - echo Build STARTED
+      - docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASS
+  build:
+    commands:
+      - echo Building docker images
+      - make docker_build_all
+      - docker tag cid-checker-frontend:latest $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend
+      - docker tag cid-checker-api:latest $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend
+      - docker tag cid-checker-watcher:latest $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher
+      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend
+      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend
+      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher
+      - cd helm
+      - sed -i "s/0.1.6/${APP_VERSION}/g" Chart.yaml
+      - helm upgrade --install cid-checker-$NETWORK . -f env-values/$NETWORK.yaml

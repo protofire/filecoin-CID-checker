@@ -2,19 +2,19 @@
   "name": "cid-checker-watcher-scripts",
   "version": "0.0.1",
   "engines": {
-    "node": ">=14"
+	"node": ">=14"
   },
   "description": "Script that downloads Filecoin market deals using the specified Lotus node, processes them and uploads the result to mongoDB",
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/protofire/filecoin-CID-checker.git"
+	"type": "git",
+	"url": "git+https://github.com/protofire/filecoin-CID-checker.git"
   },
   "keywords": [
-    "filecoin"
+	"filecoin"
   ],
   "author": "koteld",
   "homepage": "https://github.com/protofire/filecoin-CID-checker#readme",
   "dependencies": {
-    "mongodb": "4.9.1"
+	"mongodb": "4.9.1"
   }
 }

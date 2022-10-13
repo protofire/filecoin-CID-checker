@@ -1,0 +1,16 @@
+# Do not change version. This is the version of aws buildspec, not the version of your buildspec file.
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Environment Variables
+      - printenv
+
+  pre_build:
+    commands:
+      - echo Build STARTED
+      - make docker_build_all 
+  build:
+    commands:
+      - echo Image built

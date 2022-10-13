@@ -25,10 +25,11 @@ const dbOptions = {
   uri: env.CID_DB_CONNECTIONSTRING,
   options: {
     dbName: env.CID_DB_NAME,
-    auth: {
-      user: env.CID_DATABASE_USER,
-      password: env.CID_DATABASE_PASSWORD,
-    },
+    useMongoClient: true,
+    useNewUrlParser: true, // removes a deprecation warning when connecting
+    useUnifiedTopology: true, // removes a deprecating warning when connecting
+    connectTimeoutMS: 3600000, // increase connection timeout to 1 hour
+    socketTimeoutMS: 3600000, // increase socket timeout to 1 hour
   },
 }
 

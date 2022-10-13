@@ -2,12 +2,13 @@ FROM node:14-alpine
 
 WORKDIR /app/
 
-COPY ./package.json ./package.json
+COPY ./package.json ./
 COPY ./packages/backend/config ./packages/backend/config
 COPY ./packages/backend/src ./packages/backend/src
-COPY ./packages/backend/index.js ./packages/backend/index.js
-COPY ./packages/backend/package.json ./packages/backend/package.json
-COPY ./packages/shared/package.json ./packages/shared/package.json
+COPY ./packages/backend/migrations ./packages/backend/migrations
+COPY ./packages/backend/migrate-mongo-config.js ./packages/backend/migrate-mongo-config.js
+COPY ./packages/backend/index.js ./packages/backend/package.json ./packages/backend/
+COPY ./packages/shared/package.json ./packages/shared/
 COPY ./packages/shared/src ./packages/shared/src
 
 EXPOSE 3000

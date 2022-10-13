@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "CID.fullname" . }}-mongo
+  labels:
+    {{- include "CID.labels" . | nindent 4 }}
+    component: mongo
+spec:
+  replicas: 1
+  serviceName: {{ include "CID.fullname" . }}-mongo
+  selector:
+    matchLabels:
+      {{- include "CID.selectorLabels" . | nindent 6 }}
+      component: mongo
+  template:
+    metadata:
+      labels:
+        component: mongo
+        {{- include "CID.selectorLabels" . | nindent 8 }}
+    spec:
+      volumes:
+        - name: mongo-vol
+          hostPath:
+            path: /data/db
+            type: Directory
+      containers:
+      - name: mongo
+        image: "{{ .Values.services.mongo.image.repository }}:{{ .Values.services.mongo.image.tag | default "5.0.4" }}" 
+        imagePullPolicy: "{{ .Values.services.mongo.image.pullPolicy }}"
+        livenessProbe:
+          tcpSocket:
+            port: db
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        ports:
+          - containerPort: 27017
+            name: db
+        volumeMounts:
+          - name: {{ include "CID.fullname" . }}-mongo-vol
+            mountPath: /data/db
+        resources:
+        {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 12 }}
+      {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ include "CID.fullname" . }}-mongo-vol
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "{{ .Values.dbSize }}" 

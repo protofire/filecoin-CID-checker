@@ -9,7 +9,6 @@ const createModels = (path) => {
 const init = async (app, config, done) => {
   const models = await createModels(config.modelsPath)
   try {
-    // await connect(app, config.db, models, done)
     const uri = `${config.db.uri}`
 
     const securedUri = uri.replace(/(.+):(.+)@/,'***:***@')
@@ -21,26 +20,18 @@ const init = async (app, config, done) => {
     });
 
     mongoose.connection.on("disconnected", () => {
-      app.log.error({ actor: "MongoDB" }, "disconnected");
-      done()
+      app.log.error({ actor: "MongoDB", uri: securedUri, name: config.db.options.dbName }, "disconnected");
+      // done()
     });
     mongoose.connection.on("error", (err) => {
-      app.log.error({ actor: "MongoDB", error: err }, "mongo error");
-      done(err)
+      app.log.error({ actor: "MongoDB", error: err, uri: securedUri, name: config.db.options.dbName }, "mongo error");
+      // done(err)
+      throw err
     });
-    // if (dbConfig.options && dbConfig.options.tls) {
-    //   if (!dbConfig.options.tlsCAFile) {
-    //     throw new Error('tls=true required tlsCAFile path to cert file')
-    //   }
-    // }
+
     await mongoose.connect(
       uri,
-      {
-        useNewUrlParser: true,
-        keepAlive: 1,
-        useUnifiedTopology: true,
-        ...config.db.options
-      }
+      config.db.options
     );
 
     app.addHook('onRequest', (req, res, next) => {
@@ -50,9 +41,23 @@ const init = async (app, config, done) => {
     })
 
     app.decorate('db', { models })
-    done()
+
+    app.addHook('onClose', () => {
+        mongoose.connection.close()
+        app.log.info('Mongodb connection closed')
+      }
+    )
+    // If the Node process ends, close the Mongoose connection
+    process.on('SIGINT', () => {
+      mongoose.connection.close(() => {
+        app.log.info('Mongoose default connection disconnected through app termination');
+        process.exit(0);
+      });
+    });
+    // done()
   } catch (err) {
-    done(err)
+    // done(err)
+    throw err
   }
 }
 

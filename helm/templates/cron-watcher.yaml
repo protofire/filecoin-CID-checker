@@ -1,0 +1,51 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "CID.fullname" . }}-watcher 
+  labels:
+    {{- include "CID.labels" . | nindent 4 }}
+    component: watcher  
+spec:
+  concurrencyPolicy: "Replace" 
+  failedJobsHistoryLimit: 1 
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 10
+      template:
+        metadata:
+          labels:
+            {{- include "CID.labels" . | nindent 12 }}
+            component: watcher
+        spec:
+          restartPolicy: Never
+          containers:
+          - image: "{{ .Values.services.watcher.image.repository }}:{{ .Chart.AppVersion }}-watcher"
+            imagePullPolicy: {{ .Values.services.watcher.image.pullPolicy }} 
+            name: {{ include "CID.fullname" . }}-watcher
+            env:
+            - name: CID_LOTUS_RPCURL
+              value: "{{ .Values.lotusURL }}"
+            - name: CID_DB_NAME
+              value: "{{ .Values.services.mongo.dbName }}"
+            - name: CID_DB_CONNECTIONSTRING
+              value: "mongodb://{{ include "CID.fullname" . }}-mongo-service:27017"
+      {{- range $key, $value := .Values.services.watcher.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+      {{- end }}
+         {{- with .Values.nodeSelector }}
+          nodeSelector:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+  schedule: "{{ .Values.services.watcher.schedule }}"
+  successfulJobsHistoryLimit: 2

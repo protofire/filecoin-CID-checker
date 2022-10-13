@@ -21,14 +21,6 @@ const schema = {
     ProviderCollateral: { type: String },
     ClientCollateral: { type: String }
   }
-
-// dateCreated: { type: Date, default: Date.now() },
-  // authorid: {
-  //   type: String,
-  //   required: true,
-  //   ref: 'User',
-  //   populateAs: 'author'
-  // },
 }
 const DealsSchema = new Schema(schema, { _id: false });
 

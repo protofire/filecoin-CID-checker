@@ -138,26 +138,6 @@ docker build -t cid-checker-watcher:$(cat ./packages/frontend/version.txt) -f Do
 docker-compose up -d
 ```
 
-### CI/CD
-
-For CI/CD we're using [`AWS CodeDeploy` stack](https://eu-west-2.console.aws.amazon.com/codesuite/codedeploy/applications/CID-Checker?region=eu-west-2). 
-
-Before configuring CodeDeploy on server was created folder `/opt/filecoin-cid-checker` with prepared `.env` file.
-
-Workflow:
-
-```
-GitHub push (master) -> GitHub Actions -> AWS CodeDeploy -> EC2 instance -> init.sh script
-```
-
-In repository configured [`appspec.yml`](./appspec.yml) for AWS CodeDeploy and [`init.sh`](./.config/init.sh).
-
-Check CodeDeploy logs on entire instance:
-
-```bash
-less /opt/codedeploy-agent/deployment-root/*deployment-group-ID*/*deployment-ID*/logs/scripts.log
-```
-
 ## App structure
 
 The main components of the CID checker are:
@@ -240,3 +220,17 @@ yarn run start:ui
 yarn run start:api
 yarn run start:watcher
 ```
+
+## CI/CD
+
+The image uses as part of the solution for the cid-checker collects data from the endpoint and provides it to the external DB.
+
+### CI Logic
+CI verifies that the Dockerfile can build successfully.
+
+### CD Logic
+CD has mandatory requirements to bump a new image version in the buildspec.yaml file.
+
+CD push image to DockerHub repository, and it is publicly available.
+
+URL for DockerHub repository: [https://hub.docker.com/r/protofire/cid-checker](https://hub.docker.com/r/protofire/cid-checker)

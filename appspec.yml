@@ -1,9 +1,0 @@
-version: 0.0
-os: linux
-files:
-  - source: .
-    destination: /opt/filecoin-cid-checker
-hooks:
-  ApplicationStart:
-   - location: .config/init.sh
-     runas: root
