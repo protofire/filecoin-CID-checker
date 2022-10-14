@@ -11,6 +11,7 @@ class DealsController {
     if (selector.error) {
       selector.result = req.params.selector
     }
+
     logger.info({ selector }, 'listWithSelector')
     req.query.selector = selector.result
 
@@ -38,7 +39,6 @@ class DealsController {
 
     try {
       const deals = await dealProvider.list(req.query, req.db.models, pageOptions)
-
       const data = deals.Deals.map((deal) => {
         return [
           deal.DealInfo.Proposal.PieceCID['/'],

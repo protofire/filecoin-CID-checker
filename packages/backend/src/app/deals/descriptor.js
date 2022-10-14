@@ -12,18 +12,6 @@ module.exports = {
     },
     {
       httpMethod: 'get',
-      controllerMethod: 'list',
-      path: '/deals/list',
-      preHandler: [],
-    },
-    {
-      httpMethod: 'get',
-      controllerMethod: 'csv',
-      path: '/deals/csv',
-      preHandler: [],
-    },
-    {
-      httpMethod: 'get',
       controllerMethod: 'csv',
       path: '/api/deals/csv',
       preHandler: [],
@@ -36,32 +24,14 @@ module.exports = {
     },
     {
       httpMethod: 'get',
-      controllerMethod: 'listWithSelector',
-      path: '/deals/:selector/list',
-      preHandler: [],
-    },
-    {
-      httpMethod: 'get',
       controllerMethod: 'getStats',
       path: '/api/deals/stats',
       preHandler: [],
     },
     {
       httpMethod: 'get',
-      controllerMethod: 'getStats',
-      path: '/deals/stats',
-      preHandler: [],
-    },
-    {
-      httpMethod: 'get',
       controllerMethod: 'getDeal',
       path: '/api/deals/details/:id',
-      preHandler: [],
-    },
-    {
-      httpMethod: 'get',
-      controllerMethod: 'getDeal',
-      path: '/deals/details/:id',
       preHandler: [],
     },
   ],

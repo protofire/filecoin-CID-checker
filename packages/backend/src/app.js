@@ -15,6 +15,11 @@ const cronJobs = require('./app/cron-jobs')
 function build() {
   const app = fastify({ logger: config.logging })
 
+  let httpSchemes = ['https']
+
+  if (config.env === 'dev') {
+    httpSchemes.push('http')
+  }
   app.register(swagger, {
     mode: 'dynamic',
     routePrefix: '/docs',
@@ -29,23 +34,18 @@ function build() {
         url: 'https://swagger.io',
         description: 'Find more info here',
       },
-      schemes: ['http', 'https'],
+      schemes: httpSchemes,
       consumes: ['application/json'],
       produces: ['application/json'],
       tags: [],
-      securityDefinitions: {
-        apiKey: {
-          type: 'apiKey',
-          name: 'authorization',
-          in: 'header',
-        },
-      },
+      // securityDefinitions: {
+      //   apiKey: {
+      //     type: 'apiKey',
+      //     name: 'authorization',
+      //     in: 'header',
+      //   },
+      // },
     },
-    // for debug only
-    // transform: schema => {
-    //   console.info('schema', schema);
-    //   return schema
-    // }
   })
 
   app.register(cors, {
@@ -71,7 +71,7 @@ function build() {
         unlinkSync('deals.csv')
       }
     } catch (err) {
-      console.error({ hookError: err })
+      console.error('onResponse.hook', { hookError: err })
     }
   })
 

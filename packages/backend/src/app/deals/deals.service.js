@@ -40,7 +40,7 @@ class DealsService {
       .sort(sortCriteria)
       .skip(pagination.skip)
 
-    console.info({ where }, 'DealsService.list.where')
+    console.info('DealsService.list.where', JSON.stringify(where))
 
     const deals = result.map((deal) => ({
       DealID: deal['_id'],
@@ -81,7 +81,7 @@ class DealsService {
     const clientId = deal.Proposal.Client
 
     const clientAddress = await lotusProvider.getStateAccountKey(clientId)
-    // clientAddress: { result: { ... } }
+
     const response = {
       clientAddress: clientAddress.result ? clientAddress.result : '',
     }

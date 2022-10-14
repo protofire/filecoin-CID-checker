@@ -12,6 +12,9 @@ const list = {
         type: 'number',
         enum: [1],
       },
+      selector: {
+        type: 'string'
+      },
       ...commonSchemas.pagination.properties,
       ...commonSchemas.sorter.properties,
     },

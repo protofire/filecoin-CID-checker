@@ -124,7 +124,7 @@ class LotusApi {
       params: {
         ...baseBody,
         method: 'Filecoin.StateLookupID',
-        params: [address, null],
+        params: [address, []],
       }
     })
   }

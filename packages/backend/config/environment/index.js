@@ -25,6 +25,13 @@ const dbOptions = {
   uri: env.CID_DB_CONNECTIONSTRING,
   options: {
     dbName: env.CID_DB_NAME,
+    // For long running applications, it is often prudent to enable keepAlive with a number of milliseconds.
+    // Without it, after some period of time you may start to see "connection closed" errors
+    // for what seems like no reason.
+    // If so, after reading this, you may decide to enable keepAlive:
+    // https://mongoosejs.com/docs/connections.html#keepAlive
+    keepAlive: true,
+    keepAliveInitialDelay: 300000, // is the number of milliseconds to wait before initiating keepAlive on the socket.
     useNewUrlParser: true, // removes a deprecation warning when connecting
     useUnifiedTopology: true, // removes a deprecating warning when connecting
     connectTimeoutMS: 3600000, // increase connection timeout to 1 hour
