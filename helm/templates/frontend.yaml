@@ -39,7 +39,7 @@ spec:
               protocol: TCP
           env:
             - name: REACT_APP_REPOSITORY_URL
-              value: "https://github.com/glifio/cid-checker"
+              value: "https://github.com/protofire/filecoin-CID-checker"
           livenessProbe:
             httpGet:
               path: /

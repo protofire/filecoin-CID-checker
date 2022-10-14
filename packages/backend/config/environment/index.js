@@ -25,7 +25,6 @@ const dbOptions = {
   uri: env.CID_DB_CONNECTIONSTRING,
   options: {
     dbName: env.CID_DB_NAME,
-    useMongoClient: true,
     useNewUrlParser: true, // removes a deprecation warning when connecting
     useUnifiedTopology: true, // removes a deprecating warning when connecting
     connectTimeoutMS: 3600000, // increase connection timeout to 1 hour
@@ -37,6 +36,7 @@ const dbOptions = {
 // ============================================
 const all = {
   env: env.NODE_ENV,
+  appVersion: env.APP_VERSION,
   // Server port
   port: env.PORT || 3000,
   // Server IP
