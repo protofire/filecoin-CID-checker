@@ -32,7 +32,7 @@ export const fetchDeals = async (
   let url = `${FILECOIN_CID_CHECKER_API}/deals/list?page=${page}&per_page=${PAGE_SIZE}`
 
   if (search) {
-    url = `${FILECOIN_CID_CHECKER_API}/deals/${search}/list?page=${page}&per_page=${PAGE_SIZE}`
+    url = url + `&selector=${search}`
   }
 
   if (activeFilter) {
@@ -114,7 +114,7 @@ export const getDealsCsvUrl = async (
   let url = `${FILECOIN_CID_CHECKER_API}/deals/csv?per_page=${pageSize}`
 
   if (search) {
-    url = `${FILECOIN_CID_CHECKER_API}/deals/${search}/csv?per_page=${pageSize}`
+    url = url + `&selector=${search}`
   }
 
   if (activeFilter) {

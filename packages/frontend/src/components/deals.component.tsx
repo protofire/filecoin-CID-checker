@@ -157,13 +157,15 @@ export const Deals = () => {
   const encodedSearch = encodeURIComponent(search)
 
   const handleCsvDownload = useCallback(async () => {
-    window.location.href = await getDealsCsvUrl(
+    const url = await getDealsCsvUrl(
       encodedSearch,
       query,
       activeFilter,
       verifiedFilter,
       page * PAGE_SIZE,
     )
+    window.open(url, '_blank')
+
   }, [encodedSearch, page, query, activeFilter, verifiedFilter])
 
   const showMoreButton =
