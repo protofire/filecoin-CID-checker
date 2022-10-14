@@ -64,6 +64,7 @@ const CopyTextWrapper = styled(CopyText)`
 
 export const DealDetailModal = (props: Props) => {
   const { onClose, isOpen, deal } = props
+
   const [dealDetails, setDealDetails] = useState<DealDetails | undefined>()
   const clientAddress = useMemo(() => {
     return dealDetails && dealDetails.clientAddress ? dealDetails.clientAddress : 'loading'
@@ -73,6 +74,10 @@ export const DealDetailModal = (props: Props) => {
     async function run() {
       if (deal && deal.DealID) {
         try {
+            // unused one server api request
+            if(!isOpen) {
+                return null
+            }
           const details = await fetchDealDetails(`${deal.DealID}`)
           setDealDetails(details)
         } catch (err) {
@@ -86,7 +91,7 @@ export const DealDetailModal = (props: Props) => {
     run()
   }, [deal])
 
-  if (!deal) {
+  if (!deal || !isOpen) {
     return null
   }
 
