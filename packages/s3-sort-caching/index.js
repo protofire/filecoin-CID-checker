@@ -2,7 +2,23 @@ const commandLineArgs = require('command-line-args')
 const getUsage = require('command-line-usage')
 const { MongoClient } = require('mongodb')
 const pino = require('pino')
-const fs = require('fs')
+const { Transform, PassThrough } = require('stream')
+const AWS = require('aws-sdk')
+const dotenv = require('dotenv')
+
+dotenv.config()
+
+const awsConfig = {
+  region: process.env.AWS_S3_REGION,
+  accessKeyId: process.env.AWS_S3_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_S3_SECRET_KEY,
+  bucketName: process.env.AWS_S3_BUCKET_NAME,
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property
+  uploadOptions: {
+    partSize: 10 * 1024 * 1024, // default in s3 client - 5mb
+    queueSize: 10 // default in s3 client - 4
+  }
+}
 
 const logger = pino({})
 
@@ -63,10 +79,40 @@ const help = () => {
 
 options.help && help()
 
-function getWriteStream(destination) {
-  const result = fs.createWriteStream(destination, 'utf8')
+const s3 = new AWS.S3({
+  apiVersion: '2012-10-17',
+  region: awsConfig.region,
+  accessKeyId: awsConfig.accessKeyId,
+  secretAccessKey: awsConfig.secretAccessKey,
+})
 
-  return result
+function writeToS3({ Key }) {
+  const Body = new PassThrough()
+
+  const params = {
+    Body,
+    Key,
+    Bucket: awsConfig.bucketName,
+  }
+  const options = awsConfig.uploadOptions
+
+  s3.upload(params, options)
+    .on('httpUploadProgress', (progress) => {
+      logger.info(progress, 's3 uploading progress')
+    })
+    .send((err, data) => {
+      if (err) {
+        logger.error({ err }, 'failed to upload to s3')
+        Body.destroy(err)
+        process.exit(1)
+      } else {
+        logger.info({ data }, `File uploaded and available`)
+        Body.destroy()
+        process.exit()
+      }
+    })
+
+  return Body
 }
 
 const run = async (options) => {
@@ -107,51 +153,44 @@ const run = async (options) => {
       logger.warn({ lengthOfData }, 'End because length of data = 0')
       process.exit()
     }
-
-    let writeStream = getWriteStream(dest)
-
-    writeStream.on('end', () => {
-      logger.info('writeStream.end')
-    })
-    writeStream.on('close', () => {
-      logger.info('writeStream.closed')
-    })
-
-    readStream.on('error', (err) => {
-      logger.error({ err }, 'readStream error')
-      client.close()
-    })
-    readStream.on('data', (data) => {
-      if (isFirst) {
-        logger.info('started first line')
-        writeStream.write('{ "id": 1,"jsonrpc":"2.0","result":{')
-        isFirst = false
-      }
-      count++
-
-      const writeData = {
-        [data._id]: {
-          Proposal: data.Proposal,
-          State: data.State,
-        },
-      }
-      let str = JSON.stringify(writeData).replace(/^{/, '').replace(/}$/, '')
-
-      if (count === lengthOfData) {
-        str = `${str}}}`
-      } else {
-        str = `${str},`
-      }
-      writeStream.write(str, 'utf8', () => {
-        if (count === lengthOfData) {
-          process.exit()
+    const convertToLotus = new Transform({
+      objectMode: true,
+      transform(chunk, encoding, callback) {
+        let str = ''
+        if (isFirst) {
+          logger.info('started first line')
+          str = '{ "id": 1,"jsonrpc":"2.0","result":{'
+          isFirst = false
         }
-      })
+        count++
+
+        const writeData = {
+          [chunk._id]: {
+            Proposal: chunk.Proposal,
+            State: chunk.State,
+          },
+        }
+        str = `${str},${JSON.stringify(writeData).replace(/^{/, '').replace(/}$/, '')}`
+
+        if (count === lengthOfData) {
+          str = `${str}}}`
+        } else {
+          str = `${str},`
+        }
+        callback(null, str)
+      },
     })
-    readStream.on('end', () => {
-      logger.info({ count, lengthOfData }, 'finished')
-      writeStream.emit('end')
-      writeStream.emit('close')
+    convertToLotus.on('finish', () => {
+      logger.info('convertToLotus.end')
+    })
+
+    const pipeline = readStream
+      .pipe(convertToLotus)
+      .pipe(writeToS3({ Key: dest }))
+
+    pipeline.on('error', (err) => {
+      logger.error('pipeline.err', err)
+      client.close()
     })
   } catch (err) {
     logger.error({ err }, 'failed to run')
