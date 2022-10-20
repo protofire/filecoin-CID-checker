@@ -27,10 +27,6 @@ spec:
             imagePullPolicy: {{ .Values.services.s3SortCaching.image.pullPolicy }}
             name: {{ include "CID.fullname" . }}-s3-sort-caching-filPlus
             args:
-            - "--mongouri"
-            - mongodb://{{ include "CID.fullname" . }}-mongo-service:27017
-            - --dbname
-            - {{ .Values.services.mongo.dbName }}
             - --dest
             - StateMarketDealsFilPlusOnly.json
             - --where
@@ -38,6 +34,10 @@ spec:
             env:
             - name: AWS_S3_BUCKET_NAME
               value: "{{ .Values.services.s3SortCaching.s3Name }}"
+            - name: CID_DB_NAME
+              value: "{{ .Values.services.mongo.dbName }}"
+            - name: CID_DB_CONNECTIONSTRING
+              value: "mongodb://{{ include "CID.fullname" . }}-mongo-service:27017"
       {{- range $key, $value := .Values.services.s3SortCaching.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
@@ -46,15 +46,15 @@ spec:
             imagePullPolicy: {{ .Values.services.s3SortCaching.image.pullPolicy }} 
             name: {{ include "CID.fullname" . }}-s3-sort-caching
             args:
-            - --mongouri
-            - mongodb://{{ include "CID.fullname" . }}-mongo-service:27017
-            - --dbname
-            - {{ .Values.services.mongo.dbName }}
             - --dest
             - StateMarketDeals.json
             env:
             - name: AWS_S3_BUCKET_NAME
               value: "{{ .Values.services.s3SortCaching.s3Name }}"
+            - name: CID_DB_NAME
+              value: "{{ .Values.services.mongo.dbName }}"
+            - name: CID_DB_CONNECTIONSTRING
+              value: "mongodb://{{ include "CID.fullname" . }}-mongo-service:27017"
       {{- range $key, $value := .Values.services.s3SortCaching.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
