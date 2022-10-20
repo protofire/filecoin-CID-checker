@@ -1,6 +1,11 @@
 # Do not change version. This is the version of aws buildspec, not the version of your buildspec file.
 version: 0.2
 
+env:
+  shell: bash
+  variables:
+    HELM_VERSION: 'v3.1.0'
+
 phases:
   install:
     commands:
