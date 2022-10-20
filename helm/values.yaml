@@ -6,6 +6,8 @@ dockerHubRepo: protofire/cid-checker
 
 services:
   s3SortCaching:
+    env:
+      AWS_REGION: "ap-northeast-1"
     image:
       pullPolicy: Always
   watcher:
