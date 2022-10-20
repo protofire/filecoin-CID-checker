@@ -9,11 +9,11 @@ metadata:
     component: s3-sort-caching
 spec:
   concurrencyPolicy: "Replace" 
-  failedJobsHistoryLimit: 1 
+  failedJobsHistoryLimit: 2
   jobTemplate:
     spec:
       backoffLimit: 2
-      ttlSecondsAfterFinished: 10
+      ttlSecondsAfterFinished: 1200
       template:
         metadata:
           labels:
@@ -25,12 +25,8 @@ spec:
           containers:
           - image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-s3-sort-caching"
             imagePullPolicy: {{ .Values.services.s3SortCaching.image.pullPolicy }}
-            name: {{ include "CID.fullname" . }}-s3-sort-caching-filPlus
-            args:
-            - --dest
-            - StateMarketDealsFilPlusOnly.json
-            - --where
-            - { "Proposal.VerifiedDeal": true }
+            name: {{ include "CID.fullname" . }}-s3-sort-caching-fil-plus
+            args: ["--dest", "StateMarketDealsFilPlusOnly.json", "--where", "{ \"Proposal.VerifiedDeal\": true }"]
             env:
             - name: AWS_S3_BUCKET_NAME
               value: "{{ .Values.services.s3SortCaching.s3Name }}"
@@ -45,9 +41,7 @@ spec:
           - image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-s3-sort-caching"
             imagePullPolicy: {{ .Values.services.s3SortCaching.image.pullPolicy }} 
             name: {{ include "CID.fullname" . }}-s3-sort-caching
-            args:
-            - --dest
-            - StateMarketDeals.json
+            args: ["--dest", "StateMarketDeals.json"]
             env:
             - name: AWS_S3_BUCKET_NAME
               value: "{{ .Values.services.s3SortCaching.s3Name }}"
