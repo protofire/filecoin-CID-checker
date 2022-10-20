@@ -20,8 +20,8 @@ host@user:~/path$ node index.js -h
 
 Synopsis
 
-  $ node index.js --mongouri `mongodb://localhost:27017` --dbname `dbname` --dest `s3bucket/filename.json`                                               
-  $ node index.js --mongouri `mongodb://localhost:27017` --dbname `dbname`  --dest `s3bucket/filename.json` --where { "Proposal.VerifiedDeal": true }     
+  $ node index.js --mongouri `mongodb://localhost:27017` --dbname `dbname` --dest `filename.json`                                               
+  $ node index.js --mongouri `mongodb://localhost:27017` --dbname `dbname`  --dest `filename.json` --where { "Proposal.VerifiedDeal": true }     
   $ node index.js --help                                                        
 
 Options

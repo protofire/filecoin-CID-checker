@@ -59,8 +59,8 @@ const sections = [
   {
     header: 'Synopsis',
     content: [
-      '$ node index.js {bold --mongouri} {underline `mongodb://localhost:27017`} {bold --dbname} {underline `dbname`} {bold --dest} {underline `s3bucket/filename.json`}',
-      '$ node index.js {bold --mongouri} {underline `mongodb://localhost:27017`} {bold --dbname} {underline `dbname`} {bold --dest} {underline `s3bucket/filename.json`} {bold --where} {underline \\{ "Proposal.VerifiedDeal": true \\}}',
+      '$ node index.js {bold --mongouri} {underline `mongodb://localhost:27017`} {bold --dbname} {underline `dbname`} {bold --dest} {underline `filename.json`}',
+      '$ node index.js {bold --mongouri} {underline `mongodb://localhost:27017`} {bold --dbname} {underline `dbname`} {bold --dest} {underline `filename.json`} {bold --where} {underline \\{ "Proposal.VerifiedDeal": true \\}}',
       '$ node index.js {bold --help}',
     ],
   },
