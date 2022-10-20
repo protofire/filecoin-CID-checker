@@ -6,6 +6,11 @@ phases:
     commands:
       - echo Environment Variables
       - printenv
+      - echo Installing Helm
+      - wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz
+      - tar -xzvf helm-${HELM_VERSION}-linux-amd64.tar.gz
+      - chmod +x ./linux-amd64/helm
+      - mv ./linux-amd64/helm /usr/bin/helm
 
   pre_build:
     commands:
