@@ -9,9 +9,9 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const awsConfig = {
-  region: process.env.AWS_S3_REGION,
-  accessKeyId: process.env.AWS_S3_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_S3_SECRET_KEY,
+  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   bucketName: process.env.AWS_S3_BUCKET_NAME,
   // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property
   uploadOptions: {
@@ -28,18 +28,6 @@ const optionDefinitions = [
     description: 'Display this usage guide.',
     alias: 'h',
     type: Boolean,
-  },
-  {
-    name: 'mongouri',
-    description: 'Mongodb connection URI',
-    alias: 'm',
-    type: String,
-  },
-  {
-    name: 'dbname',
-    description: 'Mongodb name',
-    alias: 'n',
-    type: String,
   },
   {
     name: 'dest',
@@ -59,8 +47,8 @@ const sections = [
   {
     header: 'Synopsis',
     content: [
-      '$ node index.js {bold --mongouri} {underline `mongodb://localhost:27017`} {bold --dbname} {underline `dbname`} {bold --dest} {underline `filename.json`}',
-      '$ node index.js {bold --mongouri} {underline `mongodb://localhost:27017`} {bold --dbname} {underline `dbname`} {bold --dest} {underline `filename.json`} {bold --where} {underline \\{ "Proposal.VerifiedDeal": true \\}}',
+      '$ node index.js {bold --dest} {underline `filename.json`}',
+      '$ node index.js {bold --dest} {underline `filename.json`} {bold --where} {underline \\{ "Proposal.VerifiedDeal": true \\}}',
       '$ node index.js {bold --help}',
     ],
   },
@@ -116,7 +104,21 @@ function writeToS3({ Key }) {
 }
 
 const run = async (options) => {
-  ;['mongouri', 'dbname', 'dest'].forEach((key) => {
+  [
+    'AWS_REGION',
+    'AWS_ACCESS_KEY_ID',
+    'AWS_SECRET_ACCESS_KEY',
+    'AWS_S3_BUCKET_NAME',
+    'CID_DB_CONNECTIONSTRING',
+    'CID_DB_NAME'
+  ].forEach(key => {
+    if (!process.env[key]) {
+      console.error(`Environment variable ${key} required.Set it as ${key}=<your value>`)
+      help()
+      process.exit()
+    }
+  })
+  ;['dest'].forEach((key) => {
     if (!options[key]) {
       console.error(`${key} required`)
       help()
@@ -129,8 +131,9 @@ const run = async (options) => {
     help()
     process.exit()
   }
-
-  const { mongouri, dbname, dest } = options
+  const mongouri = process.env.CID_DB_CONNECTIONSTRING
+  const dbname = process.env.CID_DB_NAME
+  const { dest } = options
   let { where } = options
   if (!where) {
     where = '{}'
