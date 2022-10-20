@@ -9,7 +9,6 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const awsConfig = {
-  region: process.env.AWS_REGION,
   bucketName: process.env.AWS_S3_BUCKET_NAME,
   // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property
   uploadOptions: {
@@ -100,7 +99,6 @@ function writeToS3({ Key }) {
 
 const run = async (options) => {
   [
-    'AWS_REGION',
     'AWS_S3_BUCKET_NAME',
     'CID_DB_CONNECTIONSTRING',
     'CID_DB_NAME'
