@@ -43,9 +43,13 @@ phases:
       - docker tag cid-checker-frontend:latest $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend
       - docker tag cid-checker-api:latest $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend
       - docker tag cid-checker-watcher:latest $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher
+      - docker tag cid-checker-s3-sort-caching:latest $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching
       - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend
       - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend
       - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher
+      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching
       - cd helm
-      - sed -i "s/0.1.6/${APP_VERSION}/g" Chart.yaml
+      - sed -i "s/0.0.0/${APP_VERSION}/g" Chart.yaml
+      - helm lint
+      - helm template cid-checker-$NETWORK . -f env-values/$NETWORK.yaml
       - helm upgrade --install cid-checker-$NETWORK . -f env-values/$NETWORK.yaml

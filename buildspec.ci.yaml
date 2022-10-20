@@ -11,6 +11,8 @@ phases:
     commands:
       - echo Build STARTED
       - make docker_build_all 
+      - cd helm
+      - helm lint
   build:
     commands:
       - echo Image built

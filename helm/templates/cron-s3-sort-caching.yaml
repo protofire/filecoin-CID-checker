@@ -1,0 +1,75 @@
+{{ if .Values.services.s3SortCaching.enabled }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "CID.fullname" . }}-s3-sort-caching
+  labels:
+    {{- include "CID.labels" . | nindent 4 }}
+    component: s3-sort-caching
+spec:
+  concurrencyPolicy: "Replace" 
+  failedJobsHistoryLimit: 1 
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 10
+      template:
+        metadata:
+          labels:
+            {{- include "CID.labels" . | nindent 12 }}
+            component: s3-sort-caching
+        spec:
+          restartPolicy: Never
+          containers:
+          - image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-s3-sort-caching"
+            imagePullPolicy: {{ .Values.services.s3SortCaching.image.pullPolicy }}
+            name: {{ include "CID.fullname" . }}-s3-sort-caching-filPlus
+            args:
+            - "--mongouri"
+            - mongodb://{{ include "CID.fullname" . }}-mongo-service:27017
+            - --dbname
+            - {{ .Values.services.mongo.dbName }}
+            - --dest
+            - StateMarketDealsFilPlusOnly.json
+            - --where
+            - { "Proposal.VerifiedDeal": true }
+            env:
+            - name: AWS_S3_BUCKET_NAME
+              value: "{{ .Values.services.s3SortCaching.s3Name }}"
+      {{- range $key, $value := .Values.services.s3SortCaching.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+      {{- end }}
+          - image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-s3-sort-caching"
+            imagePullPolicy: {{ .Values.services.s3SortCaching.image.pullPolicy }} 
+            name: {{ include "CID.fullname" . }}-s3-sort-caching
+            args:
+            - --mongouri
+            - mongodb://{{ include "CID.fullname" . }}-mongo-service:27017
+            - --dbname
+            - {{ .Values.services.mongo.dbName }}
+            - --dest
+            - StateMarketDeals.json
+            env:
+            - name: AWS_S3_BUCKET_NAME
+              value: "{{ .Values.services.s3SortCaching.s3Name }}"
+      {{- range $key, $value := .Values.services.s3SortCaching.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+      {{- end }}
+         {{- with .Values.nodeSelector }}
+          nodeSelector:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+  schedule: "{{ .Values.services.s3SortCaching.schedule }}"
+  successfulJobsHistoryLimit: 2
+{{ end }}
