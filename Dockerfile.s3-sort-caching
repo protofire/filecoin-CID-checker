@@ -1,0 +1,11 @@
+FROM node:14-alpine
+
+WORKDIR /app/
+
+COPY ./packages/s3-sort-caching ./
+
+RUN npm install
+
+WORKDIR /app/packages/s3-sort-caching
+
+CMD [ "node", "index.js" ]

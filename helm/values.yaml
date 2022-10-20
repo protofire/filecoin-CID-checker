@@ -2,21 +2,23 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+dockerHubRepo: protofire/cid-checker
+
 services:
+  s3SortCaching:
+    image:
+      pullPolicy: Always
   watcher:
     schedule: "*/20 * * * *"
     image:
-      repository: protofire/cid-checker
       pullPolicy: Always
   frontend:
     replicaCount: 1
     image:
-      repository: protofire/cid-checker
       pullPolicy: Always
   backend:
     replicaCount: 1
     image:
-      repository: protofire/cid-checker
       pullPolicy: Always
     env:
       NODE_ENV: "production"
