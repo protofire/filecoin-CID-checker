@@ -64,6 +64,8 @@ export const fetchDeals = async (
       ProviderCollateral,
       ClientCollateral,
       Label,
+      StartEpochAsDate,
+      EndEpochAsDate,
     } = DealInfo?.Proposal
     const DealID = DealInfo?.DealID || DealValueNotAvailable
     const State = DealInfo.State.SectorStartEpoch > -1 ? DealStatus.Active : DealStatus.Unknown
@@ -77,6 +79,8 @@ export const fetchDeals = async (
       VerifiedDeal,
       StartEpoch,
       EndEpoch,
+      StartEpochAsDate,
+      EndEpochAsDate,
       StoragePricePerEpoch,
       ProviderCollateral,
       ClientCollateral,

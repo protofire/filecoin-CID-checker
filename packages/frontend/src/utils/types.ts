@@ -21,6 +21,8 @@ export interface DealValue {
   ClientCollateral: number
   State: DealStatus
   Label: string
+  StartEpochAsDate: string
+  EndEpochAsDate: string
 }
 
 export enum DealTitles {
@@ -40,6 +42,8 @@ export enum DealTitles {
   ProviderCollateral = 'Miner Collateral',
   ClientCollateral = 'Client Collateral',
   State = 'Status',
+  StartEpochAsDate = 'Start Deal(date)',
+  EndEpochAsDate = 'End Deal(date)'
 }
 
 export interface DealDetails {

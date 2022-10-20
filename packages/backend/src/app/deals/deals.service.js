@@ -1,4 +1,5 @@
 const { isNormalInteger } = require('filecoin-checker-shared/src/helpers/number')
+const { heightToDate } = require('filecoin-checker-shared/src/helpers/dates')
 
 class DealsService {
   async list(query = {}, models, pagination) {
@@ -42,10 +43,22 @@ class DealsService {
 
     console.info('DealsService.list.where', JSON.stringify(where))
 
-    const deals = result.map((deal) => ({
-      DealID: deal['_id'],
-      DealInfo: deal,
-    }))
+    // deal.Proposal.StartEpochAsDate = heightToDate()
+    // return {
+    //   DealID: deal['_id'],
+    //   DealInfo: deal,
+    // }
+    const deals = result.map((deal) => {
+      const payload = deal.toJSON()
+
+      payload.Proposal.StartEpochAsDate = heightToDate(deal.Proposal.StartEpoch)
+      payload.Proposal.EndEpochAsDate = heightToDate(deal.Proposal.EndEpoch)
+
+      return {
+        DealID: deal['_id'],
+        DealInfo: payload,
+      }
+    })
 
     const response = {
       Pagination: {
