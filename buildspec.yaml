@@ -39,7 +39,7 @@ phases:
   build:
     commands:
       - echo Building docker images
-      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching -f Dockerfile.s3_sort_caching .
+      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching -f Dockerfile.s3-sort-caching .
       - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend -f Dockerfile.backend .
       - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher -f Dockerfile.watcher .
       - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend -f Dockerfile.frontend --build-arg REACT_APP_FILECOIN_CID_CHECKER_API=/api 
