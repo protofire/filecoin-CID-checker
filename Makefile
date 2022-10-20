@@ -16,7 +16,7 @@ docker_build_api:
 	        docker build -t cid-checker-s3-sort-caching -f Dockerfile.s3_sort_caching .
 
 .PHONY: docker_build_all
-docker_build_all: docker_build_frontend docker_build_watcher docker_build_api docker_build_s3_sort_caching
+docker_build_all: docker_build_s3_sort_caching docker_build_frontend docker_build_watcher docker_build_api
 
 .PHONY: up
 up:	docker_build_all
