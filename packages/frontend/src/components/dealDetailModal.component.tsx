@@ -156,10 +156,20 @@ export const DealDetailModal = (props: Props) => {
       <div className="row">
         <SpanTitle>{DealTitles.StartEpoch}</SpanTitle>
         <Dots />
+        <SpanValue>{deal.StartEpoch}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.StartEpochAsDate}</SpanTitle>
+        <Dots />
         <SpanValue>{formatDate(deal.StartEpochAsDate)}</SpanValue>
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.EndEpoch}</SpanTitle>
+        <Dots />
+        <SpanValue>{deal.EndEpoch}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.EndEpochAsDate}</SpanTitle>
         <Dots />
         <SpanValue>{formatDate(deal.EndEpochAsDate)}</SpanValue>
       </div>
