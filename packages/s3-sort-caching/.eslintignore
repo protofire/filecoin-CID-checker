@@ -1,0 +1,4 @@
+/deploy/**
+/scripts/**
+/rc.d/**
+/seeders/**

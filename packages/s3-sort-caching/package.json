@@ -1,0 +1,22 @@
+{
+  "name": "s3-sort-caching",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.1235.0",
+    "command-line-args": "^5.1.1",
+    "command-line-usage": "^6.1.1",
+    "dotenv": "^16.0.3",
+    "mongodb": "^4.10.0",
+    "pino": "^8.6.1"
+  },
+  "scripts": {
+    "lint:check": "eslint .",
+    "lint:js:fix": "eslint . --fix",
+    "lint:fix": "yarn lint:js:fix && yarn prettier:fix",
+    "prettier": "prettier './**/*.js'",
+    "prettier:check": "yarn prettier --check",
+    "prettier:fix": "yarn prettier --write"
+  }
+}

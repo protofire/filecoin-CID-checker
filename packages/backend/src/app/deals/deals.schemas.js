@@ -13,7 +13,7 @@ const list = {
         enum: [1],
       },
       selector: {
-        type: 'string'
+        type: 'string',
       },
       ...commonSchemas.pagination.properties,
       ...commonSchemas.sorter.properties,

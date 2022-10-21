@@ -12,7 +12,7 @@ const envVarNames = [
   'CID_DB_CONNECTIONSTRING',
   'CID_DB_NAME',
   'CID_LOTUS_RPCURL',
-  'HEIGHT_ALARM_ALLOW_DIFF'
+  'HEIGHT_ALARM_ALLOW_DIFF',
 ]
 
 envVarNames.forEach((n) => {

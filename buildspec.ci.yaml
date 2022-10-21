@@ -1,16 +1,28 @@
 # Do not change version. This is the version of aws buildspec, not the version of your buildspec file.
 version: 0.2
 
+env:
+  shell: bash
+  variables:
+    HELM_VERSION: 'v3.1.0'
+
 phases:
   install:
     commands:
       - echo Environment Variables
       - printenv
+      - echo Installing Helm
+      - wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz
+      - tar -xzvf helm-${HELM_VERSION}-linux-amd64.tar.gz
+      - chmod +x ./linux-amd64/helm
+      - mv ./linux-amd64/helm /usr/bin/helm
 
   pre_build:
     commands:
       - echo Build STARTED
       - make docker_build_all 
+      - cd helm
+      - helm lint
   build:
     commands:
       - echo Image built

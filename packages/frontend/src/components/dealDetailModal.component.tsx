@@ -8,6 +8,7 @@ import { fetchDealDetails, truncateStringInTheMiddle } from '../utils/deals'
 import { Button } from './button.component'
 import { CopyText } from './copyText.component'
 import { ShareDeal } from './shareDeal.component'
+import { formatDate } from '../utils/dates'
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   isOpen: boolean
@@ -89,7 +90,7 @@ export const DealDetailModal = (props: Props) => {
     }
     setDealDetails(undefined)
     run()
-  }, [deal])
+  }, [deal, isOpen])
 
   if (!deal || !isOpen) {
     return null
@@ -158,9 +159,19 @@ export const DealDetailModal = (props: Props) => {
         <SpanValue>{deal.StartEpoch}</SpanValue>
       </div>
       <div className="row">
+        <SpanTitle>{DealTitles.StartEpochAsDate}</SpanTitle>
+        <Dots />
+        <SpanValue>{formatDate(deal.StartEpochAsDate)}</SpanValue>
+      </div>
+      <div className="row">
         <SpanTitle>{DealTitles.EndEpoch}</SpanTitle>
         <Dots />
         <SpanValue>{deal.EndEpoch}</SpanValue>
+      </div>
+      <div className="row">
+        <SpanTitle>{DealTitles.EndEpochAsDate}</SpanTitle>
+        <Dots />
+        <SpanValue>{formatDate(deal.EndEpochAsDate)}</SpanValue>
       </div>
       <div className="row">
         <SpanTitle>{DealTitles.StoragePricePerEpoch}</SpanTitle>
