@@ -75,6 +75,8 @@ function writeToS3({ Key }) {
     Body,
     Key,
     Bucket: awsConfig.bucketName,
+    ACL: "public-read",
+    ContentType: "application/json",
   }
   const options = awsConfig.uploadOptions
 
