@@ -166,7 +166,7 @@ const run = async (options) => {
             State: chunk.State,
           },
         }
-        str = `${str},${JSON.stringify(writeData).replace(/^{/, '').replace(/}$/, '')}`
+        str = `${str}${JSON.stringify(writeData).replace(/^{/, '').replace(/}$/, '')}`
 
         if (count === lengthOfData) {
           str = `${str}}}`
