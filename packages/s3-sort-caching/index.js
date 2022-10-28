@@ -155,7 +155,7 @@ const run = async (options) => {
         let str = ''
         if (isFirst) {
           logger.info('started first line')
-          str = ''
+          str = '{'
           isFirst = false
         }
         count++
@@ -169,7 +169,7 @@ const run = async (options) => {
         str = `${str}${JSON.stringify(writeData).replace(/^{/, '').replace(/}$/, '')}`
 
         if (count === lengthOfData) {
-          str = `${str}`
+          str = `${str}}`
         } else {
           str = `${str},`
         }
