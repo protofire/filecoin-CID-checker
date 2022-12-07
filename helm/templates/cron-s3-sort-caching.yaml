@@ -21,7 +21,7 @@ spec:
             component: s3-sort-caching
         spec:
           restartPolicy: Never
-          serviceAccountName: {{ include "CID.Values.services.s3SortCaching.s3Name" }}-sync-s3-sa
+          serviceAccountName: {{ .Values.services.s3SortCaching.saName }}-sync-s3-sa
           containers:
           - image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-s3-sort-caching"
             imagePullPolicy: {{ .Values.services.s3SortCaching.image.pullPolicy }}

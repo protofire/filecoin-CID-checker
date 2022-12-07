@@ -4,3 +4,4 @@ services:
   s3SortCaching:
     enabled: true
     s3Name: marketdeals-wallaby
+    saName: cid-checker-marketdeals-wallaby
