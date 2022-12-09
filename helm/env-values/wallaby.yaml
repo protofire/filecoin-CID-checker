@@ -4,3 +4,7 @@ services:
   s3SortCaching:
     enabled: true
     s3Name: marketdeals-wallaby
+    saName: cid-checker-marketdeals-wallaby
+nodeSelector:
+  assign_to_space00_07_nodes: allow_any_pods
+  kubernetes.io/arch: amd64
