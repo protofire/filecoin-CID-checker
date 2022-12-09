@@ -5,3 +5,6 @@ services:
     enabled: true
     s3Name: marketdeals
     saName: cid-checker-marketdeals
+nodeSelector:
+  assign_to_space00_07_nodes: allow_any_pods
+  kubernetes.io/arch: amd64
