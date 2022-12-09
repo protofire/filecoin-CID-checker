@@ -8,7 +8,7 @@ metadata:
     {{- include "CID.labels" . | nindent 4 }}
     component: s3-sort-caching
 spec:
-  concurrencyPolicy: "Replace" 
+  concurrencyPolicy: "Allow"
   failedJobsHistoryLimit: 2
   jobTemplate:
     spec:
@@ -21,7 +21,7 @@ spec:
             component: s3-sort-caching
         spec:
           restartPolicy: Never
-          serviceAccountName: {{ include "CID.fullname" . }}-sync-s3-sa
+          serviceAccountName: {{ .Values.services.s3SortCaching.saName }}-sync-s3-sa
           containers:
           - image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-s3-sort-caching"
             imagePullPolicy: {{ .Values.services.s3SortCaching.image.pullPolicy }}
