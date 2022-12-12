@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import ReactGA from 'react-ga'
-import { GA_TRASK_ID } from '../config/constants'
+import { GA_TRACKER_ID } from '../config/constants'
 
 export function useAnalytics () {
   const [initialized, setInitialized] = useState(false)
   useEffect(() => {
-    if (GA_TRASK_ID && window.location.href.includes('filecoin.tools')) {
-      ReactGA.initialize(GA_TRASK_ID)
+    if (GA_TRACKER_ID && window.location.href.includes('filecoin.tools')) {
+      ReactGA.initialize(GA_TRACKER_ID)
 
       setInitialized(true)
 
