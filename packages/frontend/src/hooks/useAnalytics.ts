@@ -8,7 +8,7 @@ export function useAnalytics () {
   console.info('useAnalytics.GA_TRACKER_ID', GA_TRACKER_ID)
 
   useEffect(() => {
-    if (GA_TRACKER_ID) {
+    if (GA_TRACKER_ID && GA_TRACKER_ID !== '') {
       ReactGA.initialize(GA_TRACKER_ID)
 
       setInitialized(true)
