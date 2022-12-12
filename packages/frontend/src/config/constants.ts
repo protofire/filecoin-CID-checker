@@ -17,3 +17,5 @@ export const PAGE_INDEX_START = Number(process.env.REACT_APP_PAGE_INDEX_START ||
 
 export const REPOSITORY_URL: string =
   process.env.REACT_APP_REPOSITORY_URL || 'https://github.com/protofire/filecoin-CID-checker'
+
+export const GA_TRASK_ID = process.env.REACT_APP_GA_TRACKER_ID
