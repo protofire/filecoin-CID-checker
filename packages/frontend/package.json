@@ -11,11 +11,11 @@
     "@types/react-dom": "17.0.2"
   },
   "dependencies": {
+    "@elgorditosalsero/react-gtm-hook": "^2.6.0",
     "pretty-bytes": "^5.5.0",
     "react": "^16.13.1",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.13.1",
-    "react-ga": "^3.3.1",
     "react-helmet-async": "^1.0.6",
     "react-loader-spinner": "^3.1.14",
     "react-modal": "^3.11.2",

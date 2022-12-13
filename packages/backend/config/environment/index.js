@@ -51,6 +51,9 @@ const all = {
 
   db: dbOptions,
 
+  googleAnalytics: {
+    gaTagId: env.GA_TAG_ID,
+  },
   lotus: {
     url: env.CID_LOTUS_RPCURL,
     token: env.CID_LOTUS_JWT_TOKEN,

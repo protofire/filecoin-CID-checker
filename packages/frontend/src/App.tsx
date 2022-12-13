@@ -7,21 +7,34 @@ import { Main } from './components/main.component'
 import { BackToTop } from './components/backToTop.component'
 import { GitHubCorners } from './components/gitHubCorners.component'
 import { REPOSITORY_URL } from './config/constants'
-import { AnalyticsWrapper } from './components/analytics-wrapper'
 import { useAnalytics} from './hooks/useAnalytics'
+import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 
-function App() {
-  const { initialized } = useAnalytics()
-
+function AppChild () {
   return (
-    <AnalyticsWrapper initialized={initialized}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <GitHubCorners url={REPOSITORY_URL} />
-        <Main />
-        <BackToTop />
-      </ThemeProvider>
-    </AnalyticsWrapper>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <GitHubCorners url={REPOSITORY_URL} />
+      <Main />
+      <BackToTop />
+    </ThemeProvider>
+  )
+}
+function App() {
+  const { gaTagId } = useAnalytics()
+
+  console.info('gaTagId', gaTagId)
+  if (gaTagId) {
+    const gtmParams = { id: gaTagId }
+
+    return (
+      <GTMProvider state={gtmParams}>
+        <AppChild />
+      </GTMProvider>
+    )
+  }
+  return (
+    <><AppChild /></>
   )
 }
 

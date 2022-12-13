@@ -1,23 +1,20 @@
 import { useState, useEffect } from 'react'
-import ReactGA from 'react-ga'
-import { GA_TRACKER_ID } from '../config/constants'
+import { fetchGaTag } from '../utils/ga-tag'
 
 export function useAnalytics () {
-  const [initialized, setInitialized] = useState(false)
-
-  console.info('useAnalytics.GA_TRACKER_ID', GA_TRACKER_ID)
+  const [gaTagId, setGaTagId] = useState('')
 
   useEffect(() => {
-    if (GA_TRACKER_ID && GA_TRACKER_ID !== '') {
-      ReactGA.initialize(GA_TRACKER_ID)
+    const run = async () => {
+      const gaTag = await fetchGaTag()
 
-      setInitialized(true)
-
-      console.info('useAnalytics.initialized')
+      if (gaTag && gaTag.gaTagId && gaTag.gaTagId !== '') {
+        setGaTagId(gaTag.gaTagId)
+      }
     }
-  },[])
 
-  return {
-    initialized
-  }
+    run()
+  }, [])
+
+  return { gaTagId }
 }
