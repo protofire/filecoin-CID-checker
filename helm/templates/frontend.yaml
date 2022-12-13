@@ -42,7 +42,7 @@ spec:
               value: "https://github.com/protofire/filecoin-CID-checker"
             - name: REACT_APP_GA_TRACKER_ID
               value: {{ .Values.services.frontend.gaTrackerId }}
-          command: ["sh", "-c", "/usr/local/bin/yarn run build && env"]
+          command: ["sh", "-c", "echo '{\"REACT_APP_GA_TRACKER_ID\":\"$REACT_APP_GA_TRACKER_ID\"}' > /usr/share/nginx/html/ga.json"]
           livenessProbe:
             httpGet:
               path: /
