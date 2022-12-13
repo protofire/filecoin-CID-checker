@@ -11,7 +11,7 @@ env:
     DOCKERHUB_ORGANIZATION: 'protofire'
     HELM_VERSION: 'v3.1.0'
     DOCKERHUB_REPO_NAME: 'cid-checker'
-    APP_VERSION: '0.1.26.3'
+    APP_VERSION: '0.1.26.5'
     NETWORK: 'calibration'
   secrets-manager:
     DOCKERHUB_USERNAME: "filecoin-mainnet-apn1-glif-dockerhub-glifio:username"
@@ -42,7 +42,7 @@ phases:
       - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching -f Dockerfile.s3-sort-caching .
       - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend -f Dockerfile.backend .
       - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher -f Dockerfile.watcher .
-      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend -f Dockerfile.frontend --build-arg REACT_APP_FILECOIN_CID_CHECKER_API=/api --build-arg REACT_APP_GA_TRACKER_ID={{ Values.services.frontend.gaTrackerId.}} .
+      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend -f Dockerfile.frontend --build-arg REACT_APP_FILECOIN_CID_CHECKER_API=/api .
       - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend
       - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend
       - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher
