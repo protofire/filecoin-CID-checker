@@ -18,7 +18,7 @@ ENV REACT_APP_PAGE_SIZE 20
 ENV REACT_APP_PAGE_INDEX_START 1
 ENV SKIP_PREFLIGHT_CHECK true
 
-RUN yarn run build && env
+RUN yarn run build && env && which yarn
 
 FROM nginx:1.21.4-alpine
 
