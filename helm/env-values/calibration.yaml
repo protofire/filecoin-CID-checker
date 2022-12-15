@@ -5,6 +5,8 @@ services:
     enabled: true
     s3Name: marketdeals-calibration
     saName: cid-checker-marketdeals-calibration
+  backend:
+    gaTagId: G-9399DC03ZB
 nodeSelector:
   assign_to_space00_07_nodes: allow_any_pods
   kubernetes.io/arch: amd64

@@ -49,3 +49,7 @@ export enum DealTitles {
 export interface DealDetails {
   clientAddress?: string
 }
+
+export interface GaTagId {
+  gaTagId: string | undefined
+}
