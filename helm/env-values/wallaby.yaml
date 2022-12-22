@@ -6,7 +6,7 @@ services:
     s3Name: marketdeals-wallaby
     saName: cid-checker-marketdeals-wallaby
   backend:
-    gaTagId: GTM-KP3WNZB
+    gaTagId: ""
 nodeSelector:
   assign_to_space00_07_nodes: allow_any_pods
   kubernetes.io/arch: amd64
