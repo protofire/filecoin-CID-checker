@@ -12,7 +12,7 @@ env:
     HELM_VERSION: 'v3.1.0'
     DOCKERHUB_REPO_NAME: 'cid-checker'
     APP_VERSION: '0.1.27'
-    NETWORK: 'calibration'
+    NETWORK: 'hyperspace'
   secrets-manager:
     DOCKERHUB_USERNAME: "filecoin-mainnet-apn1-glif-dockerhub-glifio:username"
     DOCKERHUB_PASS: "filecoin-mainnet-apn1-glif-dockerhub-glifio:password"
