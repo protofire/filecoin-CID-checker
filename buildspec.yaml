@@ -7,7 +7,7 @@ env:
     PROJECT: 'filecoin'
     SUB_ENV: 'glif'
     SHORT_REGION: 'apn1'
-    ENVIRONMENT: 'dev'
+    ENVIRONMENT: 'mainnet'
     DOCKERHUB_ORGANIZATION: 'protofire'
     HELM_VERSION: 'v3.1.0'
     DOCKERHUB_REPO_NAME: 'cid-checker'
