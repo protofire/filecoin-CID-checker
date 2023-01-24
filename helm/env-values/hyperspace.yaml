@@ -6,7 +6,7 @@ services:
     s3Name: marketdeals-hyperspace
     saName: cid-checker-marketdeals-hyperspace
   backend:
-    gaTagId: ""
+    gaTagId: "G-PRSTNDRPE6"
 nodeSelector:
   assign_to_space00_07_nodes: allow_any_pods
   kubernetes.io/arch: amd64
