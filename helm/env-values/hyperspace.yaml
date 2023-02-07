@@ -1,0 +1,12 @@
+dbSize: 1Gi
+lotusURL: "http://hyperspace-lotus-service.network:1234/rpc/v0"
+services:
+  s3SortCaching:
+    enabled: true
+    s3Name: marketdeals-hyperspace
+    saName: cid-checker-marketdeals-hyperspace
+  backend:
+    gaTagId: "G-PRSTNDRPE6"
+nodeSelector:
+  assign_to_space00_07_nodes: allow_any_pods
+  kubernetes.io/arch: amd64
