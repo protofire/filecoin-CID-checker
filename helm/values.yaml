@@ -10,7 +10,7 @@ services:
     image:
       pullPolicy: Always
   watcher:
-    schedule: "*/30 * * * *"
+    schedule: "*/40 * * * *"
     image:
       pullPolicy: Always
   frontend:
