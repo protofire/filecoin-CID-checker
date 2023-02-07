@@ -9,7 +9,8 @@
     "command-line-usage": "^6.1.1",
     "dotenv": "^16.0.3",
     "mongodb": "^4.10.0",
-    "pino": "^8.6.1"
+    "pino": "^8.6.1",
+    "simple-zstd": "^1.4.2"
   },
   "scripts": {
     "lint:check": "eslint .",
