@@ -1,0 +1,12 @@
+dbSize: 1Gi
+lotusURL: "http://wallaby-archive-lotus-service.network:1234/rpc/v0"
+services:
+  s3SortCaching:
+    enabled: true
+    s3Name: marketdeals-wallaby
+    saName: cid-checker-marketdeals-wallaby
+  backend:
+    gaTagId: ""
+nodeSelector:
+  assign_to_space00_07_nodes: allow_any_pods
+  kubernetes.io/arch: amd64
