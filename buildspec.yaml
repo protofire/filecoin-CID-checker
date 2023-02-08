@@ -11,7 +11,7 @@ env:
     DOCKERHUB_ORGANIZATION: 'protofire'
     HELM_VERSION: 'v3.1.0'
     DOCKERHUB_REPO_NAME: 'cid-checker'
-    APP_VERSION: '0.1.27'
+    APP_VERSION: '0.1.28'
     NETWORK: 'calibration'
   secrets-manager:
     DOCKERHUB_USERNAME: "filecoin-mainnet-apn1-glif-dockerhub-glifio:username"
