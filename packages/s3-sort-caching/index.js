@@ -5,6 +5,8 @@ const pino = require('pino')
 const { Transform, PassThrough } = require('stream')
 const AWS = require('aws-sdk')
 const dotenv = require('dotenv')
+const path = require('path')
+const { ZSTDCompress } = require('simple-zstd')
 
 dotenv.config()
 
@@ -13,8 +15,8 @@ const awsConfig = {
   // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property
   uploadOptions: {
     partSize: 10 * 1024 * 1024, // default in s3 client - 5mb
-    queueSize: 10 // default in s3 client - 4
-  }
+    queueSize: 10, // default in s3 client - 4
+  },
 }
 
 const logger = pino({})
@@ -69,34 +71,30 @@ const s3 = new AWS.S3({
 })
 
 function writeToS3({ Key }) {
-  const Body = new PassThrough()
+  const stream = new PassThrough()
 
   const params = {
-    Body,
+    Body: stream,
     Key,
     Bucket: awsConfig.bucketName,
-    ACL: "public-read",
-    ContentType: "application/json",
+    ACL: 'public-read',
+    ContentType: 'application/json',
   }
   const options = awsConfig.uploadOptions
-
   s3.upload(params, options)
     .on('httpUploadProgress', (progress) => {
       logger.info(progress, 's3 uploading progress')
     })
     .send((err, data) => {
       if (err) {
-        logger.error({ err }, 'failed to upload to s3')
-        Body.destroy(err)
-        process.exit(1)
+        stream.emit('error', err);
       } else {
-        logger.info({ data }, `File uploaded and available`)
-        Body.destroy()
-        process.exit()
+        stream.emit('uploaded', data);
       }
+      stream.destroy()
     })
 
-  return Body
+  return stream
 }
 
 const run = async (options) => {
@@ -110,8 +108,9 @@ const run = async (options) => {
       help()
       process.exit()
     }
-  })
-  ;['dest'].forEach((key) => {
+  });
+  
+  ['dest'].forEach((key) => {
     if (!options[key]) {
       console.error(`${key} required`)
       help()
@@ -119,36 +118,32 @@ const run = async (options) => {
     }
   })
 
-  if (!/\.json$/.test(options.dest)) {
-    console.error(`"dest" option should be json file`)
-    help()
-    process.exit()
-  }
+  
+  const { dest: _dest, where } = options
+  // get filename without extension
+  const dest = path.parse(_dest).name;
+  
   const mongouri = process.env.CID_DB_CONNECTIONSTRING
   const dbname = process.env.CID_DB_NAME
-  const { dest } = options
-  let { where } = options
-  if (!where) {
-    where = '{}'
-  }
-
   const client = new MongoClient(mongouri, { useUnifiedTopology: true })
+  
+  const onlyCompressed = process.env.ONLY_COMPRESSED || false
+
   try {
     await client.connect()
     const db = client.db(dbname)
     const dealsCollection = db.collection('deals')
 
-    const query = JSON.parse(where)
-
-    let isFirst = true
-    let count = 0
-    let readStream = dealsCollection.find(query).sort({ _id: 1 }).stream()
+    const query = JSON.parse(where || '{}')
 
     const lengthOfData = await dealsCollection.countDocuments(query)
     if (lengthOfData === 0) {
       logger.warn({ lengthOfData }, 'End because length of data = 0')
       process.exit()
     }
+  
+    let isFirst = true
+    let count = 0
     const convertToLotus = new Transform({
       objectMode: true,
       transform(chunk, encoding, callback) {
@@ -179,18 +174,49 @@ const run = async (options) => {
     convertToLotus.on('finish', () => {
       logger.info('convertToLotus.end')
     })
-
-    const pipeline = readStream
+    
+    const promises = []
+  
+    const readableStream = dealsCollection
+      .find(query)
+      .sort({ _id: 1 })
+      .stream()
       .pipe(convertToLotus)
-      .pipe(writeToS3({ Key: dest }))
-
-    pipeline.on('error', (err) => {
-      logger.error('pipeline.err', err)
-      client.close()
-    })
+  
+    const pipelineZST = readableStream
+      .pipe(ZSTDCompress(17, {}, {}, ['--long', '-T0']))
+      .pipe(writeToS3({ Key: `${dest}.json.zst` }))
+    promises.push(new Promise((resolve) => {
+      pipelineZST.on('error', (err) => {
+        logger.error({ err }, 'pipelineZST.err')
+        resolve()
+      })
+      pipelineZST.on('uploaded', (data) => {
+        logger.info({ data }, 'File uploaded and available')
+        resolve()
+      })
+    }))
+    
+    if (!onlyCompressed) {
+      const pipelineJSON = readableStream
+        .pipe(writeToS3({ Key: `${dest}.json` }))
+      promises.push(new Promise((resolve) => {
+        pipelineJSON.on('error', (err) => {
+          logger.error({ err }, 'pipeline.err')
+          resolve()
+        })
+        pipelineJSON.on('uploaded', (data) => {
+          logger.info({ data }, 'File uploaded and available')
+          resolve()
+        })
+      }))
+    }
+    
+    await Promise.all(promises)
+    await client.close()
   } catch (err) {
     logger.error({ err }, 'failed to run')
-    client.close()
+    await client.close()
     process.exit(1)
   }
 }
