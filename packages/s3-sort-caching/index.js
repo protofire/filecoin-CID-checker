@@ -10,6 +10,11 @@ const { ZSTDCompress } = require('simple-zstd')
 
 dotenv.config()
 
+const CONTENT_TYPE = {
+  JSON: 'application/json',
+  ZSTD: 'application/zstd'
+}
+
 const awsConfig = {
   bucketName: process.env.AWS_S3_BUCKET_NAME,
   // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property
@@ -70,7 +75,7 @@ const s3 = new AWS.S3({
   apiVersion: '2012-10-17',
 })
 
-function writeToS3({ Key }) {
+function writeToS3({ Key, ContentType }) {
   const stream = new PassThrough()
 
   const params = {
@@ -78,7 +83,7 @@ function writeToS3({ Key }) {
     Key,
     Bucket: awsConfig.bucketName,
     ACL: 'public-read',
-    ContentType: 'application/json',
+    ContentType,
   }
   const options = awsConfig.uploadOptions
   s3.upload(params, options)
@@ -185,7 +190,7 @@ const run = async (options) => {
   
     const pipelineZST = readableStream
       .pipe(ZSTDCompress(17, {}, {}, ['--long', '-T0']))
-      .pipe(writeToS3({ Key: `${dest}.json.zst` }))
+      .pipe(writeToS3({ Key: `${dest}.json.zst`, ContentType: CONTENT_TYPE.ZSTD }))
     promises.push(new Promise((resolve) => {
       pipelineZST.on('error', (err) => {
         logger.error({ err }, 'pipelineZST.err')
@@ -199,7 +204,7 @@ const run = async (options) => {
     
     if (!onlyCompressed) {
       const pipelineJSON = readableStream
-        .pipe(writeToS3({ Key: `${dest}.json` }))
+        .pipe(writeToS3({ Key: `${dest}.json`, ContentType: CONTENT_TYPE.JSON }))
       promises.push(new Promise((resolve) => {
         pipelineJSON.on('error', (err) => {
           logger.error({ err }, 'pipeline.err')
