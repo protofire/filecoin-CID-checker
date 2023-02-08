@@ -71,34 +71,30 @@ const s3 = new AWS.S3({
 })
 
 function writeToS3({ Key }) {
-  const Body = new PassThrough()
+  const stream = new PassThrough()
 
   const params = {
-    Body,
+    Body: stream,
     Key,
     Bucket: awsConfig.bucketName,
     ACL: 'public-read',
     ContentType: 'application/json',
   }
   const options = awsConfig.uploadOptions
-
   s3.upload(params, options)
     .on('httpUploadProgress', (progress) => {
       logger.info(progress, 's3 uploading progress')
     })
     .send((err, data) => {
       if (err) {
-        logger.error({ err }, 'failed to upload to s3')
-        Body.destroy(err)
-        process.exit(1)
+        stream.emit('error', err);
       } else {
-        logger.info({ data }, `File uploaded and available`)
-        Body.destroy()
-        process.exit()
+        stream.emit('uploaded', data);
       }
+      stream.destroy()
     })
 
-  return Body
+  return stream
 }
 
 const run = async (options) => {
@@ -192,26 +188,25 @@ const run = async (options) => {
       .pipe(writeToS3({ Key: `${dest}.json.zst` }))
     promises.push(new Promise((resolve) => {
       pipelineZST.on('error', (err) => {
-        logger.error('pipelineZST.err', err)
+        logger.error({ err }, 'pipelineZST.err')
         resolve()
       })
-      pipelineZST.on('finish', () => {
-        logger.info('Caching JSON.zst to S3 finished')
+      pipelineZST.on('uploaded', (data) => {
+        logger.info({ data }, 'File uploaded and available')
         resolve()
       })
     }))
-
     
     if (!onlyCompressed) {
       const pipelineJSON = readableStream
         .pipe(writeToS3({ Key: `${dest}.json` }))
       promises.push(new Promise((resolve) => {
         pipelineJSON.on('error', (err) => {
-          logger.error('pipeline.err', err)
+          logger.error({ err }, 'pipeline.err')
           resolve()
         })
-        pipelineJSON.on('finish', () => {
-          logger.info('Caching JSON to S3 finished')
+        pipelineJSON.on('uploaded', (data) => {
+          logger.info({ data }, 'File uploaded and available')
           resolve()
         })
       }))
