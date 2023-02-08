@@ -5,6 +5,8 @@ const pino = require('pino')
 const { Transform, PassThrough } = require('stream')
 const AWS = require('aws-sdk')
 const dotenv = require('dotenv')
+const path = require('path')
+const { ZSTDCompress } = require('simple-zstd')
 
 dotenv.config()
 
@@ -13,8 +15,8 @@ const awsConfig = {
   // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property
   uploadOptions: {
     partSize: 10 * 1024 * 1024, // default in s3 client - 5mb
-    queueSize: 10 // default in s3 client - 4
-  }
+    queueSize: 10, // default in s3 client - 4
+  },
 }
 
 const logger = pino({})
@@ -75,8 +77,8 @@ function writeToS3({ Key }) {
     Body,
     Key,
     Bucket: awsConfig.bucketName,
-    ACL: "public-read",
-    ContentType: "application/json",
+    ACL: 'public-read',
+    ContentType: 'application/json',
   }
   const options = awsConfig.uploadOptions
 
@@ -110,8 +112,9 @@ const run = async (options) => {
       help()
       process.exit()
     }
-  })
-  ;['dest'].forEach((key) => {
+  });
+  
+  ['dest'].forEach((key) => {
     if (!options[key]) {
       console.error(`${key} required`)
       help()
@@ -119,36 +122,32 @@ const run = async (options) => {
     }
   })
 
-  if (!/\.json$/.test(options.dest)) {
-    console.error(`"dest" option should be json file`)
-    help()
-    process.exit()
-  }
+  
+  const { dest: _dest, where } = options
+  // get filename without extension
+  const dest = path.parse(_dest).name;
+  
   const mongouri = process.env.CID_DB_CONNECTIONSTRING
   const dbname = process.env.CID_DB_NAME
-  const { dest } = options
-  let { where } = options
-  if (!where) {
-    where = '{}'
-  }
-
   const client = new MongoClient(mongouri, { useUnifiedTopology: true })
+  
+  const onlyCompressed = process.env.ONLY_COMPRESSED || false
+
   try {
     await client.connect()
     const db = client.db(dbname)
     const dealsCollection = db.collection('deals')
 
-    const query = JSON.parse(where)
-
-    let isFirst = true
-    let count = 0
-    let readStream = dealsCollection.find(query).sort({ _id: 1 }).stream()
+    const query = JSON.parse(where || '{}')
 
     const lengthOfData = await dealsCollection.countDocuments(query)
     if (lengthOfData === 0) {
       logger.warn({ lengthOfData }, 'End because length of data = 0')
       process.exit()
     }
+  
+    let isFirst = true
+    let count = 0
     const convertToLotus = new Transform({
       objectMode: true,
       transform(chunk, encoding, callback) {
@@ -179,18 +178,50 @@ const run = async (options) => {
     convertToLotus.on('finish', () => {
       logger.info('convertToLotus.end')
     })
-
-    const pipeline = readStream
+    
+    const promises = []
+  
+    const readableStream = dealsCollection
+      .find(query)
+      .sort({ _id: 1 })
+      .stream()
       .pipe(convertToLotus)
-      .pipe(writeToS3({ Key: dest }))
+  
+    const pipelineZST = readableStream
+      .pipe(ZSTDCompress(17, {}, {}, ['--long', '-T0']))
+      .pipe(writeToS3({ Key: `${dest}.json.zst` }))
+    promises.push(new Promise((resolve) => {
+      pipelineZST.on('error', (err) => {
+        logger.error('pipelineZST.err', err)
+        resolve()
+      })
+      pipelineZST.on('finish', () => {
+        logger.info('Caching JSON.zst to S3 finished')
+        resolve()
+      })
+    }))
 
-    pipeline.on('error', (err) => {
-      logger.error('pipeline.err', err)
-      client.close()
-    })
+    
+    if (!onlyCompressed) {
+      const pipelineJSON = readableStream
+        .pipe(writeToS3({ Key: `${dest}.json` }))
+      promises.push(new Promise((resolve) => {
+        pipelineJSON.on('error', (err) => {
+          logger.error('pipeline.err', err)
+          resolve()
+        })
+        pipelineJSON.on('finish', () => {
+          logger.info('Caching JSON to S3 finished')
+          resolve()
+        })
+      }))
+    }
+    
+    await Promise.all(promises)
+    await client.close()
   } catch (err) {
     logger.error({ err }, 'failed to run')
-    client.close()
+    await client.close()
     process.exit(1)
   }
 }

@@ -1,9 +1,11 @@
 FROM node:14-alpine
 
+RUN apk add --update --no-cache zstd
+
 WORKDIR /app/
 
 COPY ./packages/s3-sort-caching/ ./
 
 RUN npm install
 
-ENTRYPOINT [ "node", "index.js" ] 
+ENTRYPOINT [ "node", "index.js" ]
