@@ -6,11 +6,11 @@ dockerHubRepo: protofire/cid-checker
 
 services:
   s3SortCaching:
-    schedule: "*/20 * * * *"
+    schedule: "40 * * * *"
     image:
       pullPolicy: Always
   watcher:
-    schedule: "*/40 * * * *"
+    schedule: "0 * * * *"
     image:
       pullPolicy: Always
   frontend:
