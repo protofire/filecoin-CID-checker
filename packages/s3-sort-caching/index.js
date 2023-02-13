@@ -102,6 +102,13 @@ function writeToS3({ Key, ContentType }) {
   return stream
 }
 
+class DealsTransform extends Transform {
+  constructor(options) {
+    super(options);
+    logger.info('convertToLotus.start')
+  }
+}
+
 const run = async (options) => {
   [
     'AWS_S3_BUCKET_NAME',
@@ -122,7 +129,6 @@ const run = async (options) => {
       process.exit()
     }
   })
-
   
   const { dest: _dest, where } = options
   // get filename without extension
@@ -140,44 +146,31 @@ const run = async (options) => {
     const dealsCollection = db.collection('deals')
 
     const query = JSON.parse(where || '{}')
-
-    const lengthOfData = await dealsCollection.countDocuments(query)
-    if (lengthOfData === 0) {
-      logger.warn({ lengthOfData }, 'End because length of data = 0')
-      process.exit()
-    }
-  
-    let isFirst = true
+    
     let count = 0
-    const convertToLotus = new Transform({
+    const convertToLotus = new DealsTransform({
       objectMode: true,
       transform(chunk, encoding, callback) {
-        let str = ''
-        if (isFirst) {
-          logger.info('started first line')
-          str = '{'
-          isFirst = false
-        }
         count++
-
-        const writeData = {
+        const data = JSON.stringify({
           [chunk._id]: {
             Proposal: chunk.Proposal,
             State: chunk.State,
           },
-        }
-        str = `${str}${JSON.stringify(writeData).replace(/^{/, '').replace(/}$/, '')}`
-
-        if (count === lengthOfData) {
-          str = `${str}}`
-        } else {
-          str = `${str},`
-        }
-        callback(null, str)
+        })
+        const dataTrimmed = data.substring(1, data.length - 1)
+        callback(null, count > 1 ? `,${dataTrimmed}` : `{${dataTrimmed}` )
       },
+      flush(callback) {
+        if (count === 0) {
+          callback(null, '{}')
+        } else {
+          callback(null, '}')
+        }
+      }
     })
     convertToLotus.on('finish', () => {
-      logger.info('convertToLotus.end')
+      logger.info({ dealsProcessed: count }, 'convertToLotus.end')
     })
     
     const promises = []
