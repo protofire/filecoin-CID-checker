@@ -7,6 +7,8 @@ services:
     saName: cid-checker-marketdeals-hyperspace
   backend:
     gaTagId: "G-PRSTNDRPE6"
+    env:
+      HEIGHT_ALARM_ALLOW_DIFF: "200"
 nodeSelector:
   assign_to_space00_07_nodes: allow_any_pods
   kubernetes.io/arch: amd64
