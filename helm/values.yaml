@@ -6,6 +6,8 @@ dockerHubRepo: protofire/cid-checker
 
 services:
   s3SortCaching:
+    env:
+      ONLY_COMPRESSED: true
     schedule: "40 * * * *"
     image:
       pullPolicy: Always
