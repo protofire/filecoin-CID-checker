@@ -44,10 +44,11 @@ const AWrapper = styled.a`
 
 interface DropDownItemOpts {
   network: INetwork
+  onClick: () => void
 }
 
 const DropdowItem = (opts: DropDownItemOpts) => {
-  return <OptionWrapper>
+  return <OptionWrapper onClick={opts.onClick}>
     <AWrapper href={`${opts.network.url}?network=${opts.network.id}`}
        rel="noopener noreferrer"
        target="_blank">
@@ -65,7 +66,6 @@ export const NetworkSwitcher = () => {
       const parsedQuery = parseQuery()
       let found
       if(parsedQuery && parsedQuery.hasOwnProperty('network')) {
-        // @ts-ignore
         found = networks.find(n => n.id === parsedQuery.network)
       }
       if(found) {
@@ -81,6 +81,10 @@ export const NetworkSwitcher = () => {
 
   const options = networks.filter(n => n.id !== network.id)
 
+  const onClick = () => {
+    setOpen(!open);
+  }
+
   return (
     <DropdownWrapper>
       <SelectedWrapper onClick={handleOpen}>{network.label}</SelectedWrapper>
@@ -88,7 +92,7 @@ export const NetworkSwitcher = () => {
         <MenuWrapper>
           {
             options.map(n => {
-              return <DropdowItem key={n.id} network={n} />
+              return <DropdowItem onClick={onClick} key={n.id} network={n} />
             })
           }
         </MenuWrapper>

@@ -59,3 +59,7 @@ export interface INetwork {
   label: string
   url: string
 }
+
+export interface QueryParams {
+  [key:string]: string;
+}
