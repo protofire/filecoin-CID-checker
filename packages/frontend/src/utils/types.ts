@@ -53,3 +53,13 @@ export interface DealDetails {
 export interface GaTagId {
   gaTagId: string | undefined
 }
+
+export interface INetwork {
+  id: string
+  label: string
+  url: string
+}
+
+export interface QueryParams {
+  [key:string]: string;
+}
