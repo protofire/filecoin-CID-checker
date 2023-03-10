@@ -70,6 +70,16 @@ export const NetworkSwitcher = () => {
       }
       if(found) {
         setNetwork(found)
+        return
+      }
+      const arr = window.location.host.split(/\./)
+      let networkFromHost = 'mainnet'
+      if (arr.length === 3) {
+        networkFromHost = arr[0]
+      }
+      found = networks.find(n => n.id === networkFromHost)
+      if(found) {
+        setNetwork(found)
       }
     },
     []
