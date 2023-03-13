@@ -77,6 +77,9 @@ export const NetworkSwitcher = () => {
       if (arr.length === 3) {
         networkFromHost = arr[0]
       }
+      else if (arr.length > 3) {
+        networkFromHost = arr[1]
+      }
       found = networks.find(n => n.id === networkFromHost)
       if(found) {
         setNetwork(found)
