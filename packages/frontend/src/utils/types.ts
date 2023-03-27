@@ -63,3 +63,12 @@ export interface INetwork {
 export interface QueryParams {
   [key:string]: string;
 }
+
+export interface DealStat {
+  numberOfUniqueCIDs: number
+  numberOfUniqueProviders: number
+  numberOfUniqueClients: number
+  totalDeals: number
+  totalDealSize: number
+  latestHeight: number
+}
