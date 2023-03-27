@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { networks } from '../config/networks'
 import { parseQuery } from '../utils/urls'
 import { INetwork } from '../utils/types';
+import { DownArrowFilledIcon } from './common/icons'
 
 const DropdownWrapper = styled.div`
   position: relative;        
@@ -13,7 +14,13 @@ const SelectedWrapper = styled.div`
   font-size: ${(props) => props.theme.fonts.defaultSize};
   cursor: pointer;
   color: #f0f8ff;
-  background: radial-gradient(circle, rgba(207, 224, 255, 0.62) 1px, transparent 1px) repeat-x;
+  background: radial-gradient(circle, rgba(207, 224, 255, 0.62) 1px, transparent 1px) repeat-x;  
+`
+
+const WrappedDownArrowFilledIcon = styled(DownArrowFilledIcon)`
+  position: absolute;
+  width: 24px;
+  height: 24px;
 `
 
 const OptionWrapper = styled.li`
@@ -26,14 +33,14 @@ const OptionWrapper = styled.li`
 `
 
 const MenuWrapper = styled.ul`
-    position: absolute;
-  
-    list-style-type: none;
-    margin: 5px 0;
-    padding: 1px;
-  
-    border: 1px solid grey;
-    width: 120px;
+  position: absolute;
+
+  list-style-type: none;
+  margin: 5px 0;
+  padding: 1px;
+
+  border: 1px solid grey;
+  width: 120px;
 `
 
 const AWrapper = styled.a`
@@ -100,7 +107,10 @@ export const NetworkSwitcher = () => {
 
   return (
     <DropdownWrapper>
-      <SelectedWrapper onClick={handleOpen}>{network.label}</SelectedWrapper>
+      <SelectedWrapper onClick={handleOpen}>
+        {network.label}
+        <WrappedDownArrowFilledIcon />
+      </SelectedWrapper>
       {open ? (
         <MenuWrapper>
           {
