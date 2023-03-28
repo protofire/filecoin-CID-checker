@@ -14,7 +14,7 @@ export function useAnalytics () {
     }
 
     run()
-  }, [])
+  }, [gaTagId])
 
   return { gaTagId }
 }

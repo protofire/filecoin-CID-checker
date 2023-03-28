@@ -12,14 +12,15 @@ export const useStats = (): { stats: any } => {
           const newstats = await fetchDealStats()
           setStats(newstats)
         }
+        console.info('stats', stats)
       } catch (e) {
         /* eslint-disable no-console*/
         console.error('useStats', e)
         /* eslint-enable no-console*/
       }
     }
-
     run()
+    return () => {  }
   }, [stats])
 
   return {
