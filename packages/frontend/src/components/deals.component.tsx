@@ -3,7 +3,7 @@ import Loader from 'react-loader-spinner'
 import styled from 'styled-components'
 import { Waypoint } from 'react-waypoint'
 import { useParams } from 'react-router-dom'
-import { useDeals } from '../hooks/useDeals.hook'
+import { useDealsV2 } from '../hooks/useDeals.hook'
 import { RemoteData } from '../utils/remoteData'
 import { NoDealsAvailableMessage } from './noDealsAvailableMessage.component'
 import { DealsErrorMessage } from './dealsErrorMessage.component'
@@ -12,10 +12,15 @@ import { DealTitles } from '../utils/types'
 import { Button } from './button.component'
 import { useSearchContext } from '../state/search.context'
 import { DownArrowFilledIcon } from './common/icons'
-import { useStats } from '../hooks/useStats.hook'
-import prettyBytes from 'pretty-bytes'
+import { DealStats } from './stats.component'
 import { getDealsCsvUrl } from '../utils/deals'
 import { PAGE_SIZE } from '../config/constants'
+import {
+  Table,
+  THead,
+  TH,
+  THButton
+} from './common/layout/table.component'
 
 interface ParamTypes {
   deal: string
@@ -24,35 +29,6 @@ interface ParamTypes {
 
 const BlockWrapper = styled.div`
   padding: 120px;
-`
-
-const Table = styled.table`
-  table-layout: fixed;
-  width: 100%;
-`
-
-const TH = styled.th`
-  font-family: Poppins;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 18px;
-  text-align: left;
-  color: #cfe0ff;
-  text-transform: uppercase;
-`
-
-const StatValue = styled.th`
-  font-family: Poppins;
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 18px;
-  text-align: left;
-  color: #cfe0ff;
-  text-transform: uppercase;
-`
-
-const THead = styled.thead`
-  border-bottom: none;
 `
 
 const THFirst = styled(TH)`
@@ -76,18 +52,6 @@ const THFive = styled(TH)`
     padding-left: 0px;
     width: 20%;
   }
-`
-
-const THButton = styled.button`
-  margin: 0;
-  padding: 0;
-  border: 0;
-  display: flex;
-  align-items: center;
-  font: inherit;
-  color: inherit;
-  outline: none;
-  background-color: rgba(0, 0, 0, 0);
 `
 
 const ShowMoreButton = styled(Button)`
@@ -129,8 +93,7 @@ export const Deals = () => {
     }
   }, [setCurrentSearch, dealIdFromParams])
 
-  const { deals, moreDeals } = useDeals(search, page, query, activeFilter, verifiedFilter)
-  const { stats } = useStats()
+  const { deals, moreDeals } = useDealsV2(search, page, query, activeFilter, verifiedFilter)
 
   const showMore = () => {
     setCurrentPage(page + 1)
@@ -189,30 +152,7 @@ export const Deals = () => {
         </Button>
         {RemoteData.hasData(deals) && deals.data.length > 0 && (
           <>
-            <Table>
-              <THead>
-                <tr>
-                  <TH>TOTAL UNIQUE CIDS</TH>
-                  <TH>TOTAL UNIQUE PROVIDERS</TH>
-                  <TH>TOTAL UNIQUE CLIENTS</TH>
-                  <TH>TOTAL STORAGE DEALS</TH>
-                  <TH>TOTAL DATA STORED</TH>
-                  <TH>LATEST HEIGHT</TH>
-                </tr>
-              </THead>
-              <tbody>
-                <tr>
-                  <StatValue>{stats?.numberOfUniqueCIDs}</StatValue>
-                  <StatValue>{stats?.numberOfUniqueProviders}</StatValue>
-                  <StatValue>{stats?.numberOfUniqueClients}</StatValue>
-                  <StatValue>{stats?.totalDeals}</StatValue>
-                  <StatValue>
-                    {stats && stats.totalDealSize ? prettyBytes(stats.totalDealSize) : null}
-                  </StatValue>
-                  <StatValue>{stats?.latestHeight}</StatValue>
-                </tr>
-              </tbody>
-            </Table>
+            <DealStats />
             <br />
             <Table>
               <THead>
