@@ -13,6 +13,7 @@ env:
     DOCKERHUB_REPO_NAME: 'cid-checker'
     APP_VERSION: '0.1.30'
     NETWORK: 'calibration'
+    ARCH: 'arm64'
   secrets-manager:
     DOCKERHUB_USERNAME: "filecoin-mainnet-apn1-glif-dockerhub-glifio:username"
     DOCKERHUB_PASS: "filecoin-mainnet-apn1-glif-dockerhub-glifio:password"
@@ -27,10 +28,10 @@ phases:
       - echo Logging to AWS eks
       - aws eks --region $AWS_REGION update-kubeconfig --name $PROJECT-$ENVIRONMENT-$SHORT_REGION-$SUB_ENV-eks
       - echo Installing Helm
-      - wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz
-      - tar -xzvf helm-${HELM_VERSION}-linux-amd64.tar.gz
-      - chmod +x ./linux-amd64/helm
-      - mv ./linux-amd64/helm /usr/bin/helm
+      - wget https://get.helm.sh/helm-${HELM_VERSION}-linux-${ARCH}.tar.gz
+      - tar -xzvf helm-${HELM_VERSION}-linux-${ARCH}.tar.gz
+      - chmod +x ./linux-${ARCH}/helm
+      - mv ./linux-${ARCH}/helm /usr/bin/helm
 
   pre_build:
     commands:
@@ -39,14 +40,14 @@ phases:
   build:
     commands:
       - echo Building docker images
-      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching -f Dockerfile.s3-sort-caching .
-      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend -f Dockerfile.backend .
-      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher -f Dockerfile.watcher .
-      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend -f Dockerfile.frontend --build-arg REACT_APP_FILECOIN_CID_CHECKER_API=/api .
-      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend
-      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend
-      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher
-      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching
+      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching-${ARCH} -f Dockerfile.s3-sort-caching .
+      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend-${ARCH} -f Dockerfile.backend .
+      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher-${ARCH} -f Dockerfile.watcher .
+      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend-${ARCH} -f Dockerfile.frontend --build-arg REACT_APP_FILECOIN_CID_CHECKER_API=/api .
+      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend-${ARCH}
+      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend-${ARCH}
+      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher-${ARCH}
+      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching-${ARCH}
       - cd helm
       - sed -i "s/0.0.0/${APP_VERSION}/g" Chart.yaml
       - helm lint

@@ -5,6 +5,7 @@ env:
   shell: bash
   variables:
     HELM_VERSION: 'v3.1.0'
+    ARCH: 'arm64'
 
 phases:
   install:
@@ -12,10 +13,10 @@ phases:
       - echo Environment Variables
       - printenv
       - echo Installing Helm
-      - wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz
-      - tar -xzvf helm-${HELM_VERSION}-linux-amd64.tar.gz
-      - chmod +x ./linux-amd64/helm
-      - mv ./linux-amd64/helm /usr/bin/helm
+      - wget https://get.helm.sh/helm-${HELM_VERSION}-linux-${ARCH}.tar.gz
+      - tar -xzvf helm-${HELM_VERSION}-linux-${ARCH}.tar.gz
+      - chmod +x ./linux-${ARCH}/helm
+      - mv ./linux-${ARCH}/helm /usr/bin/helm
 
   pre_build:
     commands:
