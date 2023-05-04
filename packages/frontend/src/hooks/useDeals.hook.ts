@@ -4,6 +4,7 @@ import { fetchDeals } from '../utils/deals'
 import { RemoteData } from '../utils/remoteData'
 import { DealValue } from '../utils/types'
 import { PAGE_SIZE } from '../config/constants'
+// import { useEffectOnce } from './useEffectOnce'
 
 export const useDeals = (
   search: string,

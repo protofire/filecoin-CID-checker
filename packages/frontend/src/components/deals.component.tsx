@@ -8,14 +8,22 @@ import { RemoteData } from '../utils/remoteData'
 import { NoDealsAvailableMessage } from './noDealsAvailableMessage.component'
 import { DealsErrorMessage } from './dealsErrorMessage.component'
 import { DealsList } from './dealsList.component'
+import { DealStats } from './dealStats.component'
 import { DealTitles } from '../utils/types'
 import { Button } from './button.component'
 import { useSearchContext } from '../state/search.context'
 import { DownArrowFilledIcon } from './common/icons'
-import { useStats } from '../hooks/useStats.hook'
-import prettyBytes from 'pretty-bytes'
+import * as table from './common/layout/table.component'
+import {EventEmitter, RegistryEvents} from '../utils/event-emitter'
 import { getDealsCsvUrl } from '../utils/deals'
 import { PAGE_SIZE } from '../config/constants'
+
+const {
+  Table,
+  THead,
+  THFirst, THSecond, THThird, THFourth, THFive,
+  THButton
+} = table
 
 interface ParamTypes {
   deal: string
@@ -26,75 +34,11 @@ const BlockWrapper = styled.div`
   padding: 120px;
 `
 
-const Table = styled.table`
-  table-layout: fixed;
-  width: 100%;
-`
-
-const TH = styled.th`
-  font-family: Poppins;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 18px;
-  text-align: left;
-  color: #cfe0ff;
-  text-transform: uppercase;
-`
-
-const StatValue = styled.th`
-  font-family: Poppins;
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 18px;
-  text-align: left;
-  color: #cfe0ff;
-  text-transform: uppercase;
-`
-
-const THead = styled.thead`
-  border-bottom: none;
-`
-
-const THFirst = styled(TH)`
-  width: 35%;
-  @media (max-width: ${(props) => props.theme.themeBreakPoints.xs}) {
-    width: 20%;
-  }
-`
-const THSecond = styled(TH)`
-  @media (max-width: ${(props) => props.theme.themeBreakPoints.lg}) {
-    width: 30px;
-    visibility: hidden;
-  }
-`
-const THThird = styled(TH)``
-const THFourth = styled(TH)``
-const THFive = styled(TH)`
-  width: 35%;
-  text-align: right;
-  @media (max-width: ${(props) => props.theme.themeBreakPoints.md}) {
-    padding-left: 0px;
-    width: 20%;
-  }
-`
-
-const THButton = styled.button`
-  margin: 0;
-  padding: 0;
-  border: 0;
-  display: flex;
-  align-items: center;
-  font: inherit;
-  color: inherit;
-  outline: none;
-  background-color: rgba(0, 0, 0, 0);
-`
-
 const ShowMoreButton = styled(Button)`
   margin: 20px auto 20px auto;
 `
 
-export const Deals = () => {
+export const Deals = (opts: {} | any) => {
   const {
     search,
     page,
@@ -118,8 +62,14 @@ export const Deals = () => {
   }
 
   useEffect(() => {
+    const eventId = EventEmitter.subscribe(RegistryEvents.updateFilter, (value) => {
+      console.info('Deals.useEffect.subscription', value)
+    })
     if (searchFromParams) {
       setCurrentSearch(searchFromParams)
+    }
+    return () => {
+      EventEmitter.unsubscribe(RegistryEvents.updateFilter, eventId)
     }
   }, [setCurrentSearch, searchFromParams])
 
@@ -130,7 +80,6 @@ export const Deals = () => {
   }, [setCurrentSearch, dealIdFromParams])
 
   const { deals, moreDeals } = useDeals(search, page, query, activeFilter, verifiedFilter)
-  const { stats } = useStats()
 
   const showMore = () => {
     setCurrentPage(page + 1)
@@ -187,32 +136,10 @@ export const Deals = () => {
         <Button onClick={handleCsvDownload} width="auto">
           Download as CSV
         </Button>
+
         {RemoteData.hasData(deals) && deals.data.length > 0 && (
           <>
-            <Table>
-              <THead>
-                <tr>
-                  <TH>TOTAL UNIQUE CIDS</TH>
-                  <TH>TOTAL UNIQUE PROVIDERS</TH>
-                  <TH>TOTAL UNIQUE CLIENTS</TH>
-                  <TH>TOTAL STORAGE DEALS</TH>
-                  <TH>TOTAL DATA STORED</TH>
-                  <TH>LATEST HEIGHT</TH>
-                </tr>
-              </THead>
-              <tbody>
-                <tr>
-                  <StatValue>{stats?.numberOfUniqueCIDs}</StatValue>
-                  <StatValue>{stats?.numberOfUniqueProviders}</StatValue>
-                  <StatValue>{stats?.numberOfUniqueClients}</StatValue>
-                  <StatValue>{stats?.totalDeals}</StatValue>
-                  <StatValue>
-                    {stats && stats.totalDealSize ? prettyBytes(stats.totalDealSize) : null}
-                  </StatValue>
-                  <StatValue>{stats?.latestHeight}</StatValue>
-                </tr>
-              </tbody>
-            </Table>
+            <DealStats />
             <br />
             <Table>
               <THead>

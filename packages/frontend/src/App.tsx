@@ -11,6 +11,7 @@ import { useAnalytics} from './hooks/useAnalytics'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 
 function AppChild () {
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
@@ -23,7 +24,6 @@ function AppChild () {
 function App() {
   const { gaTagId } = useAnalytics()
 
-  console.info('gaTagId', gaTagId)
   if (gaTagId) {
     const gtmParams = { id: gaTagId }
 
