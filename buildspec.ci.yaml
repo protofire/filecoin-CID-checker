@@ -5,7 +5,7 @@ env:
   shell: bash
   variables:
     HELM_VERSION: 'v3.1.0'
-    ARCH: 'arm64'
+    ARCH: 'amd64'
 
 phases:
   install:
