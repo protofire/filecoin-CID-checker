@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { fetchGaTag } from '../utils/ga-tag'
+import { useEffectOnce } from './useEffectOnce'
 
 export function useAnalytics () {
   const [gaTagId, setGaTagId] = useState('')
 
-  useEffect(() => {
+  useEffectOnce(() => {
     const run = async () => {
       const gaTag = await fetchGaTag()
 
@@ -14,7 +15,7 @@ export function useAnalytics () {
     }
 
     run()
-  }, [gaTagId])
+  })
 
   return { gaTagId }
 }
