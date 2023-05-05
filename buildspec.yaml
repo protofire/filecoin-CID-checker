@@ -60,11 +60,11 @@ phases:
       - docker buildx build --push --platform linux/amd64,linux/arm64  -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching-multi -f Dockerfile.s3-sort-caching .
       - docker buildx build --push --platform linux/amd64,linux/arm64 -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend-multi -f Dockerfile.backend .
       - docker buildx build --push --platform linux/amd64,linux/arm64 -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher-multi -f Dockerfile.watcher .
-      - docker build -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend-multi -f Dockerfile.frontend --build-arg REACT_APP_FILECOIN_CID_CHECKER_API=/api .
-      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend-multi
-      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend-multi
-      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher-multi
-      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching-multi
+      - docker buildx build --push --platform linux/amd64,linux/arm64 -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend-multi -f Dockerfile.frontend --build-arg REACT_APP_FILECOIN_CID_CHECKER_API=/api .
+#      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend-multi
+#      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend-multi
+#      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher-multi
+#      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching-multi
 #      - cd helm
 #      - sed -i "s/0.0.0/${APP_VERSION}/g" Chart.yaml
 #      - helm lint
