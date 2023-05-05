@@ -21,7 +21,7 @@ spec:
         spec:
           restartPolicy: Never
           containers:
-          - image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-watcher"
+          - image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-watcher-multi"
             imagePullPolicy: {{ .Values.services.watcher.image.pullPolicy }}
             name: {{ include "CID.fullname" . }}-watcher
             env:
