@@ -23,7 +23,7 @@ spec:
           restartPolicy: Never
           serviceAccountName: {{ .Values.services.s3SortCaching.saName }}-sync-s3-sa
           containers:
-          - image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-s3-sort-caching"
+          - image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-s3-sort-caching-multi"
             imagePullPolicy: {{ .Values.services.s3SortCaching.image.pullPolicy }}
             name: {{ include "CID.fullname" . }}-s3-sort-caching-fil-plus
             args: ["--dest", "StateMarketDealsFilPlusOnly.json", "--where", "{ \"Proposal.VerifiedDeal\": true }"]
@@ -38,7 +38,7 @@ spec:
             - name: {{ $key }}
               value: {{ $value | quote }}
       {{- end }}
-          - image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-s3-sort-caching"
+          - image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-s3-sort-caching-multi"
             imagePullPolicy: {{ .Values.services.s3SortCaching.image.pullPolicy }}
             name: {{ include "CID.fullname" . }}-s3-sort-caching
             args: ["--dest", "StateMarketDeals.json"]
