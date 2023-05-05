@@ -65,8 +65,8 @@ phases:
 #      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend-multi
 #      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher-multi
 #      - docker push $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching-multi
-#      - cd helm
-#      - sed -i "s/0.0.0/${APP_VERSION}/g" Chart.yaml
-#      - helm lint
-#      - helm template cid-checker-$NETWORK . -f env-values/$NETWORK.yaml
-#      - helm upgrade --install cid-checker-$NETWORK . -f env-values/$NETWORK.yaml
+      - cd helm
+      - sed -i "s/0.0.0/${APP_VERSION}/g" Chart.yaml
+      - helm lint
+      - helm template cid-checker-$NETWORK . -f env-values/$NETWORK.yaml
+      - helm upgrade --install cid-checker-$NETWORK . -f env-values/$NETWORK.yaml
