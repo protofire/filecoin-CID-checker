@@ -31,7 +31,7 @@ spec:
         - name: {{ .Chart.Name }}-frontend
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-frontend"
+          image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-frontend-multi"
           imagePullPolicy: {{ .Values.services.frontend.image.pullPolicy }}
           ports:
             - name: http
