@@ -11,9 +11,4 @@ export const networks: INetwork[] = [
     url: 'https://calibration.filecoin.tools',
     label: 'Calibration',
   },
-  {
-    id: 'hyperspace',
-    url: 'https://hyperspace.filecoin.tools',
-    label: 'Hyperspace',
-  },
 ]
