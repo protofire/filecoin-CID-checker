@@ -31,7 +31,7 @@ spec:
         - name: {{ .Chart.Name }}-backend
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-backend"
+          image: "{{ .Values.dockerHubRepo }}:{{ .Chart.AppVersion }}-backend-multi"
           imagePullPolicy: {{ .Values.services.backend.image.pullPolicy }}
           lifecycle:
             postStart:
