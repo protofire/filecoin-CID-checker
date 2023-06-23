@@ -1,4 +1,4 @@
-dbSize: 10Gi
+dbSize: 30Gi
 lotusURL: "http://space06-lotus-service.network:1234/rpc/v0"
 services:
   s3SortCaching:
