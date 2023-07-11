@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-test-backend"
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: test-backend
+      image: curlimages/curl
+      command: ['curl']
+      args:
+      - --fail
+      - --write-out
+      - '%{http_code}'
+      - --silent 
+      - --output
+      - /dev/null
+      - 'http://{{ include "CID.fullname" . }}-backend-service:3000/api/version'
+  restartPolicy: Never
