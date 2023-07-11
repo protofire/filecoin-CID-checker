@@ -21,7 +21,7 @@ phases:
   pre_build:
     commands:
       - echo Build STARTED
-      - make docker_build_all 
+      - make docker_build_all
       - cd helm
       - helm lint
   build:
