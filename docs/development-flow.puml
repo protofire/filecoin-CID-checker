@@ -1,0 +1,52 @@
+@startuml
+
+legend top left
+  Development flow
+end legend
+
+actor "Developer" as developer
+actor "Reviewer" as reviewer
+actor "User" as user
+
+autonumber
+
+box "Development"
+participant "Edit code, repo branch - dev" as editCode
+end box
+
+box "GIT repo"
+participant "dev" as repoDev
+participant "calibration" as repoCalibration
+participant "main" as repoMainnet
+end box
+
+box "Servers" #LightBlue
+participant "calibration.filecoin.tools" as calibration
+participant "filecoin.tools" as mainnet
+end box
+
+box "CI/CD pipelines"
+participant "AWSPipeline" as aws
+end box
+
+group "Changes flow"
+developer -> editCode++: Edits code
+editCode -> devRepo++: Pushs to repo /dev
+devRepo -> repoCalibration++: Makes PR from /dev to /calibration
+repoCalibration -> reviewer--: Asks review
+reviewer -> repoCalibration++: Approves review
+repoCalibration -> developer--: OK
+developer -> repoCalibration++: Merges PR
+repoCalibration -> calibration++: Deploys to target servers(kubernetis)
+calibration -> developer--: Checks results
+developer -> repoMainnet++: Makes PR from /dev to /main
+repoMainnet -> reviewer--: Asks approve
+reviewer -> repoMainnet++: Approves PR
+repoMainnet -> developer--: OK
+developer -> repoMainnet++: Merges PR
+repoMainnet -> mainnet++: Deploys to target servers(kubernetis)
+mainnet -> developer--: Check results
+user -> mainnet: can use new fiature
+end group
+
+@enduml
