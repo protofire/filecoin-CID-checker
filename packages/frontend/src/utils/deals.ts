@@ -1,5 +1,5 @@
-import { FILECOIN_CID_CHECKER_API, PAGE_SIZE } from '../config/constants'
-import { DealDetails, DealStatus, DealValue, DealValueNotAvailable } from './types'
+import { FILECOIN_CID_CHECKER_API, PAGE_SIZE } from '../config/constants';
+import { DealDetails, DealStatus, DealValue, DealValueNotAvailable } from './types';
 
 export const truncateStringInTheMiddle = (
   str: string,
@@ -68,8 +68,12 @@ export const fetchDeals = async (
       EndEpochAsDate,
     } = DealInfo?.Proposal
     const DealID = DealInfo?.DealID || DealValueNotAvailable
-    const State = DealInfo.State.SectorStartEpoch > -1 ? DealStatus.Active : DealStatus.Unknown
-
+    let State = DealInfo.State.SectorStartEpoch > -1 ? DealStatus.Active : DealStatus.Unknown
+    const endEpoch = new Date(EndEpochAsDate)
+    const currentDate = new Date()
+    if (currentDate > endEpoch) {
+      State = DealStatus.Expired
+    }
     return {
       PieceCID: PieceCID['/'],
       DealID,

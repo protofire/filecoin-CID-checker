@@ -1,6 +1,6 @@
 {
   "name": "cid-checker-fastify-api",
-  "version": "0.1.18",
+  "version": "0.2.18",
   "description": "Description",
   "main": "build/index.js",
   "engines": {
