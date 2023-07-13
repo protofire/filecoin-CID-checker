@@ -1,7 +1,7 @@
-import React from 'react'
-import styled, { css } from 'styled-components'
+import React from 'react';
+import styled, { css } from 'styled-components';
 
-import { DealStatus } from '../utils/types'
+import { DealStatus } from '../utils/types';
 
 export interface DealStatusProps {
   status: DealStatus
@@ -35,6 +35,13 @@ const StatusUnknowCSS = css`
   background-color: #8a8a8a;
 `
 
+const StatusExpiredCSS = css`
+  width: 8px;
+  height: 8px;
+  border-radius: 32px;
+  background-color: #c78e8e;
+`
+
 const getStatusTypeStyles = (status: DealStatus = DealStatus.Unknown): any => {
   if (status === DealStatus.Active) {
     return StatusActiveCSS
@@ -52,6 +59,9 @@ const getStatusTypeStyles = (status: DealStatus = DealStatus.Unknown): any => {
     return StatusUnknowCSS
   }
 
+  if (status === DealStatus.Expired) {
+    return StatusExpiredCSS
+  }
   return StatusUnknowCSS
 }
 

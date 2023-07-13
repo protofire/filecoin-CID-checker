@@ -1,5 +1,5 @@
 const { isNormalInteger } = require('filecoin-checker-shared/src/helpers/number')
-const { heightToDate } = require('filecoin-checker-shared/src/helpers/dates')
+const { dateToHeight, heightToDate } = require('filecoin-checker-shared/src/helpers/dates')
 
 class DealsService {
   async list(query = {}, models, pagination) {
@@ -29,7 +29,8 @@ class DealsService {
       }
     }
     if (query.activeDeal) {
-      where['State.SectorStartEpoch'] = { $gt: -1 }
+      // where['State.SectorStartEpoch'] = { $gt: -1 }
+      where['Proposal.EndEpoch'] = { $gt: dateToHeight(new Date()) }
     }
 
     if (query.verifiedDeal) {

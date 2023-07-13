@@ -12,8 +12,15 @@ function heightToDate (inputHeight) {
   return d
 }
 
+function dateToHeight (inputDate = new Date()) {
+  const unixEpoch = inputDate.getTime() / 1000
+  const result = Math.floor((unixEpoch - FILECOIN_GENESIS_UNIX_EPOCH) / 30)
+  return result
+}
+
 module.exports = {
   FILECOIN_GENESIS_UNIX_EPOCH,
   heightToUnix,
-  heightToDate
+  heightToDate,
+  dateToHeight
 }

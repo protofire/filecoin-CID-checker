@@ -3,6 +3,7 @@ export enum DealStatus {
   Fault = 'Fault',
   Recovery = 'Recovery',
   Unknown = 'Unknown',
+  Expired = 'Expired',
 }
 
 export const DealValueNotAvailable = 'N/A'
