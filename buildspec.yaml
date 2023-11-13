@@ -38,29 +38,29 @@ phases:
     commands:
       - echo Build STARTED
       - docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASS
-      - echo Install buildx plugin
-      - curl -JLO https://github.com/docker/buildx/releases/download/${DOCKER_BUILDX_VERSION}/buildx-${DOCKER_BUILDX_VERSION}.linux-amd64
-      - mkdir -p ~/.docker/cli-plugins
-      - mv buildx-${DOCKER_BUILDX_VERSION}.linux-amd64 ~/.docker/cli-plugins/docker-buildx
-      - chmod a+rx ~/.docker/cli-plugins/docker-buildx
+      #- echo Install buildx plugin
+      #- curl -JLO https://github.com/docker/buildx/releases/download/${DOCKER_BUILDX_VERSION}/buildx-${DOCKER_BUILDX_VERSION}.linux-amd64
+      #- mkdir -p ~/.docker/cli-plugins
+      #- mv buildx-${DOCKER_BUILDX_VERSION}.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+      #- chmod a+rx ~/.docker/cli-plugins/docker-buildx
       #
-      - echo Install binfmt tool
-      - docker run --privileged --rm tonistiigi/binfmt --install all
+      #- echo Install binfmt tool
+      #- docker run --privileged --rm tonistiigi/binfmt --install all
       #
-      - echo Install QEMU and binfmt_misc tools
-      - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      #- echo Install QEMU and binfmt_misc tools
+      #- docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
       #
-      - echo Configure Docker buildx builder
-      - docker buildx create --use --name nethermind
-      - docker buildx inspect --bootstrap
+      #- echo Configure Docker buildx builder
+      #- docker buildx create --use --name nethermind
+      #- docker buildx inspect --bootstrap
   build:
     commands:
-      - echo Building docker images
+      #- echo Building docker images
 
-      - docker buildx build --push --platform linux/amd64,linux/arm64  -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching-multi -f Dockerfile.s3-sort-caching .
-      - docker buildx build --push --platform linux/amd64,linux/arm64 -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend-multi -f Dockerfile.backend .
-      - docker buildx build --push --platform linux/amd64,linux/arm64 -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher-multi -f Dockerfile.watcher .
-      - docker buildx build --push --platform linux/amd64,linux/arm64 -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend-multi -f Dockerfile.frontend --build-arg REACT_APP_FILECOIN_CID_CHECKER_API=/api .
+      #- docker buildx build --push --platform linux/amd64,linux/arm64  -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-s3-sort-caching-multi -f Dockerfile.s3-sort-caching .
+      #- docker buildx build --push --platform linux/amd64,linux/arm64 -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-backend-multi -f Dockerfile.backend .
+      #- docker buildx build --push --platform linux/amd64,linux/arm64 -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-watcher-multi -f Dockerfile.watcher .
+      #- docker buildx build --push --platform linux/amd64,linux/arm64 -t $DOCKERHUB_ORGANIZATION/$DOCKERHUB_REPO_NAME:$APP_VERSION-frontend-multi -f Dockerfile.frontend --build-arg REACT_APP_FILECOIN_CID_CHECKER_API=/api .
 
       - cd helm
       - sed -i "s/0.0.0/${APP_VERSION}/g" Chart.yaml
