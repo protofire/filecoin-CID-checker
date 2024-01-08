@@ -55,3 +55,4 @@ spec:
         resources:
           requests:
             storage: "{{ .Values.dbSize }}" 
+        storageClassName: ebs-sc-gp2
