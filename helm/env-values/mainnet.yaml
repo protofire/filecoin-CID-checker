@@ -1,4 +1,4 @@
-dbSize: 30Gi
+dbSize: 50Gi
 lotusURL: "http://api-read-cid-checker-lotus-service.network:1234/rpc/v0"
 services:
   s3SortCaching:
