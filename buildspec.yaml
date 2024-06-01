@@ -67,3 +67,4 @@ phases:
       - helm lint
       - helm template cid-checker-$NETWORK . -f env-values/$NETWORK.yaml
       - helm upgrade --install cid-checker-$NETWORK . -f env-values/$NETWORK.yaml
+      - helm test cid-checker-$NETWORK
