@@ -10,6 +10,7 @@ COPY ./packages/backend/migrate-mongo-config.js ./packages/backend/migrate-mongo
 COPY ./packages/backend/index.js ./packages/backend/package.json ./packages/backend/
 COPY ./packages/shared/package.json ./packages/shared/
 COPY ./packages/shared/src ./packages/shared/src
+COPY ./yarn.lock .
 
 EXPOSE 3000
 
