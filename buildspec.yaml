@@ -4,17 +4,17 @@ version: 0.2
 env:
   shell: bash
   variables:
-    PROJECT: 'filecoin'
-    SUB_ENV: 'glif'
-    SHORT_REGION: 'apn1'
-    ENVIRONMENT: 'dev'
-    DOCKERHUB_ORGANIZATION: 'protofire'
-    HELM_VERSION: 'v3.1.0'
-    DOCKERHUB_REPO_NAME: 'cid-checker'
-    APP_VERSION: '0.1.34'
-    NETWORK: 'calibration'
-    ARCH: 'amd64'
-    DOCKER_BUILDX_VERSION: 'v0.10.4'
+    PROJECT: "filecoin"
+    SUB_ENV: "glif"
+    SHORT_REGION: "apn1"
+    ENVIRONMENT: "dev"
+    DOCKERHUB_ORGANIZATION: "protofire"
+    HELM_VERSION: "v3.1.0"
+    DOCKERHUB_REPO_NAME: "cid-checker"
+    APP_VERSION: "0.1.35"
+    NETWORK: "calibration"
+    ARCH: "amd64"
+    DOCKER_BUILDX_VERSION: "v0.10.4"
   secrets-manager:
     DOCKERHUB_USERNAME: "filecoin-mainnet-apn1-glif-dockerhub-glifio:username"
     DOCKERHUB_PASS: "filecoin-mainnet-apn1-glif-dockerhub-glifio:password"
