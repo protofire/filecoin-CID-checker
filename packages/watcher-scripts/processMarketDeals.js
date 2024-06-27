@@ -7,65 +7,65 @@ async function getLastHeight(statsCollection) {
 }
 
 async function updateStats(dealsCollection, statsCollection, height) {
-  const stats = {latestHeight: height};
+  const stats = { latestHeight: height };
   let queryResults;
   queryResults = await dealsCollection
     .aggregate(
       [
-        {$match: {'Proposal.EndEpoch': {$gte: height}, 'State.SectorStartEpoch': {$gt: -1}}},
-        {$group: {_id: '$Proposal.Client'}},
-        {$group: {_id: 1, count: {$sum: 1}}}
+        { $match: { 'Proposal.EndEpoch': { $gte: height }, 'State.SectorStartEpoch': { $gt: -1 } } },
+        { $group: { _id: '$Proposal.Client' } },
+        { $group: { _id: 1, count: { $sum: 1 } } }
       ],
-      {allowDiskUse: true},
+      { allowDiskUse: true },
     ).toArray()
   stats.numberOfUniqueClients = queryResults.length > 0 ? queryResults[0].count : 0;
-  
+
   queryResults = await dealsCollection
     .aggregate(
       [
-        {$match: {'Proposal.EndEpoch': {$gte: height}, 'State.SectorStartEpoch': {$gt: -1}}},
-        {$group: {_id: '$Proposal.Provider'}},
-        {$group: {_id: 1, count: {$sum: 1}}},
+        { $match: { 'Proposal.EndEpoch': { $gte: height }, 'State.SectorStartEpoch': { $gt: -1 } } },
+        { $group: { _id: '$Proposal.Provider' } },
+        { $group: { _id: 1, count: { $sum: 1 } } },
       ],
-      {allowDiskUse: true},
+      { allowDiskUse: true },
     ).toArray()
   stats.numberOfUniqueProviders = queryResults.length > 0 ? queryResults[0].count : 0;
-  
+
   queryResults = await dealsCollection
     .aggregate(
       [
-        {$match: {'Proposal.EndEpoch': {$gte: height}, 'State.SectorStartEpoch': {$gt: -1}}},
-        {$group: {_id: '$Proposal.PieceCID'}},
-        {$group: {_id: 1, count: {$sum: 1}}},
+        { $match: { 'Proposal.EndEpoch': { $gte: height }, 'State.SectorStartEpoch': { $gt: -1 } } },
+        { $group: { _id: '$Proposal.PieceCID' } },
+        { $group: { _id: 1, count: { $sum: 1 } } },
       ],
-      {allowDiskUse: true},
+      { allowDiskUse: true },
     ).toArray()
   stats.numberOfUniqueCIDs = queryResults.length > 0 ? queryResults[0].count : 0;
-  
+
   queryResults = await dealsCollection
     .aggregate(
       [
-        {$match: {'Proposal.EndEpoch': {$gte: height}, 'State.SectorStartEpoch': {$gt: -1}}},
-        {$group: {_id: 1, count: {$sum: '$Proposal.PieceSize'}}},
+        { $match: { 'Proposal.EndEpoch': { $gte: height }, 'State.SectorStartEpoch': { $gt: -1 } } },
+        { $group: { _id: 1, count: { $sum: '$Proposal.PieceSize' } } },
       ],
-      {allowDiskUse: true},
+      { allowDiskUse: true },
     ).toArray()
   stats.totalDealSize = queryResults.length > 0 ? queryResults[0].count : 0;
-  
+
   queryResults = await dealsCollection
     .aggregate(
       [
-        {$match: {'Proposal.EndEpoch': {$gte: height}, 'State.SectorStartEpoch': {$gt: -1}}},
-        {$group: {_id: 1, count: {$sum: 1}}},
+        { $match: { 'Proposal.EndEpoch': { $gte: height }, 'State.SectorStartEpoch': { $gt: -1 } } },
+        { $group: { _id: 1, count: { $sum: 1 } } },
       ],
-      {allowDiskUse: true},
+      { allowDiskUse: true },
     ).toArray()
   stats.totalDeals = queryResults.length > 0 ? queryResults[0].count : 0;
-  
+
   return statsCollection.bulkWrite([
     {
       replaceOne: {
-        filter: {_id: 1},
+        filter: { _id: 1 },
         replacement: stats,
         upsert: true,
       },
@@ -83,23 +83,23 @@ async function updateStatus(statusCollection, height) {
 
 async function processMarketDeals(options) {
   const { client, dbName, currentHeight, filePath } = options;
-  
+
   await client.connect();
   const db = client.db(dbName);
   const dealsCollection = db.collection('deals');
   const statsCollection = db.collection('stats');
   const statusCollection = db.collection('status');
-  
+
   const lastHeight = await getLastHeight(statsCollection);
   const readableStream = fs.createReadStream(filePath, 'utf8');
-  
+
   let buffer = '';
   let isFirstLine = true;
   let dealsUpdated = 0;
-  
+
   let deals = [];
   let promises = [];
-  
+
   return (new Promise((resolve, reject) => {
     readableStream.on('error', function (error) {
       reject(`error: ${error.message}`);
@@ -107,10 +107,10 @@ async function processMarketDeals(options) {
 
     readableStream.on('data', (chunk) => {
       if (isFirstLine) {
-        chunk = chunk.substring(27);
+        chunk = chunk.substring(33);
         isFirstLine = false;
       }
-    
+
       buffer += chunk;
 
       let rDelimiter = buffer.indexOf('}},');
@@ -119,7 +119,7 @@ async function processMarketDeals(options) {
         if (record.endsWith('}}}')) {
           record = record.substring(0, record.length - 1);
         }
-      
+
         const kvDelimiter = record.indexOf('":{');
         const key = record.substring(1, kvDelimiter);
         const rawValue = record.substring(kvDelimiter + 2);
@@ -136,7 +136,7 @@ async function processMarketDeals(options) {
           value.DealID = parseInt(key, 10);
           deals.push({
             replaceOne: {
-              filter: {_id: value.DealID},
+              filter: { _id: value.DealID },
               replacement: value,
               upsert: true,
             }
@@ -146,7 +146,7 @@ async function processMarketDeals(options) {
         rDelimiter = buffer.indexOf('}},');
       }
     })
-  
+
     readableStream.on('end', () => {
       if (deals.length > 0) {
         promises.push(dealsCollection.bulkWrite(deals, { ordered: false }));
@@ -161,13 +161,13 @@ async function processMarketDeals(options) {
       });
     })
   }))
-  
+
 }
 
 function main() {
-  const [,,mongoUrl, dbName, currentHeight, filePath] = process.argv;
-  const client = new MongoClient(mongoUrl, {useUnifiedTopology: true});
-  
+  const [, , mongoUrl, dbName, currentHeight, filePath] = process.argv;
+  const client = new MongoClient(mongoUrl, { useUnifiedTopology: true });
+
   processMarketDeals({ client, dbName, currentHeight: parseInt(currentHeight, 10), filePath })
     .then(console.log)
     .catch(console.log)
