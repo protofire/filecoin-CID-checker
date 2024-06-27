@@ -9,6 +9,7 @@ COPY ./packages/frontend/.eslintignore .
 COPY ./packages/frontend/.eslintrc.json .
 COPY ./packages/frontend/.prettierrc .
 COPY ./packages/frontend/tsconfig.json .
+COPY ./yarn.lock .
 
 RUN yarn install
 
