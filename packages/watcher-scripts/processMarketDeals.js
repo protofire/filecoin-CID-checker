@@ -134,7 +134,7 @@ async function processMarketDeals(options) {
             deals = [];
           }
           value.DealID = parseInt(key, 10);
-          if (Number.isNone(value.DealID)) {
+          if (Number.isNaN(value.DealID)) {
             console.log(`Buffer: ${buffer}`);
             console.log(`Chunk: ${chunk}`);
             console.log(`kvDelimiter: ${kvDelimiter}`);
