@@ -107,7 +107,7 @@ async function processMarketDeals(options) {
 
     readableStream.on('data', (chunk) => {
       if (isFirstLine) {
-        chunk = chunk.substring(33);
+        chunk = chunk.substring(34);
         isFirstLine = false;
       }
 
@@ -121,7 +121,7 @@ async function processMarketDeals(options) {
         }
 
         const kvDelimiter = record.indexOf('":{');
-        const key = record.substring(2, kvDelimiter);
+        const key = record.substring(1, kvDelimiter);
         const rawValue = record.substring(kvDelimiter + 2);
 
         const value = JSON.parse(rawValue);
