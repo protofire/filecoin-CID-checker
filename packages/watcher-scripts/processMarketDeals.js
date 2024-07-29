@@ -134,15 +134,6 @@ async function processMarketDeals(options) {
             deals = [];
           }
           value.DealID = parseInt(key, 10);
-          if (Number.isNaN(value.DealID)) {
-            console.log(`Buffer: ${buffer}`);
-            console.log(`Chunk: ${chunk}`);
-            console.log(`kvDelimiter: ${kvDelimiter}`);
-            console.log(`Key: ${key}`);
-            console.log(`Raw Value: ${rawValue}`);
-            console.log(`Value: ${value}`);
-            console.log(`rDelimiter: ${rDelimiter}`);
-          }
           deals.push({
             replaceOne: {
               filter: { _id: value.DealID },
