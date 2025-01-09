@@ -45,7 +45,7 @@ For the end user it doesn't require any developer skills to quickly get informat
 If you are a total beginner to this, start here!
 
 **Use remote CID checker service:**
-1. Navigate to the website: [https://filecoin.tools](https://filecoin.tools)
+1. Navigate to the website: [https://old.filecoin.tools](https://old.filecoin.tools)
 2. See the list of all piece CIDs and related information:
 - Pieced CID
 - Status
