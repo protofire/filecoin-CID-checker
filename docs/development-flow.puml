@@ -21,8 +21,8 @@ participant "main" as repoMainnet
 end box
 
 box "Servers" #LightBlue
-participant "calibration.filecoin.tools" as calibration
-participant "filecoin.tools" as mainnet
+participant "calibration.old.filecoin.tools" as calibration
+participant "old.filecoin.tools" as mainnet
 end box
 
 box "CI/CD pipelines"
