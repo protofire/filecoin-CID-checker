@@ -10,4 +10,4 @@ services:
     env:
       HEIGHT_ALARM_ALLOW_DIFF: "200"
 nodeSelector:
-  assign_to_space00_07_nodes: allow_any_pods
+  nodeGroupName: cid_checker
