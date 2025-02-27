@@ -107,7 +107,7 @@ async function processMarketDeals(options) {
 
     readableStream.on('data', (chunk) => {
       if (isFirstLine) {
-        chunk = chunk.substring(33);
+        chunk = chunk.substring(34);
         isFirstLine = false;
       }
 
