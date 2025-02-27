@@ -6,7 +6,7 @@ env:
   variables:
     DOCKERHUB_ORGANIZATION: "protofire"
     DOCKERHUB_REPO_NAME: "cid-checker"
-    APP_VERSION: "0.1.38"
+    APP_VERSION: "0.1.38-calibnet"
     DOCKER_BUILDX_VERSION: "v0.10.4"
   secrets-manager:
     DOCKERHUB_USERNAME: "filecoin-mainnet-apn1-glif-dockerhub-glifio:username"
