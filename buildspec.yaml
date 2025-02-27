@@ -9,7 +9,7 @@ env:
     SHORT_REGION: "apn1"
     ENVIRONMENT: "dev"
     HELM_VERSION: "v3.1.0"
-    APP_VERSION: "0.1.38"
+    APP_VERSION: "0.1.38-mainnet"
     NETWORK: "mainnet"
     ARCH: "amd64"
   secrets-manager:
